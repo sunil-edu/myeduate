@@ -1,0 +1,140 @@
+
+type MstInstConnection {
+    totalCount: Int!
+    pageInfo: PageInfo!
+    edges: [MstInstEdge]
+}
+
+type MstInstEdge {
+    node: MstInst
+    cursor: Cursor!
+}
+
+# These enums are matched the entgql annotations in the ent/schema/mstinst.go
+enum MstInstOrderField {
+    INST_CODE
+    INST_NAME
+    INST_PLACE
+    INST_CONTACT_PERSON
+    INST_PHONE
+    INST_STATUS
+}
+
+
+input MstInstOrder {
+    direction: OrderDirection!
+    field: MstInstOrderField
+}
+
+
+
+type MstInst implements Node {
+    id: ID!
+    inst_code:              String!	
+    inst_name:              String!	
+    inst_short_name:        String!		
+    inst_address:           String!			
+    inst_place:             String!	
+    inst_state:             String!
+    inst_pin:               String!    
+    inst_contact_person:    String!			
+    inst_phone:             String!
+    inst_email:             String!
+    inst_mobile:            String!	    			
+    inst_url:               String!			
+    inst_banner_1:          String!		
+    inst_banner_2:          String!			
+    inst_logo_url:          String!
+    inst_is_active:         IsActive!  
+    inst_status:            String! 
+    inst_time_zone:         Time!
+    customer_id:            ID!
+
+
+}
+
+
+input CreateMstInstInput {
+
+    inst_code:              String	
+    inst_name:              String!	
+    inst_short_name:        String		
+    inst_address:           String			
+    inst_place:             String	
+    inst_state:             String
+    inst_pin:               String    
+    inst_contact_person:    String			
+    inst_phone:             String
+    inst_email:             String
+    inst_mobile:            String	    			
+    inst_url:               String			
+    inst_banner_1:          String		
+    inst_banner_2:          String			
+    inst_logo_url:          String
+    inst_is_active:         IsActive  
+    inst_status:            String
+    inst_time_zone:         Time  
+
+    customer_id:            ID!
+
+}
+
+input UpdateMstInstInput {
+    inst_code:              String	
+    inst_name:              String!	
+    inst_short_name:        String		
+    inst_address:           String			
+    inst_place:             String	
+    inst_state:             String
+    inst_pin:               String    
+    inst_contact_person:    String			
+    inst_phone:             String
+    inst_email:             String
+    inst_mobile:            String	    			
+    inst_url:               String			
+    inst_banner_1:          String		
+    inst_banner_2:          String			
+    inst_logo_url:          String
+    inst_is_active:         IsActive  
+    inst_status:            String
+    inst_time_zone:         Time  
+}
+
+
+type InstData {
+    Inst_name:  String!
+    id:             ID!
+}
+
+
+extend type Query {
+
+    ListInsts(token: String!, 
+        after: Cursor, 
+        first: Int, 
+        before: Cursor, 
+        last: Int,
+        orderBy: MstInstOrder
+        ):MstInstConnection
+    
+
+
+    ListInstsByCustID(token: String!, 
+        customer_id: ID!,
+        after: Cursor, 
+        first: Int, 
+        before: Cursor, 
+        last: Int,
+        orderBy: MstInstOrder
+        ):MstInstConnection
+
+    GetInstByID(token: String!, id: ID!):MstInst!
+    GetInstIdsByNames(token: String!, inst_names: [String!]):[InstData!]!
+
+}
+
+
+extend type Mutation {
+  AddInst(token: String!, input: CreateMstInstInput!): MstInst!
+  UpdateInst(token: String!, id: ID!, input: UpdateMstInstInput!): MstInst!
+}

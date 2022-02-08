@@ -1,0 +1,134 @@
+
+
+"""Maps a Time GraphQL scalar to a Go time.Time struct."""
+scalar Time
+
+
+"""
+Define a Relay Cursor type:
+https://relay.dev/graphql/connections.htm#sec-Cursor
+"""
+scalar Cursor
+
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: Cursor
+    endCursor: Cursor
+}
+
+enum OrderDirection {
+    ASC
+    DESC
+}
+
+
+""" any new enum type is added, please update the file /ent/enumtypes/isactive.go """
+enum IsActive {
+	ACTIVE
+	INACTIVE
+}
+""" any new enum type is added, please update the file /ent/enumtypes/yesno.go """
+
+enum YesNo {
+	YES
+	NO
+}
+
+enum StdStatus {
+  CUR
+  TC
+  DET
+  NE
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum ScSt {
+  SC
+  ST
+}
+
+enum EntranceExam {
+  CET
+  COMDEK
+  NEET
+}
+
+enum Region {
+  KAR
+  NON_KAR
+}
+
+enum RuralUrban {
+  RURAL
+  URBAN
+}
+
+enum SeatType {
+  FREE
+  PAYMENT
+}
+
+enum BloodGroup {
+	A_POSITIVE
+	A_NEGATIVE
+  B_POSITIVE
+	B_NEGATIVE
+	O_POSITIVE
+	O_NEGATIVE
+	AB_POSITIVE
+	AB_NEGATIVE
+}
+
+enum MartialStatus{
+  MARRIED
+  UNMARRIED
+}
+
+enum AuthGroupType {
+  EDUATE
+  STAFF
+  STUDENT
+  PARENT
+}
+
+enum EduateUserType{
+  EDUATE_USER
+  EDUATE_MANAGER
+  EDUATE_ADMIN
+  EDUATE_SYS_ADMIN
+}
+
+enum StaffUserType{
+  INST_SYS_ADMIN
+  INST_CHAIRMAN
+  INST_PRINCIPAL
+  INST_STAFF
+  INST_MEMBER
+  INST_HEAD
+  INST_HOD
+  INST_GROUP_HEAD
+  INST_FACULTY
+}
+
+enum ParentType {
+  FATHER
+  MOTHER
+  GUARDIAN
+}
+
+
+extend type Query {
+  node(token: String!, id: ID!): Node
+  nodes(token: String!, ids: [ID!]!): [Node]!
+}
+

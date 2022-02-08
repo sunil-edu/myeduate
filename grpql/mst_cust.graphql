@@ -1,0 +1,121 @@
+
+
+type MstCustomerConnection {
+    totalCount: Int!
+    pageInfo: PageInfo!
+    edges: [MstCustomerEdge]
+}
+
+type MstCustomerEdge {
+    node: MstCustomer
+    cursor: Cursor!
+}
+
+# These enums are matched the entgql annotations in the ent/schema/mstcustomer.go
+enum MstCustomerOrderField {
+    CUST_CODE
+    CUST_NAME
+    CUST_PLACE
+    CUST_CONTACT_PERSON
+    CUST_PHONE
+    CUST_STATUS
+}
+
+
+input MstCustomerOrder {
+    direction: OrderDirection!
+    field: MstCustomerOrderField
+}
+
+type MstCustomer  implements Node {
+    id: ID!
+    cust_code:          String!	
+    cust_name:          String!	
+    cust_address:       String!			
+    cust_place:         String!	
+    cust_state:         String!
+    cust_pin:           String!    
+    cust_contact_person:String!			
+    cust_phone:         String!
+    cust_email:         String!
+    cust_mobile:        String!	    			
+    cust_url:           String!			
+    cust_banner_1:      String!		
+    cust_banner_2:      String!			
+    cust_logo_url:      String!
+    cust_is_active:     IsActive!  
+    cust_status:        String!
+    cust_num_inst:      Int!
+    cust_time_zone:     Time!
+  }
+
+# Define an input type for the mutation below.
+# https://graphql.org/learn/schema/#input-types
+
+input CreateMstCustomerInput {
+    cust_code:          String	
+    cust_name:          String!	
+    cust_address:       String			
+    cust_place:         String	
+    cust_state:         String
+    cust_pin:           String    
+    cust_contact_person:String			
+    cust_phone:         String
+    cust_email:         String
+    cust_mobile:        String	    			
+    cust_url:           String			
+    cust_banner_1:      String		
+    cust_banner_2:      String			
+    cust_logo_url:      String
+    cust_is_active:     IsActive  
+    cust_status:        String
+    cust_time_zone:     Time
+		
+}
+
+input UpdateMstCustomerInput {
+    cust_code:          String	
+    cust_name:          String!	
+    cust_address:       String			
+    cust_place:         String	
+    cust_state:         String
+    cust_pin:           String    
+    cust_contact_person:String			
+    cust_phone:         String
+    cust_email:         String
+    cust_mobile:        String	    			
+    cust_url:           String			
+    cust_banner_1:      String		
+    cust_banner_2:      String			
+    cust_logo_url:      String
+    cust_is_active:     IsActive  
+    cust_status:        String
+    cust_time_zone:     Time
+}
+
+type CustData {
+    customer_name:  String!
+    id:             ID!
+}
+
+
+extend type Query {
+    ListCustomers(token: String!, 
+        after: Cursor, 
+        first: Int, 
+        before: Cursor, 
+        last: Int,
+        orderBy: MstCustomerOrder,
+        where:MstCustomerWhereInput):MstCustomerConnection
+
+    GetCustomerByID(token: String!, id: ID!):MstCustomer!
+   
+    GetCustomerIdsByNames(token: String!, cust_names: [String!]):[CustData!]!
+
+}
+
+
+extend type Mutation {
+  AddCustomer(token: String!, input: CreateMstCustomerInput!): MstCustomer!
+  UpdateCustomer(token: String!, id: ID!, input: UpdateMstCustomerInput!): MstCustomer! 
+}
