@@ -79,6 +79,8 @@ func (MstInst) Fields() []ent.Field {
 
 		field.UUID("customer_id", uuid.UUID{}).Annotations(
 			entgql.OrderField("CUSTOMER_ID")),
+
+		field.UUID("test_id", uuid.UUID{}),
 	}
 }
 

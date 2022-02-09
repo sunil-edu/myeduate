@@ -236,6 +236,13 @@ func CustomerID(v uuid.UUID) predicate.MstInst {
 	})
 }
 
+// TestID applies equality check predicate on the "test_id" field. It's identical to TestIDEQ.
+func TestID(v uuid.UUID) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldTestID), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
@@ -2335,6 +2342,82 @@ func CustomerIDNotIn(vs ...uuid.UUID) predicate.MstInst {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldCustomerID), v...))
+	})
+}
+
+// TestIDEQ applies the EQ predicate on the "test_id" field.
+func TestIDEQ(v uuid.UUID) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldTestID), v))
+	})
+}
+
+// TestIDNEQ applies the NEQ predicate on the "test_id" field.
+func TestIDNEQ(v uuid.UUID) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldTestID), v))
+	})
+}
+
+// TestIDIn applies the In predicate on the "test_id" field.
+func TestIDIn(vs ...uuid.UUID) predicate.MstInst {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.MstInst(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldTestID), v...))
+	})
+}
+
+// TestIDNotIn applies the NotIn predicate on the "test_id" field.
+func TestIDNotIn(vs ...uuid.UUID) predicate.MstInst {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.MstInst(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldTestID), v...))
+	})
+}
+
+// TestIDGT applies the GT predicate on the "test_id" field.
+func TestIDGT(v uuid.UUID) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldTestID), v))
+	})
+}
+
+// TestIDGTE applies the GTE predicate on the "test_id" field.
+func TestIDGTE(v uuid.UUID) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldTestID), v))
+	})
+}
+
+// TestIDLT applies the LT predicate on the "test_id" field.
+func TestIDLT(v uuid.UUID) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldTestID), v))
+	})
+}
+
+// TestIDLTE applies the LTE predicate on the "test_id" field.
+func TestIDLTE(v uuid.UUID) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldTestID), v))
 	})
 }
 

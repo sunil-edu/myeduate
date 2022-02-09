@@ -59,6 +59,8 @@ const (
 	FieldInstTimeZone = "inst_time_zone"
 	// FieldCustomerID holds the string denoting the customer_id field in the database.
 	FieldCustomerID = "customer_id"
+	// FieldTestID holds the string denoting the test_id field in the database.
+	FieldTestID = "test_id"
 	// EdgeInstfromCust holds the string denoting the instfromcust edge name in mutations.
 	EdgeInstfromCust = "InstfromCust"
 	// Table holds the table name of the mstinst in the database.
@@ -96,6 +98,7 @@ var Columns = []string{
 	FieldInstStatus,
 	FieldInstTimeZone,
 	FieldCustomerID,
+	FieldTestID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

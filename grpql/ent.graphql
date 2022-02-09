@@ -584,6 +584,16 @@ input MstInstWhereInput {
   customerIDIn: [ID!]
   customerIDNotIn: [ID!]
   
+  """test_id field predicates"""
+  testID: UUID
+  testIDNEQ: UUID
+  testIDIn: [UUID!]
+  testIDNotIn: [UUID!]
+  testIDGT: UUID
+  testIDGTE: UUID
+  testIDLT: UUID
+  testIDLTE: UUID
+  
   """id field predicates"""
   id: ID
   idNEQ: ID

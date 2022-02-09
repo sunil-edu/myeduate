@@ -62,6 +62,7 @@ var (
 		{Name: "inst_is_active", Type: field.TypeEnum, Enums: []string{"ACTIVE", "INACTIVE"}, Default: "ACTIVE"},
 		{Name: "inst_status", Type: field.TypeString},
 		{Name: "inst_time_zone", Type: field.TypeTime, SchemaType: map[string]string{"postgres": "DATE"}},
+		{Name: "test_id", Type: field.TypeUUID},
 		{Name: "customer_id", Type: field.TypeUUID, Nullable: true},
 	}
 	// MstInstsTable holds the schema information for the "mst_insts" table.
@@ -72,7 +73,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "mst_insts_mst_customers_Cust2Inst",
-				Columns:    []*schema.Column{MstInstsColumns[21]},
+				Columns:    []*schema.Column{MstInstsColumns[22]},
 				RefColumns: []*schema.Column{MstCustomersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -81,7 +82,7 @@ var (
 			{
 				Name:    "mstinst_inst_name_customer_id",
 				Unique:  true,
-				Columns: []*schema.Column{MstInstsColumns[4], MstInstsColumns[21]},
+				Columns: []*schema.Column{MstInstsColumns[4], MstInstsColumns[22]},
 			},
 		},
 	}

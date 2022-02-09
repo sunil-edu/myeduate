@@ -160,6 +160,12 @@ func (miu *MstInstUpdate) SetCustomerID(u uuid.UUID) *MstInstUpdate {
 	return miu
 }
 
+// SetTestID sets the "test_id" field.
+func (miu *MstInstUpdate) SetTestID(u uuid.UUID) *MstInstUpdate {
+	miu.mutation.SetTestID(u)
+	return miu
+}
+
 // SetInstfromCustID sets the "InstfromCust" edge to the MstCustomer entity by ID.
 func (miu *MstInstUpdate) SetInstfromCustID(id uuid.UUID) *MstInstUpdate {
 	miu.mutation.SetInstfromCustID(id)
@@ -425,6 +431,13 @@ func (miu *MstInstUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: mstinst.FieldInstTimeZone,
 		})
 	}
+	if value, ok := miu.mutation.TestID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: mstinst.FieldTestID,
+		})
+	}
 	if miu.mutation.InstfromCustCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -604,6 +617,12 @@ func (miuo *MstInstUpdateOne) SetInstTimeZone(t time.Time) *MstInstUpdateOne {
 // SetCustomerID sets the "customer_id" field.
 func (miuo *MstInstUpdateOne) SetCustomerID(u uuid.UUID) *MstInstUpdateOne {
 	miuo.mutation.SetCustomerID(u)
+	return miuo
+}
+
+// SetTestID sets the "test_id" field.
+func (miuo *MstInstUpdateOne) SetTestID(u uuid.UUID) *MstInstUpdateOne {
+	miuo.mutation.SetTestID(u)
 	return miuo
 }
 
@@ -894,6 +913,13 @@ func (miuo *MstInstUpdateOne) sqlSave(ctx context.Context) (_node *MstInst, err 
 			Type:   field.TypeTime,
 			Value:  value,
 			Column: mstinst.FieldInstTimeZone,
+		})
+	}
+	if value, ok := miuo.mutation.TestID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: mstinst.FieldTestID,
 		})
 	}
 	if miuo.mutation.InstfromCustCleared() {

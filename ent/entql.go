@@ -82,6 +82,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			mstinst.FieldInstStatus:        {Type: field.TypeString, Column: mstinst.FieldInstStatus},
 			mstinst.FieldInstTimeZone:      {Type: field.TypeTime, Column: mstinst.FieldInstTimeZone},
 			mstinst.FieldCustomerID:        {Type: field.TypeUUID, Column: mstinst.FieldCustomerID},
+			mstinst.FieldTestID:            {Type: field.TypeUUID, Column: mstinst.FieldTestID},
 		},
 	}
 	graph.MustAddE(
@@ -412,6 +413,11 @@ func (f *MstInstFilter) WhereInstTimeZone(p entql.TimeP) {
 // WhereCustomerID applies the entql [16]byte predicate on the customer_id field.
 func (f *MstInstFilter) WhereCustomerID(p entql.ValueP) {
 	f.Where(p.Field(mstinst.FieldCustomerID))
+}
+
+// WhereTestID applies the entql [16]byte predicate on the test_id field.
+func (f *MstInstFilter) WhereTestID(p entql.ValueP) {
+	f.Where(p.Field(mstinst.FieldTestID))
 }
 
 // WhereHasInstfromCust applies a predicate to check if query has an edge InstfromCust.
