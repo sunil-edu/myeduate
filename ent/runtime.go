@@ -31,10 +31,6 @@ func init() {
 	mstcustomer.DefaultUpdatedAt = mstcustomerDescUpdatedAt.Default.(func() time.Time)
 	// mstcustomer.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	mstcustomer.UpdateDefaultUpdatedAt = mstcustomerDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// mstcustomerDescCustCode is the schema descriptor for cust_code field.
-	mstcustomerDescCustCode := mstcustomerFields[1].Descriptor()
-	// mstcustomer.CustCodeValidator is a validator for the "cust_code" field. It is called by the builders before save.
-	mstcustomer.CustCodeValidator = mstcustomerDescCustCode.Validators[0].(func(string) error)
 	// mstcustomerDescCustName is the schema descriptor for cust_name field.
 	mstcustomerDescCustName := mstcustomerFields[2].Descriptor()
 	// mstcustomer.CustNameValidator is a validator for the "cust_name" field. It is called by the builders before save.
@@ -62,10 +58,6 @@ func init() {
 	mstinst.DefaultUpdatedAt = mstinstDescUpdatedAt.Default.(func() time.Time)
 	// mstinst.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	mstinst.UpdateDefaultUpdatedAt = mstinstDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// mstinstDescInstCode is the schema descriptor for inst_code field.
-	mstinstDescInstCode := mstinstFields[1].Descriptor()
-	// mstinst.InstCodeValidator is a validator for the "inst_code" field. It is called by the builders before save.
-	mstinst.InstCodeValidator = mstinstDescInstCode.Validators[0].(func(string) error)
 	// mstinstDescInstName is the schema descriptor for inst_name field.
 	mstinstDescInstName := mstinstFields[2].Descriptor()
 	// mstinst.InstNameValidator is a validator for the "inst_name" field. It is called by the builders before save.

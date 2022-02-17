@@ -59,8 +59,6 @@ const (
 	FieldInstTimeZone = "inst_time_zone"
 	// FieldCustomerID holds the string denoting the customer_id field in the database.
 	FieldCustomerID = "customer_id"
-	// FieldTestID holds the string denoting the test_id field in the database.
-	FieldTestID = "test_id"
 	// EdgeInstfromCust holds the string denoting the instfromcust edge name in mutations.
 	EdgeInstfromCust = "InstfromCust"
 	// Table holds the table name of the mstinst in the database.
@@ -98,7 +96,6 @@ var Columns = []string{
 	FieldInstStatus,
 	FieldInstTimeZone,
 	FieldCustomerID,
-	FieldTestID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -118,8 +115,6 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
-	// InstCodeValidator is a validator for the "inst_code" field. It is called by the builders before save.
-	InstCodeValidator func(string) error
 	// InstNameValidator is a validator for the "inst_name" field. It is called by the builders before save.
 	InstNameValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.

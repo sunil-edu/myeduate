@@ -203,7 +203,6 @@ type CreateMstInstInput struct {
 	InstStatus        string
 	InstTimeZone      time.Time
 	CustomerID        uuid.UUID
-	TestID            uuid.UUID
 	InstfromCust      uuid.UUID
 }
 
@@ -236,7 +235,6 @@ func (i *CreateMstInstInput) Mutate(m *MstInstCreate) {
 	m.SetInstStatus(i.InstStatus)
 	m.SetInstTimeZone(i.InstTimeZone)
 	m.SetCustomerID(i.CustomerID)
-	m.SetTestID(i.TestID)
 	m.SetInstfromCustID(i.InstfromCust)
 }
 
@@ -268,7 +266,6 @@ type UpdateMstInstInput struct {
 	InstStatus        *string
 	InstTimeZone      *time.Time
 	CustomerID        *uuid.UUID
-	TestID            *uuid.UUID
 	InstfromCust      *uuid.UUID
 	ClearInstfromCust bool
 }
@@ -334,9 +331,6 @@ func (i *UpdateMstInstInput) Mutate(m *MstInstMutation) {
 	}
 	if v := i.CustomerID; v != nil {
 		m.SetCustomerID(*v)
-	}
-	if v := i.TestID; v != nil {
-		m.SetTestID(*v)
 	}
 	if i.ClearInstfromCust {
 		m.ClearInstfromCust()

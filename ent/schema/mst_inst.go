@@ -30,8 +30,6 @@ func (MstInst) Fields() []ent.Field {
 		field.UUID("id", uuid.UUID{}).Default(uuid.New),
 
 		field.String("inst_code").
-			Unique().
-			NotEmpty().
 			Annotations(entgql.OrderField("INST_CODE")),
 
 		field.String("inst_name").
@@ -79,8 +77,6 @@ func (MstInst) Fields() []ent.Field {
 
 		field.UUID("customer_id", uuid.UUID{}).Annotations(
 			entgql.OrderField("CUSTOMER_ID")),
-
-		field.UUID("test_id", uuid.UUID{}),
 	}
 }
 

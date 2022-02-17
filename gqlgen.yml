@@ -27,6 +27,11 @@ models:
   ID:
     model:
       - myeduate/ent/uuidgql.UUID
+
+  UUID:
+    model:
+      - myeduate/ent/uuidgql.UUID
+      
   Node:
     model:
       - myeduate/ent.Noder

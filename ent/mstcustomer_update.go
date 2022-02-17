@@ -281,11 +281,6 @@ func (mcu *MstCustomerUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (mcu *MstCustomerUpdate) check() error {
-	if v, ok := mcu.mutation.CustCode(); ok {
-		if err := mstcustomer.CustCodeValidator(v); err != nil {
-			return &ValidationError{Name: "cust_code", err: fmt.Errorf(`ent: validator failed for field "MstCustomer.cust_code": %w`, err)}
-		}
-	}
 	if v, ok := mcu.mutation.CustName(); ok {
 		if err := mstcustomer.CustNameValidator(v); err != nil {
 			return &ValidationError{Name: "cust_name", err: fmt.Errorf(`ent: validator failed for field "MstCustomer.cust_name": %w`, err)}
@@ -786,11 +781,6 @@ func (mcuo *MstCustomerUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (mcuo *MstCustomerUpdateOne) check() error {
-	if v, ok := mcuo.mutation.CustCode(); ok {
-		if err := mstcustomer.CustCodeValidator(v); err != nil {
-			return &ValidationError{Name: "cust_code", err: fmt.Errorf(`ent: validator failed for field "MstCustomer.cust_code": %w`, err)}
-		}
-	}
 	if v, ok := mcuo.mutation.CustName(); ok {
 		if err := mstcustomer.CustNameValidator(v); err != nil {
 			return &ValidationError{Name: "cust_name", err: fmt.Errorf(`ent: validator failed for field "MstCustomer.cust_name": %w`, err)}

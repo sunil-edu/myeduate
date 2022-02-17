@@ -174,12 +174,6 @@ func (mic *MstInstCreate) SetCustomerID(u uuid.UUID) *MstInstCreate {
 	return mic
 }
 
-// SetTestID sets the "test_id" field.
-func (mic *MstInstCreate) SetTestID(u uuid.UUID) *MstInstCreate {
-	mic.mutation.SetTestID(u)
-	return mic
-}
-
 // SetID sets the "id" field.
 func (mic *MstInstCreate) SetID(u uuid.UUID) *MstInstCreate {
 	mic.mutation.SetID(u)
@@ -305,11 +299,6 @@ func (mic *MstInstCreate) check() error {
 	if _, ok := mic.mutation.InstCode(); !ok {
 		return &ValidationError{Name: "inst_code", err: errors.New(`ent: missing required field "MstInst.inst_code"`)}
 	}
-	if v, ok := mic.mutation.InstCode(); ok {
-		if err := mstinst.InstCodeValidator(v); err != nil {
-			return &ValidationError{Name: "inst_code", err: fmt.Errorf(`ent: validator failed for field "MstInst.inst_code": %w`, err)}
-		}
-	}
 	if _, ok := mic.mutation.InstName(); !ok {
 		return &ValidationError{Name: "inst_name", err: errors.New(`ent: missing required field "MstInst.inst_name"`)}
 	}
@@ -373,9 +362,6 @@ func (mic *MstInstCreate) check() error {
 	}
 	if _, ok := mic.mutation.CustomerID(); !ok {
 		return &ValidationError{Name: "customer_id", err: errors.New(`ent: missing required field "MstInst.customer_id"`)}
-	}
-	if _, ok := mic.mutation.TestID(); !ok {
-		return &ValidationError{Name: "test_id", err: errors.New(`ent: missing required field "MstInst.test_id"`)}
 	}
 	if _, ok := mic.mutation.InstfromCustID(); !ok {
 		return &ValidationError{Name: "InstfromCust", err: errors.New(`ent: missing required edge "MstInst.InstfromCust"`)}
@@ -575,14 +561,6 @@ func (mic *MstInstCreate) createSpec() (*MstInst, *sqlgraph.CreateSpec) {
 			Column: mstinst.FieldInstTimeZone,
 		})
 		_node.InstTimeZone = value
-	}
-	if value, ok := mic.mutation.TestID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: mstinst.FieldTestID,
-		})
-		_node.TestID = value
 	}
 	if nodes := mic.mutation.InstfromCustIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

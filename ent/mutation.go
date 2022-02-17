@@ -1530,7 +1530,6 @@ type MstInstMutation struct {
 	inst_is_active       *customtypes.IsActive
 	inst_status          *string
 	inst_time_zone       *time.Time
-	test_id              *uuid.UUID
 	clearedFields        map[string]struct{}
 	_InstfromCust        *uuid.UUID
 	cleared_InstfromCust bool
@@ -2399,42 +2398,6 @@ func (m *MstInstMutation) ResetCustomerID() {
 	m._InstfromCust = nil
 }
 
-// SetTestID sets the "test_id" field.
-func (m *MstInstMutation) SetTestID(u uuid.UUID) {
-	m.test_id = &u
-}
-
-// TestID returns the value of the "test_id" field in the mutation.
-func (m *MstInstMutation) TestID() (r uuid.UUID, exists bool) {
-	v := m.test_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTestID returns the old "test_id" field's value of the MstInst entity.
-// If the MstInst object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MstInstMutation) OldTestID(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTestID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTestID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTestID: %w", err)
-	}
-	return oldValue.TestID, nil
-}
-
-// ResetTestID resets all changes to the "test_id" field.
-func (m *MstInstMutation) ResetTestID() {
-	m.test_id = nil
-}
-
 // SetInstfromCustID sets the "InstfromCust" edge to the MstCustomer entity by id.
 func (m *MstInstMutation) SetInstfromCustID(id uuid.UUID) {
 	m._InstfromCust = &id
@@ -2493,7 +2456,7 @@ func (m *MstInstMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MstInstMutation) Fields() []string {
-	fields := make([]string, 0, 22)
+	fields := make([]string, 0, 21)
 	if m.created_at != nil {
 		fields = append(fields, mstinst.FieldCreatedAt)
 	}
@@ -2557,9 +2520,6 @@ func (m *MstInstMutation) Fields() []string {
 	if m._InstfromCust != nil {
 		fields = append(fields, mstinst.FieldCustomerID)
 	}
-	if m.test_id != nil {
-		fields = append(fields, mstinst.FieldTestID)
-	}
 	return fields
 }
 
@@ -2610,8 +2570,6 @@ func (m *MstInstMutation) Field(name string) (ent.Value, bool) {
 		return m.InstTimeZone()
 	case mstinst.FieldCustomerID:
 		return m.CustomerID()
-	case mstinst.FieldTestID:
-		return m.TestID()
 	}
 	return nil, false
 }
@@ -2663,8 +2621,6 @@ func (m *MstInstMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldInstTimeZone(ctx)
 	case mstinst.FieldCustomerID:
 		return m.OldCustomerID(ctx)
-	case mstinst.FieldTestID:
-		return m.OldTestID(ctx)
 	}
 	return nil, fmt.Errorf("unknown MstInst field %s", name)
 }
@@ -2821,13 +2777,6 @@ func (m *MstInstMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCustomerID(v)
 		return nil
-	case mstinst.FieldTestID:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTestID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown MstInst field %s", name)
 }
@@ -2939,9 +2888,6 @@ func (m *MstInstMutation) ResetField(name string) error {
 		return nil
 	case mstinst.FieldCustomerID:
 		m.ResetCustomerID()
-		return nil
-	case mstinst.FieldTestID:
-		m.ResetTestID()
 		return nil
 	}
 	return fmt.Errorf("unknown MstInst field %s", name)

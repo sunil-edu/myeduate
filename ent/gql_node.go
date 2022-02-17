@@ -228,7 +228,7 @@ func (mi *MstInst) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     mi.ID,
 		Type:   "MstInst",
-		Fields: make([]*Field, 22),
+		Fields: make([]*Field, 21),
 		Edges:  make([]*Edge, 1),
 	}
 	var buf []byte
@@ -398,14 +398,6 @@ func (mi *MstInst) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[20] = &Field{
 		Type:  "uuid.UUID",
 		Name:  "customer_id",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(mi.TestID); err != nil {
-		return nil, err
-	}
-	node.Fields[21] = &Field{
-		Type:  "uuid.UUID",
-		Name:  "test_id",
 		Value: string(buf),
 	}
 	node.Edges[0] = &Edge{

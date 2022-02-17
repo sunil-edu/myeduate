@@ -160,12 +160,6 @@ func (miu *MstInstUpdate) SetCustomerID(u uuid.UUID) *MstInstUpdate {
 	return miu
 }
 
-// SetTestID sets the "test_id" field.
-func (miu *MstInstUpdate) SetTestID(u uuid.UUID) *MstInstUpdate {
-	miu.mutation.SetTestID(u)
-	return miu
-}
-
 // SetInstfromCustID sets the "InstfromCust" edge to the MstCustomer entity by ID.
 func (miu *MstInstUpdate) SetInstfromCustID(id uuid.UUID) *MstInstUpdate {
 	miu.mutation.SetInstfromCustID(id)
@@ -259,11 +253,6 @@ func (miu *MstInstUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (miu *MstInstUpdate) check() error {
-	if v, ok := miu.mutation.InstCode(); ok {
-		if err := mstinst.InstCodeValidator(v); err != nil {
-			return &ValidationError{Name: "inst_code", err: fmt.Errorf(`ent: validator failed for field "MstInst.inst_code": %w`, err)}
-		}
-	}
 	if v, ok := miu.mutation.InstName(); ok {
 		if err := mstinst.InstNameValidator(v); err != nil {
 			return &ValidationError{Name: "inst_name", err: fmt.Errorf(`ent: validator failed for field "MstInst.inst_name": %w`, err)}
@@ -429,13 +418,6 @@ func (miu *MstInstUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeTime,
 			Value:  value,
 			Column: mstinst.FieldInstTimeZone,
-		})
-	}
-	if value, ok := miu.mutation.TestID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: mstinst.FieldTestID,
 		})
 	}
 	if miu.mutation.InstfromCustCleared() {
@@ -620,12 +602,6 @@ func (miuo *MstInstUpdateOne) SetCustomerID(u uuid.UUID) *MstInstUpdateOne {
 	return miuo
 }
 
-// SetTestID sets the "test_id" field.
-func (miuo *MstInstUpdateOne) SetTestID(u uuid.UUID) *MstInstUpdateOne {
-	miuo.mutation.SetTestID(u)
-	return miuo
-}
-
 // SetInstfromCustID sets the "InstfromCust" edge to the MstCustomer entity by ID.
 func (miuo *MstInstUpdateOne) SetInstfromCustID(id uuid.UUID) *MstInstUpdateOne {
 	miuo.mutation.SetInstfromCustID(id)
@@ -726,11 +702,6 @@ func (miuo *MstInstUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (miuo *MstInstUpdateOne) check() error {
-	if v, ok := miuo.mutation.InstCode(); ok {
-		if err := mstinst.InstCodeValidator(v); err != nil {
-			return &ValidationError{Name: "inst_code", err: fmt.Errorf(`ent: validator failed for field "MstInst.inst_code": %w`, err)}
-		}
-	}
 	if v, ok := miuo.mutation.InstName(); ok {
 		if err := mstinst.InstNameValidator(v); err != nil {
 			return &ValidationError{Name: "inst_name", err: fmt.Errorf(`ent: validator failed for field "MstInst.inst_name": %w`, err)}
@@ -913,13 +884,6 @@ func (miuo *MstInstUpdateOne) sqlSave(ctx context.Context) (_node *MstInst, err 
 			Type:   field.TypeTime,
 			Value:  value,
 			Column: mstinst.FieldInstTimeZone,
-		})
-	}
-	if value, ok := miuo.mutation.TestID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: mstinst.FieldTestID,
 		})
 	}
 	if miuo.mutation.InstfromCustCleared() {

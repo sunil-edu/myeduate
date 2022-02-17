@@ -29,8 +29,6 @@ func (MstCustomer) Fields() []ent.Field {
 		field.UUID("id", uuid.UUID{}).Default(uuid.New),
 
 		field.String("cust_code").
-			Unique().
-			NotEmpty().
 			Annotations(entgql.OrderField("CUST_CODE")),
 
 		field.String("cust_name").

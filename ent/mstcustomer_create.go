@@ -309,11 +309,6 @@ func (mcc *MstCustomerCreate) check() error {
 	if _, ok := mcc.mutation.CustCode(); !ok {
 		return &ValidationError{Name: "cust_code", err: errors.New(`ent: missing required field "MstCustomer.cust_code"`)}
 	}
-	if v, ok := mcc.mutation.CustCode(); ok {
-		if err := mstcustomer.CustCodeValidator(v); err != nil {
-			return &ValidationError{Name: "cust_code", err: fmt.Errorf(`ent: validator failed for field "MstCustomer.cust_code": %w`, err)}
-		}
-	}
 	if _, ok := mcc.mutation.CustName(); !ok {
 		return &ValidationError{Name: "cust_name", err: errors.New(`ent: missing required field "MstCustomer.cust_name"`)}
 	}

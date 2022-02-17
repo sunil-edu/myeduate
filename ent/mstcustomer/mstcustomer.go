@@ -112,8 +112,6 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
-	// CustCodeValidator is a validator for the "cust_code" field. It is called by the builders before save.
-	CustCodeValidator func(string) error
 	// CustNameValidator is a validator for the "cust_name" field. It is called by the builders before save.
 	CustNameValidator func(string) error
 	// DefaultCustNumInst holds the default value on creation for the "cust_num_inst" field.

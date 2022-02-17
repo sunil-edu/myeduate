@@ -10,6 +10,8 @@ https://relay.dev/graphql/connections.htm#sec-Cursor
 """
 scalar Cursor
 
+scalar UUID
+
 
 interface Node {
   id: ID!

@@ -1409,16 +1409,6 @@ type MstInstWhereInput struct {
 	CustomerIDIn    []uuid.UUID `json:"customerIDIn,omitempty"`
 	CustomerIDNotIn []uuid.UUID `json:"customerIDNotIn,omitempty"`
 
-	// "test_id" field predicates.
-	TestID      *uuid.UUID  `json:"testID,omitempty"`
-	TestIDNEQ   *uuid.UUID  `json:"testIDNEQ,omitempty"`
-	TestIDIn    []uuid.UUID `json:"testIDIn,omitempty"`
-	TestIDNotIn []uuid.UUID `json:"testIDNotIn,omitempty"`
-	TestIDGT    *uuid.UUID  `json:"testIDGT,omitempty"`
-	TestIDGTE   *uuid.UUID  `json:"testIDGTE,omitempty"`
-	TestIDLT    *uuid.UUID  `json:"testIDLT,omitempty"`
-	TestIDLTE   *uuid.UUID  `json:"testIDLTE,omitempty"`
-
 	// "InstfromCust" edge predicates.
 	HasInstfromCust     *bool                    `json:"hasInstfromCust,omitempty"`
 	HasInstfromCustWith []*MstCustomerWhereInput `json:"hasInstfromCustWith,omitempty"`
@@ -2226,30 +2216,6 @@ func (i *MstInstWhereInput) P() (predicate.MstInst, error) {
 	}
 	if len(i.CustomerIDNotIn) > 0 {
 		predicates = append(predicates, mstinst.CustomerIDNotIn(i.CustomerIDNotIn...))
-	}
-	if i.TestID != nil {
-		predicates = append(predicates, mstinst.TestIDEQ(*i.TestID))
-	}
-	if i.TestIDNEQ != nil {
-		predicates = append(predicates, mstinst.TestIDNEQ(*i.TestIDNEQ))
-	}
-	if len(i.TestIDIn) > 0 {
-		predicates = append(predicates, mstinst.TestIDIn(i.TestIDIn...))
-	}
-	if len(i.TestIDNotIn) > 0 {
-		predicates = append(predicates, mstinst.TestIDNotIn(i.TestIDNotIn...))
-	}
-	if i.TestIDGT != nil {
-		predicates = append(predicates, mstinst.TestIDGT(*i.TestIDGT))
-	}
-	if i.TestIDGTE != nil {
-		predicates = append(predicates, mstinst.TestIDGTE(*i.TestIDGTE))
-	}
-	if i.TestIDLT != nil {
-		predicates = append(predicates, mstinst.TestIDLT(*i.TestIDLT))
-	}
-	if i.TestIDLTE != nil {
-		predicates = append(predicates, mstinst.TestIDLTE(*i.TestIDLTE))
 	}
 
 	if i.HasInstfromCust != nil {

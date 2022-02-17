@@ -62,8 +62,6 @@ type MstInst struct {
 	InstTimeZone time.Time `json:"inst_time_zone,omitempty"`
 	// CustomerID holds the value of the "customer_id" field.
 	CustomerID uuid.UUID `json:"customer_id,omitempty"`
-	// TestID holds the value of the "test_id" field.
-	TestID uuid.UUID `json:"test_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MstInstQuery when eager-loading is set.
 	Edges MstInstEdges `json:"edges"`
@@ -101,7 +99,7 @@ func (*MstInst) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullString)
 		case mstinst.FieldCreatedAt, mstinst.FieldUpdatedAt, mstinst.FieldInstTimeZone:
 			values[i] = new(sql.NullTime)
-		case mstinst.FieldID, mstinst.FieldCustomerID, mstinst.FieldTestID:
+		case mstinst.FieldID, mstinst.FieldCustomerID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type MstInst", columns[i])
@@ -250,12 +248,6 @@ func (mi *MstInst) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				mi.CustomerID = *value
 			}
-		case mstinst.FieldTestID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field test_id", values[i])
-			} else if value != nil {
-				mi.TestID = *value
-			}
 		}
 	}
 	return nil
@@ -331,8 +323,6 @@ func (mi *MstInst) String() string {
 	builder.WriteString(mi.InstTimeZone.Format(time.ANSIC))
 	builder.WriteString(", customer_id=")
 	builder.WriteString(fmt.Sprintf("%v", mi.CustomerID))
-	builder.WriteString(", test_id=")
-	builder.WriteString(fmt.Sprintf("%v", mi.TestID))
 	builder.WriteByte(')')
 	return builder.String()
 }
