@@ -17,10 +17,12 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
-	gohandlers "github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
+	"github.com/gorilla/websocket"
 	_ "github.com/lib/pq"
+	"github.com/rs/cors"
 	"go.uber.org/zap"
 )
 
@@ -71,38 +73,35 @@ func main() {
 	})
 
 	// create a new serve mux and register the handlers
-	route := mux.NewRouter()
+	router := chi.NewRouter()
 
-	// CORS
-	ch := cors(config.AllowOrigins)
-
-	// create a new server
-	s := http.Server{
-		Addr:    config.ServerAddr, // configure the bind address
-		Handler: ch(route),         // set the default handler
-		//		ErrorLog:     l.StandardLogger(&hclog.StandardLoggerOptions{}), // set the logger for the server
-		ReadTimeout:  5 * time.Second,   // max time to read request from the client
-		WriteTimeout: 10 * time.Second,  // max time to write response to the client
-		IdleTimeout:  120 * time.Second, // max time for connections using TCP Keep-Alive
-	}
+	// Add CORS middleware around every request
+	// See https://github.com/rs/cors for full option listing
+	router.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{config.AllowOrigins},
+		AllowCredentials: true,
+		Debug:            true,
+	}).Handler)
 
 	// Configure the server and start listening on :8081.
 	srv := handler.NewDefaultServer(resolvers.NewSchema(client))
 	srv.Use(entgql.Transactioner{TxOpener: client})
+	srv.AddTransport(&transport.Websocket{
+		Upgrader: websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool {
+				// Check against your desired domains here
+				return r.Host == "example.org"
+			},
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+		},
+	})
 
-	route.Handle("/", playground.Handler("myeduate", "/query"))
-	route.Handle("/query", srv)
+	router.Handle("/", playground.Handler("myeduate", "/query"))
+	router.Handle("/query", srv)
 	fmt.Printf("listening on : %v \n", config.ServerAddr)
-	if err := s.ListenAndServe(); err != nil {
-		log.Fatal("http server terminated", err)
+	err = http.ListenAndServe(config.ServerAddr, router)
+	if err != nil {
+		panic(err)
 	}
-}
-
-func cors(allowedOrigins string) mux.MiddlewareFunc {
-	return gohandlers.CORS(
-		gohandlers.AllowedOrigins([]string{allowedOrigins}),
-		gohandlers.AllowedHeaders([]string{"Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Origin", "X-Requested-With", "Content-Type", "Accept"}),
-		gohandlers.AllowedMethods([]string{http.MethodGet, http.MethodHead, http.MethodPost, http.MethodPut, http.MethodOptions}),
-		gohandlers.AllowCredentials(),
-	)
 }
