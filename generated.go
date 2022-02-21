@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"myeduate/ent"
 	"myeduate/ent/customtypes"
-	"myeduate/ent/uuidgql"
+	"myeduate/ent/schema/uuidgql"
 	"strconv"
 	"sync"
 	"sync/atomic"

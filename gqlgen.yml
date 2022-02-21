@@ -26,11 +26,11 @@ autobind:
 models:
   ID:
     model:
-      - myeduate/ent/uuidgql.UUID
+      - myeduate/ent/schema/uuidgql.UUID
 
   UUID:
     model:
-      - myeduate/ent/uuidgql.UUID
+      - myeduate/ent/schema/uuidgql.UUID
       
   Node:
     model:
