@@ -2,6 +2,7 @@ package schema
 
 import (
 	"myeduate/ent/customtypes"
+	"myeduate/ent/schema/pulid"
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
@@ -9,7 +10,6 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/google/uuid"
 )
 
 // MstInst holds the schema definition for the MstInst entity.
@@ -19,6 +19,7 @@ type MstInst struct {
 
 func (MstInst) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		pulid.MixinWithPrefix("INST"),
 		TimeMixin{},
 	}
 }
@@ -26,8 +27,6 @@ func (MstInst) Mixin() []ent.Mixin {
 // Fields of the MstInst.
 func (MstInst) Fields() []ent.Field {
 	return []ent.Field{
-
-		field.UUID("id", uuid.UUID{}).Default(uuid.New),
 
 		field.String("inst_code").
 			Annotations(entgql.OrderField("INST_CODE")),
@@ -75,7 +74,7 @@ func (MstInst) Fields() []ent.Field {
 				dialect.Postgres: "DATE",
 			}),
 
-		field.UUID("customer_id", uuid.UUID{}).Annotations(
+		field.String("customer_id").Annotations(
 			entgql.OrderField("CUSTOMER_ID")),
 	}
 }

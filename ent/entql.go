@@ -22,7 +22,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   mstcustomer.Table,
 			Columns: mstcustomer.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
+				Type:   field.TypeString,
 				Column: mstcustomer.FieldID,
 			},
 		},
@@ -55,7 +55,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   mstinst.Table,
 			Columns: mstinst.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
+				Type:   field.TypeString,
 				Column: mstinst.FieldID,
 			},
 		},
@@ -81,7 +81,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			mstinst.FieldInstIsActive:      {Type: field.TypeEnum, Column: mstinst.FieldInstIsActive},
 			mstinst.FieldInstStatus:        {Type: field.TypeString, Column: mstinst.FieldInstStatus},
 			mstinst.FieldInstTimeZone:      {Type: field.TypeTime, Column: mstinst.FieldInstTimeZone},
-			mstinst.FieldCustomerID:        {Type: field.TypeUUID, Column: mstinst.FieldCustomerID},
+			mstinst.FieldCustomerID:        {Type: field.TypeString, Column: mstinst.FieldCustomerID},
 		},
 	}
 	graph.MustAddE(
@@ -151,8 +151,8 @@ func (f *MstCustomerFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql [16]byte predicate on the id field.
-func (f *MstCustomerFilter) WhereID(p entql.ValueP) {
+// WhereID applies the entql string predicate on the id field.
+func (f *MstCustomerFilter) WhereID(p entql.StringP) {
 	f.Where(p.Field(mstcustomer.FieldID))
 }
 
@@ -304,8 +304,8 @@ func (f *MstInstFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql [16]byte predicate on the id field.
-func (f *MstInstFilter) WhereID(p entql.ValueP) {
+// WhereID applies the entql string predicate on the id field.
+func (f *MstInstFilter) WhereID(p entql.StringP) {
 	f.Where(p.Field(mstinst.FieldID))
 }
 
@@ -409,8 +409,8 @@ func (f *MstInstFilter) WhereInstTimeZone(p entql.TimeP) {
 	f.Where(p.Field(mstinst.FieldInstTimeZone))
 }
 
-// WhereCustomerID applies the entql [16]byte predicate on the customer_id field.
-func (f *MstInstFilter) WhereCustomerID(p entql.ValueP) {
+// WhereCustomerID applies the entql string predicate on the customer_id field.
+func (f *MstInstFilter) WhereCustomerID(p entql.StringP) {
 	f.Where(p.Field(mstinst.FieldCustomerID))
 }
 

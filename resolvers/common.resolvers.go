@@ -7,16 +7,15 @@ import (
 	"context"
 	"myeduate"
 	"myeduate/ent"
-
-	"github.com/google/uuid"
+	"myeduate/ent/schema/pulid"
 )
 
-func (r *queryResolver) Node(ctx context.Context, token string, id uuid.UUID) (ent.Noder, error) {
-	return r.client.Noder(ctx, id)
+func (r *queryResolver) Node(ctx context.Context, token string, id pulid.ID) (ent.Noder, error) {
+	return r.client.Noder(ctx, id, ent.WithNodeType(ent.IDToType))
 }
 
-func (r *queryResolver) Nodes(ctx context.Context, token string, ids []uuid.UUID) ([]ent.Noder, error) {
-	return r.client.Noders(ctx, ids)
+func (r *queryResolver) Nodes(ctx context.Context, token string, ids []pulid.ID) ([]ent.Noder, error) {
+	return r.client.Noders(ctx, ids, ent.WithNodeType(ent.IDToType))
 }
 
 // Query returns myeduate.QueryResolver implementation.

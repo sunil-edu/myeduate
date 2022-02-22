@@ -2,13 +2,13 @@ package schema
 
 import (
 	"myeduate/ent/customtypes"
+	"myeduate/ent/schema/pulid"
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 )
 
 // MstCustomer holds the schema definition for the MstCustomer entity.
@@ -18,6 +18,7 @@ type MstCustomer struct {
 
 func (MstCustomer) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		pulid.MixinWithPrefix("CUST"),
 		TimeMixin{},
 	}
 }
@@ -25,8 +26,6 @@ func (MstCustomer) Mixin() []ent.Mixin {
 // Fields of the MstCustomer.
 func (MstCustomer) Fields() []ent.Field {
 	return []ent.Field{
-
-		field.UUID("id", uuid.UUID{}).Default(uuid.New),
 
 		field.String("cust_code").
 			Annotations(entgql.OrderField("CUST_CODE")),

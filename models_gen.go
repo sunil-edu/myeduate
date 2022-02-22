@@ -3,15 +3,15 @@
 package myeduate
 
 import (
-	"github.com/google/uuid"
+	"myeduate/ent/schema/pulid"
 )
 
 type CustData struct {
-	CustomerName string    `json:"customer_name"`
-	ID           uuid.UUID `json:"id"`
+	CustomerName string   `json:"customer_name"`
+	ID           pulid.ID `json:"id"`
 }
 
 type InstData struct {
-	InstName string    `json:"Inst_name"`
-	ID       uuid.UUID `json:"id"`
+	InstName string   `json:"Inst_name"`
+	ID       pulid.ID `json:"id"`
 }

@@ -26,11 +26,15 @@ autobind:
 models:
   ID:
     model:
-      - myeduate/ent/schema/uuidgql.UUID
+      - myeduate/ent/schema/pulid.ID
 
-  UUID:
+  Uint64:
     model:
-      - myeduate/ent/schema/uuidgql.UUID
+      - github.com/99designs/gqlgen/graphql.Uint64
+
+  Duration:
+    model:
+      - myeduate/ent/schema/durationgql.Duration
       
   Node:
     model:

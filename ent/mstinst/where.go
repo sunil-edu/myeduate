@@ -6,36 +6,36 @@ package mstinst
 import (
 	"myeduate/ent/customtypes"
 	"myeduate/ent/predicate"
+	"myeduate/ent/schema/pulid"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/google/uuid"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id uuid.UUID) predicate.MstInst {
+func ID(id pulid.ID) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id uuid.UUID) predicate.MstInst {
+func IDEQ(id pulid.ID) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id uuid.UUID) predicate.MstInst {
+func IDNEQ(id pulid.ID) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldID), id))
 	})
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...uuid.UUID) predicate.MstInst {
+func IDIn(ids ...pulid.ID) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -52,7 +52,7 @@ func IDIn(ids ...uuid.UUID) predicate.MstInst {
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...uuid.UUID) predicate.MstInst {
+func IDNotIn(ids ...pulid.ID) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -69,28 +69,28 @@ func IDNotIn(ids ...uuid.UUID) predicate.MstInst {
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id uuid.UUID) predicate.MstInst {
+func IDGT(id pulid.ID) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldID), id))
 	})
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id uuid.UUID) predicate.MstInst {
+func IDGTE(id pulid.ID) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldID), id))
 	})
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id uuid.UUID) predicate.MstInst {
+func IDLT(id pulid.ID) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldID), id))
 	})
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id uuid.UUID) predicate.MstInst {
+func IDLTE(id pulid.ID) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
 	})
@@ -230,7 +230,7 @@ func InstTimeZone(v time.Time) predicate.MstInst {
 }
 
 // CustomerID applies equality check predicate on the "customer_id" field. It's identical to CustomerIDEQ.
-func CustomerID(v uuid.UUID) predicate.MstInst {
+func CustomerID(v string) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCustomerID), v))
 	})
@@ -2291,21 +2291,21 @@ func InstTimeZoneLTE(v time.Time) predicate.MstInst {
 }
 
 // CustomerIDEQ applies the EQ predicate on the "customer_id" field.
-func CustomerIDEQ(v uuid.UUID) predicate.MstInst {
+func CustomerIDEQ(v string) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCustomerID), v))
 	})
 }
 
 // CustomerIDNEQ applies the NEQ predicate on the "customer_id" field.
-func CustomerIDNEQ(v uuid.UUID) predicate.MstInst {
+func CustomerIDNEQ(v string) predicate.MstInst {
 	return predicate.MstInst(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldCustomerID), v))
 	})
 }
 
 // CustomerIDIn applies the In predicate on the "customer_id" field.
-func CustomerIDIn(vs ...uuid.UUID) predicate.MstInst {
+func CustomerIDIn(vs ...string) predicate.MstInst {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -2322,7 +2322,7 @@ func CustomerIDIn(vs ...uuid.UUID) predicate.MstInst {
 }
 
 // CustomerIDNotIn applies the NotIn predicate on the "customer_id" field.
-func CustomerIDNotIn(vs ...uuid.UUID) predicate.MstInst {
+func CustomerIDNotIn(vs ...string) predicate.MstInst {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -2335,6 +2335,69 @@ func CustomerIDNotIn(vs ...uuid.UUID) predicate.MstInst {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldCustomerID), v...))
+	})
+}
+
+// CustomerIDGT applies the GT predicate on the "customer_id" field.
+func CustomerIDGT(v string) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCustomerID), v))
+	})
+}
+
+// CustomerIDGTE applies the GTE predicate on the "customer_id" field.
+func CustomerIDGTE(v string) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCustomerID), v))
+	})
+}
+
+// CustomerIDLT applies the LT predicate on the "customer_id" field.
+func CustomerIDLT(v string) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCustomerID), v))
+	})
+}
+
+// CustomerIDLTE applies the LTE predicate on the "customer_id" field.
+func CustomerIDLTE(v string) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCustomerID), v))
+	})
+}
+
+// CustomerIDContains applies the Contains predicate on the "customer_id" field.
+func CustomerIDContains(v string) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldCustomerID), v))
+	})
+}
+
+// CustomerIDHasPrefix applies the HasPrefix predicate on the "customer_id" field.
+func CustomerIDHasPrefix(v string) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldCustomerID), v))
+	})
+}
+
+// CustomerIDHasSuffix applies the HasSuffix predicate on the "customer_id" field.
+func CustomerIDHasSuffix(v string) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldCustomerID), v))
+	})
+}
+
+// CustomerIDEqualFold applies the EqualFold predicate on the "customer_id" field.
+func CustomerIDEqualFold(v string) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldCustomerID), v))
+	})
+}
+
+// CustomerIDContainsFold applies the ContainsFold predicate on the "customer_id" field.
+func CustomerIDContainsFold(v string) predicate.MstInst {
+	return predicate.MstInst(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldCustomerID), v))
 	})
 }
 

@@ -11,12 +11,12 @@ import (
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/predicate"
+	"myeduate/ent/schema/pulid"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 )
 
 // MstInstUpdate is the builder for updating MstInst entities.
@@ -155,13 +155,13 @@ func (miu *MstInstUpdate) SetInstTimeZone(t time.Time) *MstInstUpdate {
 }
 
 // SetCustomerID sets the "customer_id" field.
-func (miu *MstInstUpdate) SetCustomerID(u uuid.UUID) *MstInstUpdate {
-	miu.mutation.SetCustomerID(u)
+func (miu *MstInstUpdate) SetCustomerID(s string) *MstInstUpdate {
+	miu.mutation.SetCustomerID(s)
 	return miu
 }
 
 // SetInstfromCustID sets the "InstfromCust" edge to the MstCustomer entity by ID.
-func (miu *MstInstUpdate) SetInstfromCustID(id uuid.UUID) *MstInstUpdate {
+func (miu *MstInstUpdate) SetInstfromCustID(id pulid.ID) *MstInstUpdate {
 	miu.mutation.SetInstfromCustID(id)
 	return miu
 }
@@ -275,7 +275,7 @@ func (miu *MstInstUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   mstinst.Table,
 			Columns: mstinst.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
+				Type:   field.TypeString,
 				Column: mstinst.FieldID,
 			},
 		},
@@ -429,7 +429,7 @@ func (miu *MstInstUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUUID,
+					Type:   field.TypeString,
 					Column: mstcustomer.FieldID,
 				},
 			},
@@ -445,7 +445,7 @@ func (miu *MstInstUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUUID,
+					Type:   field.TypeString,
 					Column: mstcustomer.FieldID,
 				},
 			},
@@ -597,13 +597,13 @@ func (miuo *MstInstUpdateOne) SetInstTimeZone(t time.Time) *MstInstUpdateOne {
 }
 
 // SetCustomerID sets the "customer_id" field.
-func (miuo *MstInstUpdateOne) SetCustomerID(u uuid.UUID) *MstInstUpdateOne {
-	miuo.mutation.SetCustomerID(u)
+func (miuo *MstInstUpdateOne) SetCustomerID(s string) *MstInstUpdateOne {
+	miuo.mutation.SetCustomerID(s)
 	return miuo
 }
 
 // SetInstfromCustID sets the "InstfromCust" edge to the MstCustomer entity by ID.
-func (miuo *MstInstUpdateOne) SetInstfromCustID(id uuid.UUID) *MstInstUpdateOne {
+func (miuo *MstInstUpdateOne) SetInstfromCustID(id pulid.ID) *MstInstUpdateOne {
 	miuo.mutation.SetInstfromCustID(id)
 	return miuo
 }
@@ -724,7 +724,7 @@ func (miuo *MstInstUpdateOne) sqlSave(ctx context.Context) (_node *MstInst, err 
 			Table:   mstinst.Table,
 			Columns: mstinst.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
+				Type:   field.TypeString,
 				Column: mstinst.FieldID,
 			},
 		},
@@ -895,7 +895,7 @@ func (miuo *MstInstUpdateOne) sqlSave(ctx context.Context) (_node *MstInst, err 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUUID,
+					Type:   field.TypeString,
 					Column: mstcustomer.FieldID,
 				},
 			},
@@ -911,7 +911,7 @@ func (miuo *MstInstUpdateOne) sqlSave(ctx context.Context) (_node *MstInst, err 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUUID,
+					Type:   field.TypeString,
 					Column: mstcustomer.FieldID,
 				},
 			},

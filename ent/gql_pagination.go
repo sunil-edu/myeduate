@@ -11,13 +11,13 @@ import (
 	"io"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
+	"myeduate/ent/schema/pulid"
 	"strconv"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/arsmn/fastgql/graphql/errcode"
-	"github.com/google/uuid"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"github.com/vmihailenco/msgpack/v5"
 )
@@ -147,8 +147,8 @@ type PageInfo struct {
 
 // Cursor of an edge type.
 type Cursor struct {
-	ID    uuid.UUID `msgpack:"i"`
-	Value Value     `msgpack:"v,omitempty"`
+	ID    pulid.ID `msgpack:"i"`
+	Value Value    `msgpack:"v,omitempty"`
 }
 
 // MarshalGQL implements graphql.Marshaler interface.

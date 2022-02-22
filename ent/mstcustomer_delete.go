@@ -73,7 +73,7 @@ func (mcd *MstCustomerDelete) sqlExec(ctx context.Context) (int, error) {
 		Node: &sqlgraph.NodeSpec{
 			Table: mstcustomer.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
+				Type:   field.TypeString,
 				Column: mstcustomer.FieldID,
 			},
 		},

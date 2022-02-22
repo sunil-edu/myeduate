@@ -11,7 +11,7 @@ import (
 var (
 	// MstCustomersColumns holds the columns for the "mst_customers" table.
 	MstCustomersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUUID},
+		{Name: "id", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "cust_code", Type: field.TypeString},
@@ -41,7 +41,7 @@ var (
 	}
 	// MstInstsColumns holds the columns for the "mst_insts" table.
 	MstInstsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUUID},
+		{Name: "id", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "inst_code", Type: field.TypeString},
@@ -62,7 +62,7 @@ var (
 		{Name: "inst_is_active", Type: field.TypeEnum, Enums: []string{"ACTIVE", "INACTIVE"}, Default: "ACTIVE"},
 		{Name: "inst_status", Type: field.TypeString},
 		{Name: "inst_time_zone", Type: field.TypeTime, SchemaType: map[string]string{"postgres": "DATE"}},
-		{Name: "customer_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "customer_id", Type: field.TypeString, Nullable: true},
 	}
 	// MstInstsTable holds the schema information for the "mst_insts" table.
 	MstInstsTable = &schema.Table{

@@ -8,10 +8,10 @@ require (
 	github.com/99designs/gqlgen v0.16.0
 	github.com/arsmn/fastgql v0.14.0
 	github.com/go-chi/chi v1.5.4
-	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/lib/pq v1.10.4
+	github.com/oklog/ulid/v2 v2.0.2
 	github.com/rs/cors v1.8.2
 	github.com/spf13/viper v1.10.1
 	github.com/vektah/gqlparser/v2 v2.3.1
@@ -29,6 +29,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/graphql-go/graphql v0.8.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect

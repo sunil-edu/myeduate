@@ -583,6 +583,15 @@ input MstInstWhereInput {
   customerIDNEQ: ID
   customerIDIn: [ID!]
   customerIDNotIn: [ID!]
+  customerIDGT: ID
+  customerIDGTE: ID
+  customerIDLT: ID
+  customerIDLTE: ID
+  customerIDContains: ID
+  customerIDHasPrefix: ID
+  customerIDHasSuffix: ID
+  customerIDEqualFold: ID
+  customerIDContainsFold: ID
   
   """id field predicates"""
   id: ID

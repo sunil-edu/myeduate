@@ -105,8 +105,8 @@ extend type Query {
         first: Int, 
         before: Cursor, 
         last: Int,
-        orderBy: MstCustomerOrder,
-        where:MstCustomerWhereInput):MstCustomerConnection
+        orderBy: MstCustomerOrder
+       ):MstCustomerConnection
 
     GetCustomerByID(token: String!, id: ID!):MstCustomer!
    

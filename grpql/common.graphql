@@ -9,9 +9,8 @@ Define a Relay Cursor type:
 https://relay.dev/graphql/connections.htm#sec-Cursor
 """
 scalar Cursor
-
-scalar UUID
-
+scalar Uint64
+scalar Duration
 
 interface Node {
   id: ID!

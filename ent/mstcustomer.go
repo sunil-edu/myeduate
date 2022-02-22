@@ -7,18 +7,18 @@ import (
 	"fmt"
 	"myeduate/ent/customtypes"
 	"myeduate/ent/mstcustomer"
+	"myeduate/ent/schema/pulid"
 	"strings"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/google/uuid"
 )
 
 // MstCustomer is the model entity for the MstCustomer schema.
 type MstCustomer struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID uuid.UUID `json:"id,omitempty"`
+	ID pulid.ID `json:"id,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -87,14 +87,14 @@ func (*MstCustomer) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case mstcustomer.FieldID:
+			values[i] = new(pulid.ID)
 		case mstcustomer.FieldCustNumInst:
 			values[i] = new(sql.NullInt64)
 		case mstcustomer.FieldCustCode, mstcustomer.FieldCustName, mstcustomer.FieldCustAddress, mstcustomer.FieldCustPlace, mstcustomer.FieldCustState, mstcustomer.FieldCustPin, mstcustomer.FieldCustContactPerson, mstcustomer.FieldCustPhone, mstcustomer.FieldCustEmail, mstcustomer.FieldCustMobile, mstcustomer.FieldCustURL, mstcustomer.FieldCustBanner1, mstcustomer.FieldCustBanner2, mstcustomer.FieldCustLogoURL, mstcustomer.FieldCustIsActive, mstcustomer.FieldCustStatus:
 			values[i] = new(sql.NullString)
 		case mstcustomer.FieldCreatedAt, mstcustomer.FieldUpdatedAt, mstcustomer.FieldCustTimeZone:
 			values[i] = new(sql.NullTime)
-		case mstcustomer.FieldID:
-			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type MstCustomer", columns[i])
 		}
@@ -111,7 +111,7 @@ func (mc *MstCustomer) assignValues(columns []string, values []interface{}) erro
 	for i := range columns {
 		switch columns[i] {
 		case mstcustomer.FieldID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
+			if value, ok := values[i].(*pulid.ID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
 				mc.ID = *value

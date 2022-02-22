@@ -5,9 +5,8 @@ package ent
 
 import (
 	"myeduate/ent/customtypes"
+	"myeduate/ent/schema/pulid"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // CreateMstCustomerInput represents a mutation input for creating mstcustomers.
@@ -32,7 +31,7 @@ type CreateMstCustomerInput struct {
 	CustStatus        string
 	CustNumInst       *int
 	CustTimeZone      time.Time
-	Cust2Inst         []uuid.UUID
+	Cust2Inst         []pulid.ID
 }
 
 // Mutate applies the CreateMstCustomerInput on the MstCustomerCreate builder.
@@ -97,8 +96,8 @@ type UpdateMstCustomerInput struct {
 	CustStatus         *string
 	CustNumInst        *int
 	CustTimeZone       *time.Time
-	AddCust2InstIDs    []uuid.UUID
-	RemoveCust2InstIDs []uuid.UUID
+	AddCust2InstIDs    []pulid.ID
+	RemoveCust2InstIDs []pulid.ID
 }
 
 // Mutate applies the UpdateMstCustomerInput on the MstCustomerMutation.
@@ -202,8 +201,8 @@ type CreateMstInstInput struct {
 	InstIsActive      *customtypes.IsActive
 	InstStatus        string
 	InstTimeZone      time.Time
-	CustomerID        uuid.UUID
-	InstfromCust      uuid.UUID
+	CustomerID        string
+	InstfromCust      pulid.ID
 }
 
 // Mutate applies the CreateMstInstInput on the MstInstCreate builder.
@@ -265,8 +264,8 @@ type UpdateMstInstInput struct {
 	InstIsActive      *customtypes.IsActive
 	InstStatus        *string
 	InstTimeZone      *time.Time
-	CustomerID        *uuid.UUID
-	InstfromCust      *uuid.UUID
+	CustomerID        *string
+	InstfromCust      *pulid.ID
 	ClearInstfromCust bool
 }
 

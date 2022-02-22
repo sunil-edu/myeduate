@@ -6,10 +6,10 @@ package mstinst
 import (
 	"fmt"
 	"myeduate/ent/customtypes"
+	"myeduate/ent/schema/pulid"
 	"time"
 
 	"github.com/arsmn/fastgql/graphql"
-	"github.com/google/uuid"
 )
 
 const (
@@ -118,7 +118,7 @@ var (
 	// InstNameValidator is a validator for the "inst_name" field. It is called by the builders before save.
 	InstNameValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID func() uuid.UUID
+	DefaultID func() pulid.ID
 )
 
 const DefaultInstIsActive customtypes.IsActive = "ACTIVE"

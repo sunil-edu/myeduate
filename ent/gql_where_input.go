@@ -9,9 +9,8 @@ import (
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/predicate"
+	"myeduate/ent/schema/pulid"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // MstCustomerWhereInput represents a where input for filtering MstCustomer queries.
@@ -21,14 +20,14 @@ type MstCustomerWhereInput struct {
 	And []*MstCustomerWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *uuid.UUID  `json:"id,omitempty"`
-	IDNEQ   *uuid.UUID  `json:"idNEQ,omitempty"`
-	IDIn    []uuid.UUID `json:"idIn,omitempty"`
-	IDNotIn []uuid.UUID `json:"idNotIn,omitempty"`
-	IDGT    *uuid.UUID  `json:"idGT,omitempty"`
-	IDGTE   *uuid.UUID  `json:"idGTE,omitempty"`
-	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
-	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
+	ID      *pulid.ID  `json:"id,omitempty"`
+	IDNEQ   *pulid.ID  `json:"idNEQ,omitempty"`
+	IDIn    []pulid.ID `json:"idIn,omitempty"`
+	IDNotIn []pulid.ID `json:"idNotIn,omitempty"`
+	IDGT    *pulid.ID  `json:"idGT,omitempty"`
+	IDGTE   *pulid.ID  `json:"idGTE,omitempty"`
+	IDLT    *pulid.ID  `json:"idLT,omitempty"`
+	IDLTE   *pulid.ID  `json:"idLTE,omitempty"`
 
 	// "created_at" field predicates.
 	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
@@ -1118,14 +1117,14 @@ type MstInstWhereInput struct {
 	And []*MstInstWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *uuid.UUID  `json:"id,omitempty"`
-	IDNEQ   *uuid.UUID  `json:"idNEQ,omitempty"`
-	IDIn    []uuid.UUID `json:"idIn,omitempty"`
-	IDNotIn []uuid.UUID `json:"idNotIn,omitempty"`
-	IDGT    *uuid.UUID  `json:"idGT,omitempty"`
-	IDGTE   *uuid.UUID  `json:"idGTE,omitempty"`
-	IDLT    *uuid.UUID  `json:"idLT,omitempty"`
-	IDLTE   *uuid.UUID  `json:"idLTE,omitempty"`
+	ID      *pulid.ID  `json:"id,omitempty"`
+	IDNEQ   *pulid.ID  `json:"idNEQ,omitempty"`
+	IDIn    []pulid.ID `json:"idIn,omitempty"`
+	IDNotIn []pulid.ID `json:"idNotIn,omitempty"`
+	IDGT    *pulid.ID  `json:"idGT,omitempty"`
+	IDGTE   *pulid.ID  `json:"idGTE,omitempty"`
+	IDLT    *pulid.ID  `json:"idLT,omitempty"`
+	IDLTE   *pulid.ID  `json:"idLTE,omitempty"`
 
 	// "created_at" field predicates.
 	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
@@ -1404,10 +1403,19 @@ type MstInstWhereInput struct {
 	InstTimeZoneLTE   *time.Time  `json:"instTimeZoneLTE,omitempty"`
 
 	// "customer_id" field predicates.
-	CustomerID      *uuid.UUID  `json:"customerID,omitempty"`
-	CustomerIDNEQ   *uuid.UUID  `json:"customerIDNEQ,omitempty"`
-	CustomerIDIn    []uuid.UUID `json:"customerIDIn,omitempty"`
-	CustomerIDNotIn []uuid.UUID `json:"customerIDNotIn,omitempty"`
+	CustomerID             *string  `json:"customerID,omitempty"`
+	CustomerIDNEQ          *string  `json:"customerIDNEQ,omitempty"`
+	CustomerIDIn           []string `json:"customerIDIn,omitempty"`
+	CustomerIDNotIn        []string `json:"customerIDNotIn,omitempty"`
+	CustomerIDGT           *string  `json:"customerIDGT,omitempty"`
+	CustomerIDGTE          *string  `json:"customerIDGTE,omitempty"`
+	CustomerIDLT           *string  `json:"customerIDLT,omitempty"`
+	CustomerIDLTE          *string  `json:"customerIDLTE,omitempty"`
+	CustomerIDContains     *string  `json:"customerIDContains,omitempty"`
+	CustomerIDHasPrefix    *string  `json:"customerIDHasPrefix,omitempty"`
+	CustomerIDHasSuffix    *string  `json:"customerIDHasSuffix,omitempty"`
+	CustomerIDEqualFold    *string  `json:"customerIDEqualFold,omitempty"`
+	CustomerIDContainsFold *string  `json:"customerIDContainsFold,omitempty"`
 
 	// "InstfromCust" edge predicates.
 	HasInstfromCust     *bool                    `json:"hasInstfromCust,omitempty"`
@@ -2216,6 +2224,33 @@ func (i *MstInstWhereInput) P() (predicate.MstInst, error) {
 	}
 	if len(i.CustomerIDNotIn) > 0 {
 		predicates = append(predicates, mstinst.CustomerIDNotIn(i.CustomerIDNotIn...))
+	}
+	if i.CustomerIDGT != nil {
+		predicates = append(predicates, mstinst.CustomerIDGT(*i.CustomerIDGT))
+	}
+	if i.CustomerIDGTE != nil {
+		predicates = append(predicates, mstinst.CustomerIDGTE(*i.CustomerIDGTE))
+	}
+	if i.CustomerIDLT != nil {
+		predicates = append(predicates, mstinst.CustomerIDLT(*i.CustomerIDLT))
+	}
+	if i.CustomerIDLTE != nil {
+		predicates = append(predicates, mstinst.CustomerIDLTE(*i.CustomerIDLTE))
+	}
+	if i.CustomerIDContains != nil {
+		predicates = append(predicates, mstinst.CustomerIDContains(*i.CustomerIDContains))
+	}
+	if i.CustomerIDHasPrefix != nil {
+		predicates = append(predicates, mstinst.CustomerIDHasPrefix(*i.CustomerIDHasPrefix))
+	}
+	if i.CustomerIDHasSuffix != nil {
+		predicates = append(predicates, mstinst.CustomerIDHasSuffix(*i.CustomerIDHasSuffix))
+	}
+	if i.CustomerIDEqualFold != nil {
+		predicates = append(predicates, mstinst.CustomerIDEqualFold(*i.CustomerIDEqualFold))
+	}
+	if i.CustomerIDContainsFold != nil {
+		predicates = append(predicates, mstinst.CustomerIDContainsFold(*i.CustomerIDContainsFold))
 	}
 
 	if i.HasInstfromCust != nil {

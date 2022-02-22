@@ -10,11 +10,11 @@ import (
 	"myeduate/ent/customtypes"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
+	"myeduate/ent/schema/pulid"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 )
 
 // MstCustomerCreate is the builder for creating a MstCustomer entity.
@@ -177,28 +177,28 @@ func (mcc *MstCustomerCreate) SetCustTimeZone(t time.Time) *MstCustomerCreate {
 }
 
 // SetID sets the "id" field.
-func (mcc *MstCustomerCreate) SetID(u uuid.UUID) *MstCustomerCreate {
-	mcc.mutation.SetID(u)
+func (mcc *MstCustomerCreate) SetID(pu pulid.ID) *MstCustomerCreate {
+	mcc.mutation.SetID(pu)
 	return mcc
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (mcc *MstCustomerCreate) SetNillableID(u *uuid.UUID) *MstCustomerCreate {
-	if u != nil {
-		mcc.SetID(*u)
+func (mcc *MstCustomerCreate) SetNillableID(pu *pulid.ID) *MstCustomerCreate {
+	if pu != nil {
+		mcc.SetID(*pu)
 	}
 	return mcc
 }
 
 // AddCust2InstIDs adds the "Cust2Inst" edge to the MstInst entity by IDs.
-func (mcc *MstCustomerCreate) AddCust2InstIDs(ids ...uuid.UUID) *MstCustomerCreate {
+func (mcc *MstCustomerCreate) AddCust2InstIDs(ids ...pulid.ID) *MstCustomerCreate {
 	mcc.mutation.AddCust2InstIDs(ids...)
 	return mcc
 }
 
 // AddCust2Inst adds the "Cust2Inst" edges to the MstInst entity.
 func (mcc *MstCustomerCreate) AddCust2Inst(m ...*MstInst) *MstCustomerCreate {
-	ids := make([]uuid.UUID, len(m))
+	ids := make([]pulid.ID, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -382,7 +382,7 @@ func (mcc *MstCustomerCreate) sqlSave(ctx context.Context) (*MstCustomer, error)
 		return nil, err
 	}
 	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(*uuid.UUID); ok {
+		if id, ok := _spec.ID.Value.(*pulid.ID); ok {
 			_node.ID = *id
 		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
 			return nil, err
@@ -397,7 +397,7 @@ func (mcc *MstCustomerCreate) createSpec() (*MstCustomer, *sqlgraph.CreateSpec) 
 		_spec = &sqlgraph.CreateSpec{
 			Table: mstcustomer.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
+				Type:   field.TypeString,
 				Column: mstcustomer.FieldID,
 			},
 		}
@@ -575,7 +575,7 @@ func (mcc *MstCustomerCreate) createSpec() (*MstCustomer, *sqlgraph.CreateSpec) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUUID,
+					Type:   field.TypeString,
 					Column: mstinst.FieldID,
 				},
 			},

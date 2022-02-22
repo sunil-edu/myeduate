@@ -8,58 +8,27 @@ import (
 	"fmt"
 	"myeduate"
 	"myeduate/ent"
-	"myeduate/ent/mstcustomer"
-
-	"github.com/google/uuid"
+	"myeduate/ent/schema/pulid"
 )
 
 func (r *mutationResolver) AddCustomer(ctx context.Context, token string, input ent.CreateMstCustomerInput) (*ent.MstCustomer, error) {
-	client := ent.FromContext(ctx)
-
-	r.log.Debugf("received request to add new customer %s", input.CustName)
-	return client.MstCustomer.Create().SetInput(input).Save(ctx)
+	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateCustomer(ctx context.Context, token string, id uuid.UUID, input ent.UpdateMstCustomerInput) (*ent.MstCustomer, error) {
-	client := ent.FromContext(ctx)
-
-	r.log.Debugf("received request to udate customer %s", input.CustName)
-	return client.MstCustomer.UpdateOneID(id).SetInput(input).Save(ctx)
+func (r *mutationResolver) UpdateCustomer(ctx context.Context, token string, id pulid.ID, input ent.UpdateMstCustomerInput) (*ent.MstCustomer, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) ListCustomers(ctx context.Context, token string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstCustomerOrder, where *ent.MstCustomerWhereInput) (*ent.MstCustomerConnection, error) {
-	return r.client.MstCustomer.Query().
-		Paginate(ctx, after, first, before, last,
-			ent.WithMstCustomerOrder(orderBy),
-			ent.WithMstCustomerFilter(where.Filter))
+func (r *queryResolver) ListCustomers(ctx context.Context, token string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstCustomerOrder) (*ent.MstCustomerConnection, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetCustomerByID(ctx context.Context, token string, id uuid.UUID) (*ent.MstCustomer, error) {
-	return r.client.MstCustomer.Query().Where(mstcustomer.IDEQ(id)).Only(ctx)
+func (r *queryResolver) GetCustomerByID(ctx context.Context, token string, id pulid.ID) (*ent.MstCustomer, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) GetCustomerIdsByNames(ctx context.Context, token string, custNames []string) ([]*myeduate.CustData, error) {
-	custData := make([]*myeduate.CustData, len(custNames))
-
-	if len(custNames) == 0 {
-		return nil, fmt.Errorf("no input")
-	}
-
-	for i, name := range custNames {
-		id, err := r.client.MstCustomer.Query().Where(mstcustomer.CustNameEQ(name)).Select(mstcustomer.FieldID).OnlyID(ctx)
-
-		if err != nil {
-
-		} else {
-
-			custData[i] = &myeduate.CustData{
-				CustomerName: name,
-				ID:           id,
-			}
-		}
-	}
-
-	return custData, nil
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Mutation returns myeduate.MutationResolver implementation.
