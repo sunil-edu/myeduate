@@ -39,11 +39,8 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	MstInst() MstInstResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
-	CreateMstInstInput() CreateMstInstInputResolver
-	MstInstWhereInput() MstInstWhereInputResolver
 }
 
 type DirectiveRoot struct {
@@ -94,7 +91,6 @@ type ComplexityRoot struct {
 	}
 
 	MstInst struct {
-		CustomerID        func(childComplexity int) int
 		ID                func(childComplexity int) int
 		InstAddress       func(childComplexity int) int
 		InstBanner1       func(childComplexity int) int
@@ -154,9 +150,6 @@ type ComplexityRoot struct {
 	}
 }
 
-type MstInstResolver interface {
-	CustomerID(ctx context.Context, obj *ent.MstInst) (pulid.ID, error)
-}
 type MutationResolver interface {
 	AddCustomer(ctx context.Context, token string, input ent.CreateMstCustomerInput) (*ent.MstCustomer, error)
 	UpdateCustomer(ctx context.Context, token string, id pulid.ID, input ent.UpdateMstCustomerInput) (*ent.MstCustomer, error)
@@ -173,25 +166,6 @@ type QueryResolver interface {
 	ListInstsByCustID(ctx context.Context, token string, customerID pulid.ID, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) (*ent.MstInstConnection, error)
 	GetInstByID(ctx context.Context, token string, id pulid.ID) (*ent.MstInst, error)
 	GetInstIdsByNames(ctx context.Context, token string, instNames []string) ([]*InstData, error)
-}
-
-type CreateMstInstInputResolver interface {
-	CustomerID(ctx context.Context, obj *ent.CreateMstInstInput, data pulid.ID) error
-}
-type MstInstWhereInputResolver interface {
-	CustomerID(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDNeq(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDIn(ctx context.Context, obj *ent.MstInstWhereInput, data []pulid.ID) error
-	CustomerIDNotIn(ctx context.Context, obj *ent.MstInstWhereInput, data []pulid.ID) error
-	CustomerIDGt(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDGte(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDLt(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDLte(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDContains(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDHasPrefix(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDHasSuffix(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDEqualFold(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
-	CustomerIDContainsFold(ctx context.Context, obj *ent.MstInstWhereInput, data *pulid.ID) error
 }
 
 type executableSchema struct {
@@ -404,13 +378,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MstCustomerEdge.Node(childComplexity), true
-
-	case "MstInst.customer_id":
-		if e.complexity.MstInst.CustomerID == nil {
-			break
-		}
-
-		return e.complexity.MstInst.CustomerID(childComplexity), true
 
 	case "MstInst.id":
 		if e.complexity.MstInst.ID == nil {
@@ -1745,7 +1712,7 @@ type MstInst implements Node {
     inst_is_active:         IsActive!  
     inst_status:            String! 
     inst_time_zone:         Time!
-    customer_id:            ID!
+
 
 
 }
@@ -1772,7 +1739,6 @@ input CreateMstInstInput {
     inst_status:            String
     inst_time_zone:         Time  
 
-    customer_id:            ID!
 
 }
 
@@ -3994,41 +3960,6 @@ func (ec *executionContext) _MstInst_inst_time_zone(ctx context.Context, field g
 	res := resTmp.(time.Time)
 	fc.Result = res
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _MstInst_customer_id(ctx context.Context, field graphql.CollectedField, obj *ent.MstInst) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "MstInst",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.MstInst().CustomerID(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(pulid.ID)
-	fc.Result = res
-	return ec.marshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _MstInstConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.MstInstConnection) (ret graphql.Marshaler) {
@@ -6372,17 +6303,6 @@ func (ec *executionContext) unmarshalInputCreateMstInstInput(ctx context.Context
 			if err != nil {
 				return it, err
 			}
-		case "customer_id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customer_id"))
-			data, err := ec.unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateMstInstInput().CustomerID(ctx, &it, data); err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -6420,8 +6340,8 @@ func (ec *executionContext) unmarshalInputMstCustomerOrder(ctx context.Context, 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Context, obj interface{}) (ent.MstCustomerWhereInput, error) {
-	var it ent.MstCustomerWhereInput
+func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Context, obj interface{}) (MstCustomerWhereInput, error) {
+	var it MstCustomerWhereInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -6433,7 +6353,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
-			it.Not, err = ec.unmarshalOMstCustomerWhereInput2ᚖmyeduateᚋentᚐMstCustomerWhereInput(ctx, v)
+			it.Not, err = ec.unmarshalOMstCustomerWhereInput2ᚖmyeduateᚐMstCustomerWhereInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6441,7 +6361,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
-			it.And, err = ec.unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚋentᚐMstCustomerWhereInputᚄ(ctx, v)
+			it.And, err = ec.unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚐMstCustomerWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6449,7 +6369,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
-			it.Or, err = ec.unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚋentᚐMstCustomerWhereInputᚄ(ctx, v)
+			it.Or, err = ec.unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚐMstCustomerWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6465,7 +6385,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
-			it.CreatedAtNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtNeq, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6473,7 +6393,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
-			it.CreatedAtIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.CreatedAtIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6481,7 +6401,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
-			it.CreatedAtNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.CreatedAtNotIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6489,7 +6409,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
-			it.CreatedAtGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6497,7 +6417,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
-			it.CreatedAtGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6505,7 +6425,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
-			it.CreatedAtLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6513,7 +6433,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
-			it.CreatedAtLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6529,7 +6449,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
-			it.UpdatedAtNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtNeq, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6537,7 +6457,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
-			it.UpdatedAtIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.UpdatedAtIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6545,7 +6465,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
-			it.UpdatedAtNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.UpdatedAtNotIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6553,7 +6473,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
-			it.UpdatedAtGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6561,7 +6481,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
-			it.UpdatedAtGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6569,7 +6489,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
-			it.UpdatedAtLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6577,7 +6497,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
-			it.UpdatedAtLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6593,7 +6513,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custCodeNEQ"))
-			it.CustCodeNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustCodeNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6617,7 +6537,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custCodeGT"))
-			it.CustCodeGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustCodeGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6625,7 +6545,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custCodeGTE"))
-			it.CustCodeGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustCodeGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6633,7 +6553,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custCodeLT"))
-			it.CustCodeLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustCodeLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6641,7 +6561,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custCodeLTE"))
-			it.CustCodeLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustCodeLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6697,7 +6617,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNameNEQ"))
-			it.CustNameNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustNameNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6721,7 +6641,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNameGT"))
-			it.CustNameGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustNameGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6729,7 +6649,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNameGTE"))
-			it.CustNameGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustNameGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6737,7 +6657,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNameLT"))
-			it.CustNameLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustNameLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6745,7 +6665,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNameLTE"))
-			it.CustNameLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustNameLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6801,7 +6721,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custAddressNEQ"))
-			it.CustAddressNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustAddressNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6825,7 +6745,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custAddressGT"))
-			it.CustAddressGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustAddressGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6833,7 +6753,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custAddressGTE"))
-			it.CustAddressGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustAddressGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6841,7 +6761,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custAddressLT"))
-			it.CustAddressLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustAddressLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6849,7 +6769,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custAddressLTE"))
-			it.CustAddressLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustAddressLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6905,7 +6825,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPlaceNEQ"))
-			it.CustPlaceNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPlaceNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6929,7 +6849,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPlaceGT"))
-			it.CustPlaceGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPlaceGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6937,7 +6857,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPlaceGTE"))
-			it.CustPlaceGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPlaceGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6945,7 +6865,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPlaceLT"))
-			it.CustPlaceLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPlaceLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6953,7 +6873,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPlaceLTE"))
-			it.CustPlaceLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPlaceLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7009,7 +6929,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStateNEQ"))
-			it.CustStateNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStateNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7033,7 +6953,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStateGT"))
-			it.CustStateGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStateGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7041,7 +6961,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStateGTE"))
-			it.CustStateGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStateGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7049,7 +6969,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStateLT"))
-			it.CustStateLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStateLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7057,7 +6977,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStateLTE"))
-			it.CustStateLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStateLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7113,7 +7033,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPinNEQ"))
-			it.CustPinNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPinNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7137,7 +7057,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPinGT"))
-			it.CustPinGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPinGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7145,7 +7065,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPinGTE"))
-			it.CustPinGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPinGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7153,7 +7073,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPinLT"))
-			it.CustPinLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPinLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7161,7 +7081,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPinLTE"))
-			it.CustPinLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPinLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7217,7 +7137,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custContactPersonNEQ"))
-			it.CustContactPersonNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustContactPersonNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7241,7 +7161,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custContactPersonGT"))
-			it.CustContactPersonGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustContactPersonGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7249,7 +7169,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custContactPersonGTE"))
-			it.CustContactPersonGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustContactPersonGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7257,7 +7177,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custContactPersonLT"))
-			it.CustContactPersonLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustContactPersonLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7265,7 +7185,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custContactPersonLTE"))
-			it.CustContactPersonLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustContactPersonLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7321,7 +7241,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPhoneNEQ"))
-			it.CustPhoneNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPhoneNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7345,7 +7265,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPhoneGT"))
-			it.CustPhoneGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPhoneGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7353,7 +7273,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPhoneGTE"))
-			it.CustPhoneGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPhoneGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7361,7 +7281,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPhoneLT"))
-			it.CustPhoneLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPhoneLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7369,7 +7289,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custPhoneLTE"))
-			it.CustPhoneLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustPhoneLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7425,7 +7345,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custEmailNEQ"))
-			it.CustEmailNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustEmailNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7449,7 +7369,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custEmailGT"))
-			it.CustEmailGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustEmailGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7457,7 +7377,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custEmailGTE"))
-			it.CustEmailGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustEmailGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7465,7 +7385,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custEmailLT"))
-			it.CustEmailLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustEmailLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7473,7 +7393,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custEmailLTE"))
-			it.CustEmailLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustEmailLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7529,7 +7449,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custMobileNEQ"))
-			it.CustMobileNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustMobileNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7553,7 +7473,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custMobileGT"))
-			it.CustMobileGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustMobileGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7561,7 +7481,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custMobileGTE"))
-			it.CustMobileGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustMobileGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7569,7 +7489,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custMobileLT"))
-			it.CustMobileLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustMobileLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7577,7 +7497,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custMobileLTE"))
-			it.CustMobileLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustMobileLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7633,7 +7553,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custURLNEQ"))
-			it.CustURLNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustURLNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7657,7 +7577,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custURLGT"))
-			it.CustURLGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustURLGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7665,7 +7585,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custURLGTE"))
-			it.CustURLGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustURLGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7673,7 +7593,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custURLLT"))
-			it.CustURLLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustURLLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7681,7 +7601,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custURLLTE"))
-			it.CustURLLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustURLLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7737,7 +7657,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner1NEQ"))
-			it.CustBanner1NEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner1neq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7761,7 +7681,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner1GT"))
-			it.CustBanner1GT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner1gt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7769,7 +7689,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner1GTE"))
-			it.CustBanner1GTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner1gte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7777,7 +7697,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner1LT"))
-			it.CustBanner1LT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner1lt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7785,7 +7705,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner1LTE"))
-			it.CustBanner1LTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner1lte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7841,7 +7761,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner2NEQ"))
-			it.CustBanner2NEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner2neq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7865,7 +7785,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner2GT"))
-			it.CustBanner2GT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner2gt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7873,7 +7793,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner2GTE"))
-			it.CustBanner2GTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner2gte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7881,7 +7801,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner2LT"))
-			it.CustBanner2LT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner2lt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7889,7 +7809,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custBanner2LTE"))
-			it.CustBanner2LTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustBanner2lte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7945,7 +7865,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custLogoURLNEQ"))
-			it.CustLogoURLNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustLogoURLNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7969,7 +7889,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custLogoURLGT"))
-			it.CustLogoURLGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustLogoURLGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7977,7 +7897,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custLogoURLGTE"))
-			it.CustLogoURLGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustLogoURLGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7985,7 +7905,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custLogoURLLT"))
-			it.CustLogoURLLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustLogoURLLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7993,7 +7913,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custLogoURLLTE"))
-			it.CustLogoURLLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustLogoURLLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8049,7 +7969,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custIsActiveNEQ"))
-			it.CustIsActiveNEQ, err = ec.unmarshalOIsActive2ᚖmyeduateᚋentᚋcustomtypesᚐIsActive(ctx, v)
+			it.CustIsActiveNeq, err = ec.unmarshalOIsActive2ᚖmyeduateᚋentᚋcustomtypesᚐIsActive(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8081,7 +8001,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStatusNEQ"))
-			it.CustStatusNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStatusNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8105,7 +8025,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStatusGT"))
-			it.CustStatusGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStatusGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8113,7 +8033,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStatusGTE"))
-			it.CustStatusGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStatusGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8121,7 +8041,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStatusLT"))
-			it.CustStatusLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStatusLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8129,7 +8049,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custStatusLTE"))
-			it.CustStatusLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.CustStatusLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8185,7 +8105,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNumInstNEQ"))
-			it.CustNumInstNEQ, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.CustNumInstNeq, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8209,7 +8129,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNumInstGT"))
-			it.CustNumInstGT, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.CustNumInstGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8217,7 +8137,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNumInstGTE"))
-			it.CustNumInstGTE, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.CustNumInstGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8225,7 +8145,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNumInstLT"))
-			it.CustNumInstLT, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.CustNumInstLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8233,7 +8153,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custNumInstLTE"))
-			it.CustNumInstLTE, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.CustNumInstLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8249,7 +8169,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custTimeZoneNEQ"))
-			it.CustTimeZoneNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CustTimeZoneNeq, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8257,7 +8177,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custTimeZoneIn"))
-			it.CustTimeZoneIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.CustTimeZoneIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8265,7 +8185,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custTimeZoneNotIn"))
-			it.CustTimeZoneNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.CustTimeZoneNotIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8273,7 +8193,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custTimeZoneGT"))
-			it.CustTimeZoneGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CustTimeZoneGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8281,7 +8201,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custTimeZoneGTE"))
-			it.CustTimeZoneGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CustTimeZoneGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8289,7 +8209,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custTimeZoneLT"))
-			it.CustTimeZoneLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CustTimeZoneLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8297,7 +8217,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("custTimeZoneLTE"))
-			it.CustTimeZoneLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CustTimeZoneLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8313,7 +8233,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			it.IDNEQ, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDNeq, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8337,7 +8257,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			it.IDGT, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDGt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8345,7 +8265,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			it.IDGTE, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDGte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8353,7 +8273,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			it.IDLT, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDLt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8361,7 +8281,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			it.IDLTE, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDLte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8377,7 +8297,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasCust2InstWith"))
-			it.HasCust2InstWith, err = ec.unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚋentᚐMstInstWhereInputᚄ(ctx, v)
+			it.HasCust2InstWith, err = ec.unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚐMstInstWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8418,8 +8338,8 @@ func (ec *executionContext) unmarshalInputMstInstOrder(ctx context.Context, obj 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context, obj interface{}) (ent.MstInstWhereInput, error) {
-	var it ent.MstInstWhereInput
+func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context, obj interface{}) (MstInstWhereInput, error) {
+	var it MstInstWhereInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -8431,7 +8351,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
-			it.Not, err = ec.unmarshalOMstInstWhereInput2ᚖmyeduateᚋentᚐMstInstWhereInput(ctx, v)
+			it.Not, err = ec.unmarshalOMstInstWhereInput2ᚖmyeduateᚐMstInstWhereInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8439,7 +8359,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
-			it.And, err = ec.unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚋentᚐMstInstWhereInputᚄ(ctx, v)
+			it.And, err = ec.unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚐMstInstWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8447,7 +8367,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
-			it.Or, err = ec.unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚋentᚐMstInstWhereInputᚄ(ctx, v)
+			it.Or, err = ec.unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚐMstInstWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8463,7 +8383,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
-			it.CreatedAtNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtNeq, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8471,7 +8391,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
-			it.CreatedAtIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.CreatedAtIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8479,7 +8399,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
-			it.CreatedAtNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.CreatedAtNotIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8487,7 +8407,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
-			it.CreatedAtGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8495,7 +8415,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
-			it.CreatedAtGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8503,7 +8423,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
-			it.CreatedAtLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8511,7 +8431,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
-			it.CreatedAtLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8527,7 +8447,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
-			it.UpdatedAtNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtNeq, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8535,7 +8455,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
-			it.UpdatedAtIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.UpdatedAtIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8543,7 +8463,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
-			it.UpdatedAtNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.UpdatedAtNotIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8551,7 +8471,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
-			it.UpdatedAtGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8559,7 +8479,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
-			it.UpdatedAtGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8567,7 +8487,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
-			it.UpdatedAtLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8575,7 +8495,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
-			it.UpdatedAtLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8591,7 +8511,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instCodeNEQ"))
-			it.InstCodeNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstCodeNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8615,7 +8535,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instCodeGT"))
-			it.InstCodeGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstCodeGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8623,7 +8543,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instCodeGTE"))
-			it.InstCodeGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstCodeGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8631,7 +8551,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instCodeLT"))
-			it.InstCodeLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstCodeLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8639,7 +8559,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instCodeLTE"))
-			it.InstCodeLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstCodeLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8695,7 +8615,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instNameNEQ"))
-			it.InstNameNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstNameNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8719,7 +8639,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instNameGT"))
-			it.InstNameGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstNameGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8727,7 +8647,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instNameGTE"))
-			it.InstNameGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstNameGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8735,7 +8655,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instNameLT"))
-			it.InstNameLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstNameLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8743,7 +8663,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instNameLTE"))
-			it.InstNameLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstNameLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8799,7 +8719,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instShortNameNEQ"))
-			it.InstShortNameNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstShortNameNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8823,7 +8743,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instShortNameGT"))
-			it.InstShortNameGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstShortNameGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8831,7 +8751,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instShortNameGTE"))
-			it.InstShortNameGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstShortNameGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8839,7 +8759,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instShortNameLT"))
-			it.InstShortNameLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstShortNameLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8847,7 +8767,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instShortNameLTE"))
-			it.InstShortNameLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstShortNameLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8903,7 +8823,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instAddressNEQ"))
-			it.InstAddressNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstAddressNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8927,7 +8847,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instAddressGT"))
-			it.InstAddressGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstAddressGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8935,7 +8855,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instAddressGTE"))
-			it.InstAddressGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstAddressGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8943,7 +8863,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instAddressLT"))
-			it.InstAddressLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstAddressLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8951,7 +8871,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instAddressLTE"))
-			it.InstAddressLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstAddressLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9007,7 +8927,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPlaceNEQ"))
-			it.InstPlaceNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPlaceNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9031,7 +8951,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPlaceGT"))
-			it.InstPlaceGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPlaceGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9039,7 +8959,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPlaceGTE"))
-			it.InstPlaceGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPlaceGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9047,7 +8967,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPlaceLT"))
-			it.InstPlaceLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPlaceLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9055,7 +8975,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPlaceLTE"))
-			it.InstPlaceLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPlaceLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9111,7 +9031,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStateNEQ"))
-			it.InstStateNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStateNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9135,7 +9055,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStateGT"))
-			it.InstStateGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStateGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9143,7 +9063,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStateGTE"))
-			it.InstStateGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStateGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9151,7 +9071,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStateLT"))
-			it.InstStateLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStateLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9159,7 +9079,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStateLTE"))
-			it.InstStateLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStateLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9215,7 +9135,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPinNEQ"))
-			it.InstPinNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPinNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9239,7 +9159,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPinGT"))
-			it.InstPinGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPinGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9247,7 +9167,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPinGTE"))
-			it.InstPinGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPinGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9255,7 +9175,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPinLT"))
-			it.InstPinLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPinLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9263,7 +9183,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPinLTE"))
-			it.InstPinLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPinLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9319,7 +9239,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instContactPersonNEQ"))
-			it.InstContactPersonNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstContactPersonNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9343,7 +9263,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instContactPersonGT"))
-			it.InstContactPersonGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstContactPersonGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9351,7 +9271,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instContactPersonGTE"))
-			it.InstContactPersonGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstContactPersonGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9359,7 +9279,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instContactPersonLT"))
-			it.InstContactPersonLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstContactPersonLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9367,7 +9287,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instContactPersonLTE"))
-			it.InstContactPersonLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstContactPersonLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9423,7 +9343,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPhoneNEQ"))
-			it.InstPhoneNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPhoneNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9447,7 +9367,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPhoneGT"))
-			it.InstPhoneGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPhoneGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9455,7 +9375,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPhoneGTE"))
-			it.InstPhoneGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPhoneGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9463,7 +9383,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPhoneLT"))
-			it.InstPhoneLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPhoneLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9471,7 +9391,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instPhoneLTE"))
-			it.InstPhoneLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstPhoneLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9527,7 +9447,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instEmailNEQ"))
-			it.InstEmailNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstEmailNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9551,7 +9471,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instEmailGT"))
-			it.InstEmailGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstEmailGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9559,7 +9479,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instEmailGTE"))
-			it.InstEmailGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstEmailGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9567,7 +9487,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instEmailLT"))
-			it.InstEmailLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstEmailLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9575,7 +9495,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instEmailLTE"))
-			it.InstEmailLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstEmailLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9631,7 +9551,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instMobileNEQ"))
-			it.InstMobileNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstMobileNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9655,7 +9575,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instMobileGT"))
-			it.InstMobileGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstMobileGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9663,7 +9583,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instMobileGTE"))
-			it.InstMobileGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstMobileGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9671,7 +9591,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instMobileLT"))
-			it.InstMobileLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstMobileLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9679,7 +9599,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instMobileLTE"))
-			it.InstMobileLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstMobileLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9735,7 +9655,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instURLNEQ"))
-			it.InstURLNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstURLNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9759,7 +9679,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instURLGT"))
-			it.InstURLGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstURLGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9767,7 +9687,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instURLGTE"))
-			it.InstURLGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstURLGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9775,7 +9695,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instURLLT"))
-			it.InstURLLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstURLLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9783,7 +9703,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instURLLTE"))
-			it.InstURLLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstURLLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9839,7 +9759,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner1NEQ"))
-			it.InstBanner1NEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner1neq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9863,7 +9783,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner1GT"))
-			it.InstBanner1GT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner1gt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9871,7 +9791,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner1GTE"))
-			it.InstBanner1GTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner1gte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9879,7 +9799,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner1LT"))
-			it.InstBanner1LT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner1lt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9887,7 +9807,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner1LTE"))
-			it.InstBanner1LTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner1lte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9943,7 +9863,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner2NEQ"))
-			it.InstBanner2NEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner2neq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9967,7 +9887,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner2GT"))
-			it.InstBanner2GT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner2gt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9975,7 +9895,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner2GTE"))
-			it.InstBanner2GTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner2gte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9983,7 +9903,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner2LT"))
-			it.InstBanner2LT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner2lt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9991,7 +9911,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instBanner2LTE"))
-			it.InstBanner2LTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstBanner2lte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10047,7 +9967,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instLogoURLNEQ"))
-			it.InstLogoURLNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstLogoURLNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10071,7 +9991,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instLogoURLGT"))
-			it.InstLogoURLGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstLogoURLGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10079,7 +9999,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instLogoURLGTE"))
-			it.InstLogoURLGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstLogoURLGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10087,7 +10007,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instLogoURLLT"))
-			it.InstLogoURLLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstLogoURLLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10095,7 +10015,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instLogoURLLTE"))
-			it.InstLogoURLLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstLogoURLLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10151,7 +10071,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instIsActiveNEQ"))
-			it.InstIsActiveNEQ, err = ec.unmarshalOIsActive2ᚖmyeduateᚋentᚋcustomtypesᚐIsActive(ctx, v)
+			it.InstIsActiveNeq, err = ec.unmarshalOIsActive2ᚖmyeduateᚋentᚋcustomtypesᚐIsActive(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10183,7 +10103,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStatusNEQ"))
-			it.InstStatusNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStatusNeq, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10207,7 +10127,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStatusGT"))
-			it.InstStatusGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStatusGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10215,7 +10135,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStatusGTE"))
-			it.InstStatusGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStatusGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10223,7 +10143,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStatusLT"))
-			it.InstStatusLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStatusLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10231,7 +10151,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instStatusLTE"))
-			it.InstStatusLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.InstStatusLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10287,7 +10207,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instTimeZoneNEQ"))
-			it.InstTimeZoneNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.InstTimeZoneNeq, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10295,7 +10215,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instTimeZoneIn"))
-			it.InstTimeZoneIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.InstTimeZoneIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10303,7 +10223,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instTimeZoneNotIn"))
-			it.InstTimeZoneNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			it.InstTimeZoneNotIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10311,7 +10231,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instTimeZoneGT"))
-			it.InstTimeZoneGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.InstTimeZoneGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10319,7 +10239,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instTimeZoneGTE"))
-			it.InstTimeZoneGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.InstTimeZoneGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10327,7 +10247,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instTimeZoneLT"))
-			it.InstTimeZoneLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.InstTimeZoneLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10335,7 +10255,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instTimeZoneLTE"))
-			it.InstTimeZoneLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.InstTimeZoneLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10343,143 +10263,104 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerID"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerID, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDNeq, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDIn"))
-			data, err := ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
+			it.CustomerIDIn, err = ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
+			it.CustomerIDNotIn, err = ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDGT"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDGt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDGTE"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDGte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDLT"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDLt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDLTE"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDLte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDContains":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDContains"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDContains, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDContains(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDHasPrefix":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDHasPrefix"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDHasPrefix, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDHasPrefix(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDHasSuffix":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDHasSuffix"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDHasSuffix, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDHasSuffix(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDEqualFold":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDEqualFold"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDEqualFold, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDEqualFold(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "customerIDContainsFold":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDContainsFold"))
-			data, err := ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDContainsFold, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MstInstWhereInput().CustomerIDContainsFold(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "id":
@@ -10494,7 +10375,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			it.IDNEQ, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDNeq, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10518,7 +10399,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			it.IDGT, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDGt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10526,7 +10407,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			it.IDGTE, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDGte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10534,7 +10415,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			it.IDLT, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDLt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10542,7 +10423,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			it.IDLTE, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDLte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10558,7 +10439,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasInstfromCustWith"))
-			it.HasInstfromCustWith, err = ec.unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚋentᚐMstCustomerWhereInputᚄ(ctx, v)
+			it.HasInstfromCustWith, err = ec.unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚐMstCustomerWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -11302,7 +11183,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_code":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11312,7 +11193,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_name":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11322,7 +11203,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_short_name":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11332,7 +11213,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_address":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11342,7 +11223,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_place":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11352,7 +11233,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_state":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11362,7 +11243,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_pin":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11372,7 +11253,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_contact_person":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11382,7 +11263,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_phone":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11392,7 +11273,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_email":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11402,7 +11283,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_mobile":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11412,7 +11293,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_url":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11422,7 +11303,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_banner_1":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11432,7 +11313,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_banner_2":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11442,7 +11323,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_logo_url":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11452,7 +11333,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_is_active":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11462,7 +11343,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_status":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11472,7 +11353,7 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "inst_time_zone":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -11482,28 +11363,8 @@ func (ec *executionContext) _MstInst(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
-		case "customer_id":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._MstInst_customer_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -12598,7 +12459,7 @@ func (ec *executionContext) marshalNMstCustomer2ᚖmyeduateᚋentᚐMstCustomer(
 	return ec._MstCustomer(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMstCustomerWhereInput2ᚖmyeduateᚋentᚐMstCustomerWhereInput(ctx context.Context, v interface{}) (*ent.MstCustomerWhereInput, error) {
+func (ec *executionContext) unmarshalNMstCustomerWhereInput2ᚖmyeduateᚐMstCustomerWhereInput(ctx context.Context, v interface{}) (*MstCustomerWhereInput, error) {
 	res, err := ec.unmarshalInputMstCustomerWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -12617,7 +12478,7 @@ func (ec *executionContext) marshalNMstInst2ᚖmyeduateᚋentᚐMstInst(ctx cont
 	return ec._MstInst(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMstInstWhereInput2ᚖmyeduateᚋentᚐMstInstWhereInput(ctx context.Context, v interface{}) (*ent.MstInstWhereInput, error) {
+func (ec *executionContext) unmarshalNMstInstWhereInput2ᚖmyeduateᚐMstInstWhereInput(ctx context.Context, v interface{}) (*MstInstWhereInput, error) {
 	res, err := ec.unmarshalInputMstInstWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -12717,6 +12578,27 @@ func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v in
 
 func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
 	res := graphql.MarshalTime(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := graphql.MarshalTime(*v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -13307,7 +13189,7 @@ func (ec *executionContext) marshalOMstCustomerOrderField2ᚖmyeduateᚋentᚐMs
 	return v
 }
 
-func (ec *executionContext) unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚋentᚐMstCustomerWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.MstCustomerWhereInput, error) {
+func (ec *executionContext) unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚐMstCustomerWhereInputᚄ(ctx context.Context, v interface{}) ([]*MstCustomerWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13316,10 +13198,10 @@ func (ec *executionContext) unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚋent
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]*ent.MstCustomerWhereInput, len(vSlice))
+	res := make([]*MstCustomerWhereInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNMstCustomerWhereInput2ᚖmyeduateᚋentᚐMstCustomerWhereInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNMstCustomerWhereInput2ᚖmyeduateᚐMstCustomerWhereInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -13327,7 +13209,7 @@ func (ec *executionContext) unmarshalOMstCustomerWhereInput2ᚕᚖmyeduateᚋent
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOMstCustomerWhereInput2ᚖmyeduateᚋentᚐMstCustomerWhereInput(ctx context.Context, v interface{}) (*ent.MstCustomerWhereInput, error) {
+func (ec *executionContext) unmarshalOMstCustomerWhereInput2ᚖmyeduateᚐMstCustomerWhereInput(ctx context.Context, v interface{}) (*MstCustomerWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13421,7 +13303,7 @@ func (ec *executionContext) marshalOMstInstOrderField2ᚖmyeduateᚋentᚐMstIns
 	return v
 }
 
-func (ec *executionContext) unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚋentᚐMstInstWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.MstInstWhereInput, error) {
+func (ec *executionContext) unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚐMstInstWhereInputᚄ(ctx context.Context, v interface{}) ([]*MstInstWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13430,10 +13312,10 @@ func (ec *executionContext) unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚋentᚐM
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]*ent.MstInstWhereInput, len(vSlice))
+	res := make([]*MstInstWhereInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNMstInstWhereInput2ᚖmyeduateᚋentᚐMstInstWhereInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNMstInstWhereInput2ᚖmyeduateᚐMstInstWhereInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -13441,7 +13323,7 @@ func (ec *executionContext) unmarshalOMstInstWhereInput2ᚕᚖmyeduateᚋentᚐM
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOMstInstWhereInput2ᚖmyeduateᚋentᚐMstInstWhereInput(ctx context.Context, v interface{}) (*ent.MstInstWhereInput, error) {
+func (ec *executionContext) unmarshalOMstInstWhereInput2ᚖmyeduateᚐMstInstWhereInput(ctx context.Context, v interface{}) (*MstInstWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13530,7 +13412,7 @@ func (ec *executionContext) marshalOTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx context.Context, v interface{}) ([]time.Time, error) {
+func (ec *executionContext) unmarshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx context.Context, v interface{}) ([]*time.Time, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13539,10 +13421,10 @@ func (ec *executionContext) unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx context.Context
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]time.Time, len(vSlice))
+	res := make([]*time.Time, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNTime2timeᚐTime(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNTime2ᚖtimeᚐTime(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -13550,13 +13432,13 @@ func (ec *executionContext) unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx context.Context
 	return res, nil
 }
 
-func (ec *executionContext) marshalOTime2ᚕtimeᚐTimeᚄ(ctx context.Context, sel ast.SelectionSet, v []time.Time) graphql.Marshaler {
+func (ec *executionContext) marshalOTime2ᚕᚖtimeᚐTimeᚄ(ctx context.Context, sel ast.SelectionSet, v []*time.Time) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNTime2timeᚐTime(ctx, sel, v[i])
+		ret[i] = ec.marshalNTime2ᚖtimeᚐTime(ctx, sel, v[i])
 	}
 
 	for _, e := range ret {

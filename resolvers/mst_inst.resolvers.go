@@ -11,10 +11,6 @@ import (
 	"myeduate/ent/schema/pulid"
 )
 
-func (r *mstInstResolver) CustomerID(ctx context.Context, obj *ent.MstInst) (pulid.ID, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
 func (r *mutationResolver) AddInst(ctx context.Context, token string, input ent.CreateMstInstInput) (*ent.MstInst, error) {
 	panic(fmt.Errorf("not implemented"))
 }
@@ -38,8 +34,3 @@ func (r *queryResolver) GetInstByID(ctx context.Context, token string, id pulid.
 func (r *queryResolver) GetInstIdsByNames(ctx context.Context, token string, instNames []string) ([]*myeduate.InstData, error) {
 	panic(fmt.Errorf("not implemented"))
 }
-
-// MstInst returns myeduate.MstInstResolver implementation.
-func (r *Resolver) MstInst() myeduate.MstInstResolver { return &mstInstResolver{r} }
-
-type mstInstResolver struct{ *Resolver }

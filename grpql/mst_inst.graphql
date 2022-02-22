@@ -48,7 +48,7 @@ type MstInst implements Node {
     inst_is_active:         IsActive!  
     inst_status:            String! 
     inst_time_zone:         Time!
-    customer_id:            ID!
+
 
 
 }
@@ -75,7 +75,6 @@ input CreateMstInstInput {
     inst_status:            String
     inst_time_zone:         Time  
 
-    customer_id:            ID!
 
 }
 
