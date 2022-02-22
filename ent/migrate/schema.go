@@ -77,13 +77,6 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "mstinst_inst_name_customer_id",
-				Unique:  true,
-				Columns: []*schema.Column{MstInstsColumns[4], MstInstsColumns[21]},
-			},
-		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{

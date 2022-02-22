@@ -829,16 +829,6 @@ var (
 			}
 		},
 	}
-	// MstInstOrderFieldCustomerID orders MstInst by customer_id.
-	MstInstOrderFieldCustomerID = &MstInstOrderField{
-		field: mstinst.FieldCustomerID,
-		toCursor: func(mi *MstInst) Cursor {
-			return Cursor{
-				ID:    mi.ID,
-				Value: mi.CustomerID,
-			}
-		},
-	}
 )
 
 // String implement fmt.Stringer interface.
@@ -857,8 +847,6 @@ func (f MstInstOrderField) String() string {
 		str = "INST_PHONE"
 	case mstinst.FieldInstStatus:
 		str = "INST_STATUS"
-	case mstinst.FieldCustomerID:
-		str = "CUSTOMER_ID"
 	}
 	return str
 }
@@ -887,8 +875,6 @@ func (f *MstInstOrderField) UnmarshalGQL(v interface{}) error {
 		*f = *MstInstOrderFieldInstPhone
 	case "INST_STATUS":
 		*f = *MstInstOrderFieldInstStatus
-	case "CUSTOMER_ID":
-		*f = *MstInstOrderFieldCustomerID
 	default:
 		return fmt.Errorf("%s is not a valid MstInstOrderField", str)
 	}

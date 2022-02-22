@@ -13,8 +13,8 @@ import (
 
 // prefixMap maps PULID prefixes to table names.
 var prefixMap = map[pulid.ID]string{
-	"CUST": mstcustomer.Table,
-	"INST": mstinst.Table,
+	"CU": mstcustomer.Table,
+	"IN": mstinst.Table,
 }
 
 // IDToType maps a pulid.ID to the underlying table.

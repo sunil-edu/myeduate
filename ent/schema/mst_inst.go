@@ -9,7 +9,6 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 )
 
 // MstInst holds the schema definition for the MstInst entity.
@@ -19,7 +18,7 @@ type MstInst struct {
 
 func (MstInst) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		pulid.MixinWithPrefix("INST"),
+		pulid.MixinWithPrefix("IN"),
 		TimeMixin{},
 	}
 }
@@ -74,8 +73,7 @@ func (MstInst) Fields() []ent.Field {
 				dialect.Postgres: "DATE",
 			}),
 
-		field.String("customer_id").Annotations(
-			entgql.OrderField("CUSTOMER_ID")),
+		field.String("customer_id"),
 	}
 }
 
@@ -88,13 +86,5 @@ func (MstInst) Edges() []ent.Edge {
 			Required().
 			Field("customer_id").
 			Annotations(entgql.Bind()),
-	}
-}
-
-func (MstInst) Indexes() []ent.Index {
-	return []ent.Index{
-
-		index.Fields("inst_name", "customer_id").
-			Unique(),
 	}
 }

@@ -18,7 +18,7 @@ type MstCustomer struct {
 
 func (MstCustomer) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		pulid.MixinWithPrefix("CUST"),
+		pulid.MixinWithPrefix("CU"),
 		TimeMixin{},
 	}
 }
