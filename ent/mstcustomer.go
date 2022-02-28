@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"myeduate/ent/customtypes"
 	"myeduate/ent/mstcustomer"
-	"myeduate/ent/schema/pulid"
 	"strings"
 	"time"
 
@@ -18,7 +17,7 @@ import (
 type MstCustomer struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID pulid.ID `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -87,9 +86,7 @@ func (*MstCustomer) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case mstcustomer.FieldID:
-			values[i] = new(pulid.ID)
-		case mstcustomer.FieldCustNumInst:
+		case mstcustomer.FieldID, mstcustomer.FieldCustNumInst:
 			values[i] = new(sql.NullInt64)
 		case mstcustomer.FieldCustCode, mstcustomer.FieldCustName, mstcustomer.FieldCustAddress, mstcustomer.FieldCustPlace, mstcustomer.FieldCustState, mstcustomer.FieldCustPin, mstcustomer.FieldCustContactPerson, mstcustomer.FieldCustPhone, mstcustomer.FieldCustEmail, mstcustomer.FieldCustMobile, mstcustomer.FieldCustURL, mstcustomer.FieldCustBanner1, mstcustomer.FieldCustBanner2, mstcustomer.FieldCustLogoURL, mstcustomer.FieldCustIsActive, mstcustomer.FieldCustStatus:
 			values[i] = new(sql.NullString)
@@ -111,11 +108,11 @@ func (mc *MstCustomer) assignValues(columns []string, values []interface{}) erro
 	for i := range columns {
 		switch columns[i] {
 		case mstcustomer.FieldID:
-			if value, ok := values[i].(*pulid.ID); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value != nil {
-				mc.ID = *value
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
 			}
+			mc.ID = int(value.Int64)
 		case mstcustomer.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])

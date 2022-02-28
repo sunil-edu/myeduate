@@ -11,7 +11,6 @@ import (
 	"io"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
-	"myeduate/ent/schema/pulid"
 	"strconv"
 	"strings"
 
@@ -147,8 +146,8 @@ type PageInfo struct {
 
 // Cursor of an edge type.
 type Cursor struct {
-	ID    pulid.ID `msgpack:"i"`
-	Value Value    `msgpack:"v,omitempty"`
+	ID    int   `msgpack:"i"`
+	Value Value `msgpack:"v,omitempty"`
 }
 
 // MarshalGQL implements graphql.Marshaler interface.

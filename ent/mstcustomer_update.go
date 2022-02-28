@@ -11,7 +11,6 @@ import (
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/predicate"
-	"myeduate/ent/schema/pulid"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -170,14 +169,14 @@ func (mcu *MstCustomerUpdate) SetCustTimeZone(t time.Time) *MstCustomerUpdate {
 }
 
 // AddCust2InstIDs adds the "Cust2Inst" edge to the MstInst entity by IDs.
-func (mcu *MstCustomerUpdate) AddCust2InstIDs(ids ...pulid.ID) *MstCustomerUpdate {
+func (mcu *MstCustomerUpdate) AddCust2InstIDs(ids ...int) *MstCustomerUpdate {
 	mcu.mutation.AddCust2InstIDs(ids...)
 	return mcu
 }
 
 // AddCust2Inst adds the "Cust2Inst" edges to the MstInst entity.
 func (mcu *MstCustomerUpdate) AddCust2Inst(m ...*MstInst) *MstCustomerUpdate {
-	ids := make([]pulid.ID, len(m))
+	ids := make([]int, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -196,14 +195,14 @@ func (mcu *MstCustomerUpdate) ClearCust2Inst() *MstCustomerUpdate {
 }
 
 // RemoveCust2InstIDs removes the "Cust2Inst" edge to MstInst entities by IDs.
-func (mcu *MstCustomerUpdate) RemoveCust2InstIDs(ids ...pulid.ID) *MstCustomerUpdate {
+func (mcu *MstCustomerUpdate) RemoveCust2InstIDs(ids ...int) *MstCustomerUpdate {
 	mcu.mutation.RemoveCust2InstIDs(ids...)
 	return mcu
 }
 
 // RemoveCust2Inst removes "Cust2Inst" edges to MstInst entities.
 func (mcu *MstCustomerUpdate) RemoveCust2Inst(m ...*MstInst) *MstCustomerUpdate {
-	ids := make([]pulid.ID, len(m))
+	ids := make([]int, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -300,7 +299,7 @@ func (mcu *MstCustomerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   mstcustomer.Table,
 			Columns: mstcustomer.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeString,
+				Type:   field.TypeInt,
 				Column: mstcustomer.FieldID,
 			},
 		},
@@ -461,7 +460,7 @@ func (mcu *MstCustomerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
+					Type:   field.TypeInt,
 					Column: mstinst.FieldID,
 				},
 			},
@@ -477,7 +476,7 @@ func (mcu *MstCustomerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
+					Type:   field.TypeInt,
 					Column: mstinst.FieldID,
 				},
 			},
@@ -496,7 +495,7 @@ func (mcu *MstCustomerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
+					Type:   field.TypeInt,
 					Column: mstinst.FieldID,
 				},
 			},
@@ -663,14 +662,14 @@ func (mcuo *MstCustomerUpdateOne) SetCustTimeZone(t time.Time) *MstCustomerUpdat
 }
 
 // AddCust2InstIDs adds the "Cust2Inst" edge to the MstInst entity by IDs.
-func (mcuo *MstCustomerUpdateOne) AddCust2InstIDs(ids ...pulid.ID) *MstCustomerUpdateOne {
+func (mcuo *MstCustomerUpdateOne) AddCust2InstIDs(ids ...int) *MstCustomerUpdateOne {
 	mcuo.mutation.AddCust2InstIDs(ids...)
 	return mcuo
 }
 
 // AddCust2Inst adds the "Cust2Inst" edges to the MstInst entity.
 func (mcuo *MstCustomerUpdateOne) AddCust2Inst(m ...*MstInst) *MstCustomerUpdateOne {
-	ids := make([]pulid.ID, len(m))
+	ids := make([]int, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -689,14 +688,14 @@ func (mcuo *MstCustomerUpdateOne) ClearCust2Inst() *MstCustomerUpdateOne {
 }
 
 // RemoveCust2InstIDs removes the "Cust2Inst" edge to MstInst entities by IDs.
-func (mcuo *MstCustomerUpdateOne) RemoveCust2InstIDs(ids ...pulid.ID) *MstCustomerUpdateOne {
+func (mcuo *MstCustomerUpdateOne) RemoveCust2InstIDs(ids ...int) *MstCustomerUpdateOne {
 	mcuo.mutation.RemoveCust2InstIDs(ids...)
 	return mcuo
 }
 
 // RemoveCust2Inst removes "Cust2Inst" edges to MstInst entities.
 func (mcuo *MstCustomerUpdateOne) RemoveCust2Inst(m ...*MstInst) *MstCustomerUpdateOne {
-	ids := make([]pulid.ID, len(m))
+	ids := make([]int, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -800,7 +799,7 @@ func (mcuo *MstCustomerUpdateOne) sqlSave(ctx context.Context) (_node *MstCustom
 			Table:   mstcustomer.Table,
 			Columns: mstcustomer.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeString,
+				Type:   field.TypeInt,
 				Column: mstcustomer.FieldID,
 			},
 		},
@@ -978,7 +977,7 @@ func (mcuo *MstCustomerUpdateOne) sqlSave(ctx context.Context) (_node *MstCustom
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
+					Type:   field.TypeInt,
 					Column: mstinst.FieldID,
 				},
 			},
@@ -994,7 +993,7 @@ func (mcuo *MstCustomerUpdateOne) sqlSave(ctx context.Context) (_node *MstCustom
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
+					Type:   field.TypeInt,
 					Column: mstinst.FieldID,
 				},
 			},
@@ -1013,7 +1012,7 @@ func (mcuo *MstCustomerUpdateOne) sqlSave(ctx context.Context) (_node *MstCustom
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
+					Type:   field.TypeInt,
 					Column: mstinst.FieldID,
 				},
 			},

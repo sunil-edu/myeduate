@@ -11,12 +11,12 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/lib/pq v1.10.4
-	github.com/oklog/ulid/v2 v2.0.2
 	github.com/rs/cors v1.8.2
 	github.com/spf13/viper v1.10.1
 	github.com/vektah/gqlparser/v2 v2.3.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	go.uber.org/zap v1.20.0
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 

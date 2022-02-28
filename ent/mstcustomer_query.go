@@ -12,7 +12,6 @@ import (
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/predicate"
-	"myeduate/ent/schema/pulid"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -113,8 +112,8 @@ func (mcq *MstCustomerQuery) FirstX(ctx context.Context) *MstCustomer {
 
 // FirstID returns the first MstCustomer ID from the query.
 // Returns a *NotFoundError when no MstCustomer ID was found.
-func (mcq *MstCustomerQuery) FirstID(ctx context.Context) (id pulid.ID, err error) {
-	var ids []pulid.ID
+func (mcq *MstCustomerQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = mcq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -126,7 +125,7 @@ func (mcq *MstCustomerQuery) FirstID(ctx context.Context) (id pulid.ID, err erro
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (mcq *MstCustomerQuery) FirstIDX(ctx context.Context) pulid.ID {
+func (mcq *MstCustomerQuery) FirstIDX(ctx context.Context) int {
 	id, err := mcq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -164,8 +163,8 @@ func (mcq *MstCustomerQuery) OnlyX(ctx context.Context) *MstCustomer {
 // OnlyID is like Only, but returns the only MstCustomer ID in the query.
 // Returns a *NotSingularError when exactly one MstCustomer ID is not found.
 // Returns a *NotFoundError when no entities are found.
-func (mcq *MstCustomerQuery) OnlyID(ctx context.Context) (id pulid.ID, err error) {
-	var ids []pulid.ID
+func (mcq *MstCustomerQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = mcq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -181,7 +180,7 @@ func (mcq *MstCustomerQuery) OnlyID(ctx context.Context) (id pulid.ID, err error
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (mcq *MstCustomerQuery) OnlyIDX(ctx context.Context) pulid.ID {
+func (mcq *MstCustomerQuery) OnlyIDX(ctx context.Context) int {
 	id, err := mcq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -207,8 +206,8 @@ func (mcq *MstCustomerQuery) AllX(ctx context.Context) []*MstCustomer {
 }
 
 // IDs executes the query and returns a list of MstCustomer IDs.
-func (mcq *MstCustomerQuery) IDs(ctx context.Context) ([]pulid.ID, error) {
-	var ids []pulid.ID
+func (mcq *MstCustomerQuery) IDs(ctx context.Context) ([]int, error) {
+	var ids []int
 	if err := mcq.Select(mstcustomer.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -216,7 +215,7 @@ func (mcq *MstCustomerQuery) IDs(ctx context.Context) ([]pulid.ID, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (mcq *MstCustomerQuery) IDsX(ctx context.Context) []pulid.ID {
+func (mcq *MstCustomerQuery) IDsX(ctx context.Context) []int {
 	ids, err := mcq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -382,7 +381,7 @@ func (mcq *MstCustomerQuery) sqlAll(ctx context.Context) ([]*MstCustomer, error)
 
 	if query := mcq.withCust2Inst; query != nil {
 		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[pulid.ID]*MstCustomer)
+		nodeids := make(map[int]*MstCustomer)
 		for i := range nodes {
 			fks = append(fks, nodes[i].ID)
 			nodeids[nodes[i].ID] = nodes[i]
@@ -434,7 +433,7 @@ func (mcq *MstCustomerQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   mstcustomer.Table,
 			Columns: mstcustomer.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeString,
+				Type:   field.TypeInt,
 				Column: mstcustomer.FieldID,
 			},
 		},

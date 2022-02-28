@@ -6,7 +6,6 @@ package mstcustomer
 import (
 	"fmt"
 	"myeduate/ent/customtypes"
-	"myeduate/ent/schema/pulid"
 	"time"
 
 	"github.com/arsmn/fastgql/graphql"
@@ -116,8 +115,6 @@ var (
 	CustNameValidator func(string) error
 	// DefaultCustNumInst holds the default value on creation for the "cust_num_inst" field.
 	DefaultCustNumInst int
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID func() pulid.ID
 )
 
 const DefaultCustIsActive customtypes.IsActive = "ACTIVE"

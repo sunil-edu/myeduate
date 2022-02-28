@@ -8,14 +8,13 @@ import (
 	"fmt"
 	"myeduate"
 	"myeduate/ent"
-	"myeduate/ent/schema/pulid"
 )
 
 func (r *mutationResolver) AddInst(ctx context.Context, token string, input ent.CreateMstInstInput) (*ent.MstInst, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateInst(ctx context.Context, token string, id pulid.ID, input ent.UpdateMstInstInput) (*ent.MstInst, error) {
+func (r *mutationResolver) UpdateInst(ctx context.Context, token string, id int, input ent.UpdateMstInstInput) (*ent.MstInst, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -23,11 +22,11 @@ func (r *queryResolver) ListInsts(ctx context.Context, token string, after *ent.
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) ListInstsByCustID(ctx context.Context, token string, customerID pulid.ID, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) (*ent.MstInstConnection, error) {
+func (r *queryResolver) ListInstsByCustID(ctx context.Context, token string, customerID int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) (*ent.MstInstConnection, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetInstByID(ctx context.Context, token string, id pulid.ID) (*ent.MstInst, error) {
+func (r *queryResolver) GetInstByID(ctx context.Context, token string, id int) (*ent.MstInst, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

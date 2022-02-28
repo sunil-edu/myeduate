@@ -10,7 +10,6 @@ import (
 	"myeduate/ent/customtypes"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
-	"myeduate/ent/schema/pulid"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -169,27 +168,13 @@ func (mic *MstInstCreate) SetInstTimeZone(t time.Time) *MstInstCreate {
 }
 
 // SetCustomerID sets the "customer_id" field.
-func (mic *MstInstCreate) SetCustomerID(s string) *MstInstCreate {
-	mic.mutation.SetCustomerID(s)
-	return mic
-}
-
-// SetID sets the "id" field.
-func (mic *MstInstCreate) SetID(pu pulid.ID) *MstInstCreate {
-	mic.mutation.SetID(pu)
-	return mic
-}
-
-// SetNillableID sets the "id" field if the given value is not nil.
-func (mic *MstInstCreate) SetNillableID(pu *pulid.ID) *MstInstCreate {
-	if pu != nil {
-		mic.SetID(*pu)
-	}
+func (mic *MstInstCreate) SetCustomerID(i int) *MstInstCreate {
+	mic.mutation.SetCustomerID(i)
 	return mic
 }
 
 // SetInstfromCustID sets the "InstfromCust" edge to the MstCustomer entity by ID.
-func (mic *MstInstCreate) SetInstfromCustID(id pulid.ID) *MstInstCreate {
+func (mic *MstInstCreate) SetInstfromCustID(id int) *MstInstCreate {
 	mic.mutation.SetInstfromCustID(id)
 	return mic
 }
@@ -282,10 +267,6 @@ func (mic *MstInstCreate) defaults() {
 		v := mstinst.DefaultInstIsActive
 		mic.mutation.SetInstIsActive(v)
 	}
-	if _, ok := mic.mutation.ID(); !ok {
-		v := mstinst.DefaultID()
-		mic.mutation.SetID(v)
-	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -377,13 +358,8 @@ func (mic *MstInstCreate) sqlSave(ctx context.Context) (*MstInst, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(*pulid.ID); ok {
-			_node.ID = *id
-		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
-			return nil, err
-		}
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	return _node, nil
 }
 
@@ -393,15 +369,11 @@ func (mic *MstInstCreate) createSpec() (*MstInst, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: mstinst.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeString,
+				Type:   field.TypeInt,
 				Column: mstinst.FieldID,
 			},
 		}
 	)
-	if id, ok := mic.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = &id
-	}
 	if value, ok := mic.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -571,7 +543,7 @@ func (mic *MstInstCreate) createSpec() (*MstInst, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
+					Type:   field.TypeInt,
 					Column: mstcustomer.FieldID,
 				},
 			},
@@ -627,6 +599,10 @@ func (micb *MstInstCreateBulk) Save(ctx context.Context) ([]*MstInst, error) {
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
+				if specs[i].ID.Value != nil {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
+				}
 				return nodes[i], nil
 			})
 			for i := len(builder.hooks) - 1; i >= 0; i-- {

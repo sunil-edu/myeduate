@@ -9,7 +9,6 @@ import (
 	"log"
 
 	"myeduate/ent/migrate"
-	"myeduate/ent/schema/pulid"
 
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
@@ -28,6 +27,8 @@ type Client struct {
 	MstCustomer *MstCustomerClient
 	// MstInst is the client for interacting with the MstInst builders.
 	MstInst *MstInstClient
+	// additional fields for node api
+	tables tables
 }
 
 // NewClient creates a new client configured with the given options.
@@ -172,7 +173,7 @@ func (c *MstCustomerClient) UpdateOne(mc *MstCustomer) *MstCustomerUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *MstCustomerClient) UpdateOneID(id pulid.ID) *MstCustomerUpdateOne {
+func (c *MstCustomerClient) UpdateOneID(id int) *MstCustomerUpdateOne {
 	mutation := newMstCustomerMutation(c.config, OpUpdateOne, withMstCustomerID(id))
 	return &MstCustomerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -189,7 +190,7 @@ func (c *MstCustomerClient) DeleteOne(mc *MstCustomer) *MstCustomerDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *MstCustomerClient) DeleteOneID(id pulid.ID) *MstCustomerDeleteOne {
+func (c *MstCustomerClient) DeleteOneID(id int) *MstCustomerDeleteOne {
 	builder := c.Delete().Where(mstcustomer.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -204,12 +205,12 @@ func (c *MstCustomerClient) Query() *MstCustomerQuery {
 }
 
 // Get returns a MstCustomer entity by its id.
-func (c *MstCustomerClient) Get(ctx context.Context, id pulid.ID) (*MstCustomer, error) {
+func (c *MstCustomerClient) Get(ctx context.Context, id int) (*MstCustomer, error) {
 	return c.Query().Where(mstcustomer.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *MstCustomerClient) GetX(ctx context.Context, id pulid.ID) *MstCustomer {
+func (c *MstCustomerClient) GetX(ctx context.Context, id int) *MstCustomer {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -278,7 +279,7 @@ func (c *MstInstClient) UpdateOne(mi *MstInst) *MstInstUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *MstInstClient) UpdateOneID(id pulid.ID) *MstInstUpdateOne {
+func (c *MstInstClient) UpdateOneID(id int) *MstInstUpdateOne {
 	mutation := newMstInstMutation(c.config, OpUpdateOne, withMstInstID(id))
 	return &MstInstUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -295,7 +296,7 @@ func (c *MstInstClient) DeleteOne(mi *MstInst) *MstInstDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *MstInstClient) DeleteOneID(id pulid.ID) *MstInstDeleteOne {
+func (c *MstInstClient) DeleteOneID(id int) *MstInstDeleteOne {
 	builder := c.Delete().Where(mstinst.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -310,12 +311,12 @@ func (c *MstInstClient) Query() *MstInstQuery {
 }
 
 // Get returns a MstInst entity by its id.
-func (c *MstInstClient) Get(ctx context.Context, id pulid.ID) (*MstInst, error) {
+func (c *MstInstClient) Get(ctx context.Context, id int) (*MstInst, error) {
 	return c.Query().Where(mstinst.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *MstInstClient) GetX(ctx context.Context, id pulid.ID) *MstInst {
+func (c *MstInstClient) GetX(ctx context.Context, id int) *MstInst {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

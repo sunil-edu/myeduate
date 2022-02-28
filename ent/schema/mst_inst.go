@@ -2,7 +2,6 @@ package schema
 
 import (
 	"myeduate/ent/customtypes"
-	"myeduate/ent/schema/pulid"
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
@@ -18,7 +17,7 @@ type MstInst struct {
 
 func (MstInst) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		pulid.MixinWithPrefix("IN"),
+
 		TimeMixin{},
 	}
 }
@@ -73,7 +72,7 @@ func (MstInst) Fields() []ent.Field {
 				dialect.Postgres: "DATE",
 			}),
 
-		field.String("customer_id"),
+		field.Int("customer_id"),
 	}
 }
 

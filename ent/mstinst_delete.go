@@ -73,7 +73,7 @@ func (mid *MstInstDelete) sqlExec(ctx context.Context) (int, error) {
 		Node: &sqlgraph.NodeSpec{
 			Table: mstinst.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeString,
+				Type:   field.TypeInt,
 				Column: mstinst.FieldID,
 			},
 		},

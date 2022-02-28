@@ -2,7 +2,6 @@ package schema
 
 import (
 	"myeduate/ent/customtypes"
-	"myeduate/ent/schema/pulid"
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
@@ -18,7 +17,7 @@ type MstCustomer struct {
 
 func (MstCustomer) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		pulid.MixinWithPrefix("CU"),
+
 		TimeMixin{},
 	}
 }

@@ -7,7 +7,6 @@ import (
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/schema"
-	"myeduate/ent/schema/pulid"
 	"time"
 )
 
@@ -18,16 +17,14 @@ func init() {
 	mstcustomerMixin := schema.MstCustomer{}.Mixin()
 	mstcustomerMixinFields0 := mstcustomerMixin[0].Fields()
 	_ = mstcustomerMixinFields0
-	mstcustomerMixinFields1 := mstcustomerMixin[1].Fields()
-	_ = mstcustomerMixinFields1
 	mstcustomerFields := schema.MstCustomer{}.Fields()
 	_ = mstcustomerFields
 	// mstcustomerDescCreatedAt is the schema descriptor for created_at field.
-	mstcustomerDescCreatedAt := mstcustomerMixinFields1[0].Descriptor()
+	mstcustomerDescCreatedAt := mstcustomerMixinFields0[0].Descriptor()
 	// mstcustomer.DefaultCreatedAt holds the default value on creation for the created_at field.
 	mstcustomer.DefaultCreatedAt = mstcustomerDescCreatedAt.Default.(func() time.Time)
 	// mstcustomerDescUpdatedAt is the schema descriptor for updated_at field.
-	mstcustomerDescUpdatedAt := mstcustomerMixinFields1[1].Descriptor()
+	mstcustomerDescUpdatedAt := mstcustomerMixinFields0[1].Descriptor()
 	// mstcustomer.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	mstcustomer.DefaultUpdatedAt = mstcustomerDescUpdatedAt.Default.(func() time.Time)
 	// mstcustomer.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
@@ -40,23 +37,17 @@ func init() {
 	mstcustomerDescCustNumInst := mstcustomerFields[16].Descriptor()
 	// mstcustomer.DefaultCustNumInst holds the default value on creation for the cust_num_inst field.
 	mstcustomer.DefaultCustNumInst = mstcustomerDescCustNumInst.Default.(int)
-	// mstcustomerDescID is the schema descriptor for id field.
-	mstcustomerDescID := mstcustomerMixinFields0[0].Descriptor()
-	// mstcustomer.DefaultID holds the default value on creation for the id field.
-	mstcustomer.DefaultID = mstcustomerDescID.Default.(func() pulid.ID)
 	mstinstMixin := schema.MstInst{}.Mixin()
 	mstinstMixinFields0 := mstinstMixin[0].Fields()
 	_ = mstinstMixinFields0
-	mstinstMixinFields1 := mstinstMixin[1].Fields()
-	_ = mstinstMixinFields1
 	mstinstFields := schema.MstInst{}.Fields()
 	_ = mstinstFields
 	// mstinstDescCreatedAt is the schema descriptor for created_at field.
-	mstinstDescCreatedAt := mstinstMixinFields1[0].Descriptor()
+	mstinstDescCreatedAt := mstinstMixinFields0[0].Descriptor()
 	// mstinst.DefaultCreatedAt holds the default value on creation for the created_at field.
 	mstinst.DefaultCreatedAt = mstinstDescCreatedAt.Default.(func() time.Time)
 	// mstinstDescUpdatedAt is the schema descriptor for updated_at field.
-	mstinstDescUpdatedAt := mstinstMixinFields1[1].Descriptor()
+	mstinstDescUpdatedAt := mstinstMixinFields0[1].Descriptor()
 	// mstinst.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	mstinst.DefaultUpdatedAt = mstinstDescUpdatedAt.Default.(func() time.Time)
 	// mstinst.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
@@ -65,8 +56,4 @@ func init() {
 	mstinstDescInstName := mstinstFields[1].Descriptor()
 	// mstinst.InstNameValidator is a validator for the "inst_name" field. It is called by the builders before save.
 	mstinst.InstNameValidator = mstinstDescInstName.Validators[0].(func(string) error)
-	// mstinstDescID is the schema descriptor for id field.
-	mstinstDescID := mstinstMixinFields0[0].Descriptor()
-	// mstinst.DefaultID holds the default value on creation for the id field.
-	mstinst.DefaultID = mstinstDescID.Default.(func() pulid.ID)
 }

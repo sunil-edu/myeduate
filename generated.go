@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"myeduate/ent"
 	"myeduate/ent/customtypes"
-	"myeduate/ent/schema/pulid"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -126,8 +125,8 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AddCustomer    func(childComplexity int, token string, input ent.CreateMstCustomerInput) int
 		AddInst        func(childComplexity int, token string, input ent.CreateMstInstInput) int
-		UpdateCustomer func(childComplexity int, token string, id pulid.ID, input ent.UpdateMstCustomerInput) int
-		UpdateInst     func(childComplexity int, token string, id pulid.ID, input ent.UpdateMstInstInput) int
+		UpdateCustomer func(childComplexity int, token string, id int, input ent.UpdateMstCustomerInput) int
+		UpdateInst     func(childComplexity int, token string, id int, input ent.UpdateMstInstInput) int
 	}
 
 	PageInfo struct {
@@ -138,33 +137,33 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetCustomerByID       func(childComplexity int, token string, id pulid.ID) int
+		GetCustomerByID       func(childComplexity int, token string, id int) int
 		GetCustomerIdsByNames func(childComplexity int, token string, custNames []string) int
-		GetInstByID           func(childComplexity int, token string, id pulid.ID) int
+		GetInstByID           func(childComplexity int, token string, id int) int
 		GetInstIdsByNames     func(childComplexity int, token string, instNames []string) int
 		ListCustomers         func(childComplexity int, token string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstCustomerOrder) int
 		ListInsts             func(childComplexity int, token string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) int
-		ListInstsByCustID     func(childComplexity int, token string, customerID pulid.ID, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) int
-		Node                  func(childComplexity int, token string, id pulid.ID) int
-		Nodes                 func(childComplexity int, token string, ids []pulid.ID) int
+		ListInstsByCustID     func(childComplexity int, token string, customerID int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) int
+		Node                  func(childComplexity int, token string, id int) int
+		Nodes                 func(childComplexity int, token string, ids []int) int
 	}
 }
 
 type MutationResolver interface {
 	AddCustomer(ctx context.Context, token string, input ent.CreateMstCustomerInput) (*ent.MstCustomer, error)
-	UpdateCustomer(ctx context.Context, token string, id pulid.ID, input ent.UpdateMstCustomerInput) (*ent.MstCustomer, error)
+	UpdateCustomer(ctx context.Context, token string, id int, input ent.UpdateMstCustomerInput) (*ent.MstCustomer, error)
 	AddInst(ctx context.Context, token string, input ent.CreateMstInstInput) (*ent.MstInst, error)
-	UpdateInst(ctx context.Context, token string, id pulid.ID, input ent.UpdateMstInstInput) (*ent.MstInst, error)
+	UpdateInst(ctx context.Context, token string, id int, input ent.UpdateMstInstInput) (*ent.MstInst, error)
 }
 type QueryResolver interface {
-	Node(ctx context.Context, token string, id pulid.ID) (ent.Noder, error)
-	Nodes(ctx context.Context, token string, ids []pulid.ID) ([]ent.Noder, error)
+	Node(ctx context.Context, token string, id int) (ent.Noder, error)
+	Nodes(ctx context.Context, token string, ids []int) ([]ent.Noder, error)
 	ListCustomers(ctx context.Context, token string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstCustomerOrder) (*ent.MstCustomerConnection, error)
-	GetCustomerByID(ctx context.Context, token string, id pulid.ID) (*ent.MstCustomer, error)
+	GetCustomerByID(ctx context.Context, token string, id int) (*ent.MstCustomer, error)
 	GetCustomerIdsByNames(ctx context.Context, token string, custNames []string) ([]*CustData, error)
 	ListInsts(ctx context.Context, token string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) (*ent.MstInstConnection, error)
-	ListInstsByCustID(ctx context.Context, token string, customerID pulid.ID, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) (*ent.MstInstConnection, error)
-	GetInstByID(ctx context.Context, token string, id pulid.ID) (*ent.MstInst, error)
+	ListInstsByCustID(ctx context.Context, token string, customerID int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) (*ent.MstInstConnection, error)
+	GetInstByID(ctx context.Context, token string, id int) (*ent.MstInst, error)
 	GetInstIdsByNames(ctx context.Context, token string, instNames []string) ([]*InstData, error)
 }
 
@@ -581,7 +580,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateCustomer(childComplexity, args["token"].(string), args["id"].(pulid.ID), args["input"].(ent.UpdateMstCustomerInput)), true
+		return e.complexity.Mutation.UpdateCustomer(childComplexity, args["token"].(string), args["id"].(int), args["input"].(ent.UpdateMstCustomerInput)), true
 
 	case "Mutation.UpdateInst":
 		if e.complexity.Mutation.UpdateInst == nil {
@@ -593,7 +592,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateInst(childComplexity, args["token"].(string), args["id"].(pulid.ID), args["input"].(ent.UpdateMstInstInput)), true
+		return e.complexity.Mutation.UpdateInst(childComplexity, args["token"].(string), args["id"].(int), args["input"].(ent.UpdateMstInstInput)), true
 
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
@@ -633,7 +632,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetCustomerByID(childComplexity, args["token"].(string), args["id"].(pulid.ID)), true
+		return e.complexity.Query.GetCustomerByID(childComplexity, args["token"].(string), args["id"].(int)), true
 
 	case "Query.GetCustomerIdsByNames":
 		if e.complexity.Query.GetCustomerIdsByNames == nil {
@@ -657,7 +656,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetInstByID(childComplexity, args["token"].(string), args["id"].(pulid.ID)), true
+		return e.complexity.Query.GetInstByID(childComplexity, args["token"].(string), args["id"].(int)), true
 
 	case "Query.GetInstIdsByNames":
 		if e.complexity.Query.GetInstIdsByNames == nil {
@@ -705,7 +704,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.ListInstsByCustID(childComplexity, args["token"].(string), args["customer_id"].(pulid.ID), args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.MstInstOrder)), true
+		return e.complexity.Query.ListInstsByCustID(childComplexity, args["token"].(string), args["customer_id"].(int), args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.MstInstOrder)), true
 
 	case "Query.node":
 		if e.complexity.Query.Node == nil {
@@ -717,7 +716,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Node(childComplexity, args["token"].(string), args["id"].(pulid.ID)), true
+		return e.complexity.Query.Node(childComplexity, args["token"].(string), args["id"].(int)), true
 
 	case "Query.nodes":
 		if e.complexity.Query.Nodes == nil {
@@ -729,7 +728,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Nodes(childComplexity, args["token"].(string), args["ids"].([]pulid.ID)), true
+		return e.complexity.Query.Nodes(childComplexity, args["token"].(string), args["ids"].([]int)), true
 
 	}
 	return 0, false
@@ -1868,10 +1867,10 @@ func (ec *executionContext) field_Mutation_UpdateCustomer_args(ctx context.Conte
 		}
 	}
 	args["token"] = arg0
-	var arg1 pulid.ID
+	var arg1 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg1, err = ec.unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, tmp)
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1901,10 +1900,10 @@ func (ec *executionContext) field_Mutation_UpdateInst_args(ctx context.Context, 
 		}
 	}
 	args["token"] = arg0
-	var arg1 pulid.ID
+	var arg1 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg1, err = ec.unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, tmp)
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1934,10 +1933,10 @@ func (ec *executionContext) field_Query_GetCustomerByID_args(ctx context.Context
 		}
 	}
 	args["token"] = arg0
-	var arg1 pulid.ID
+	var arg1 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg1, err = ec.unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, tmp)
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1982,10 +1981,10 @@ func (ec *executionContext) field_Query_GetInstByID_args(ctx context.Context, ra
 		}
 	}
 	args["token"] = arg0
-	var arg1 pulid.ID
+	var arg1 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg1, err = ec.unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, tmp)
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2090,10 +2089,10 @@ func (ec *executionContext) field_Query_ListInstsByCustID_args(ctx context.Conte
 		}
 	}
 	args["token"] = arg0
-	var arg1 pulid.ID
+	var arg1 int
 	if tmp, ok := rawArgs["customer_id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customer_id"))
-		arg1, err = ec.unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, tmp)
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2234,10 +2233,10 @@ func (ec *executionContext) field_Query_node_args(ctx context.Context, rawArgs m
 		}
 	}
 	args["token"] = arg0
-	var arg1 pulid.ID
+	var arg1 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg1, err = ec.unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, tmp)
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2258,10 +2257,10 @@ func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs 
 		}
 	}
 	args["token"] = arg0
-	var arg1 []pulid.ID
+	var arg1 []int
 	if tmp, ok := rawArgs["ids"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ids"))
-		arg1, err = ec.unmarshalNID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, tmp)
+		arg1, err = ec.unmarshalNID2ᚕintᚄ(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2388,9 +2387,9 @@ func (ec *executionContext) _CustData_id(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.(pulid.ID)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _InstData_Inst_name(ctx context.Context, field graphql.CollectedField, obj *InstData) (ret graphql.Marshaler) {
@@ -2458,9 +2457,9 @@ func (ec *executionContext) _InstData_id(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.(pulid.ID)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _MstCustomer_id(ctx context.Context, field graphql.CollectedField, obj *ent.MstCustomer) (ret graphql.Marshaler) {
@@ -2493,9 +2492,9 @@ func (ec *executionContext) _MstCustomer_id(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(pulid.ID)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _MstCustomer_cust_code(ctx context.Context, field graphql.CollectedField, obj *ent.MstCustomer) (ret graphql.Marshaler) {
@@ -3327,9 +3326,9 @@ func (ec *executionContext) _MstInst_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(pulid.ID)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _MstInst_inst_code(ctx context.Context, field graphql.CollectedField, obj *ent.MstInst) (ret graphql.Marshaler) {
@@ -4198,7 +4197,7 @@ func (ec *executionContext) _Mutation_UpdateCustomer(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateCustomer(rctx, args["token"].(string), args["id"].(pulid.ID), args["input"].(ent.UpdateMstCustomerInput))
+		return ec.resolvers.Mutation().UpdateCustomer(rctx, args["token"].(string), args["id"].(int), args["input"].(ent.UpdateMstCustomerInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4282,7 +4281,7 @@ func (ec *executionContext) _Mutation_UpdateInst(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateInst(rctx, args["token"].(string), args["id"].(pulid.ID), args["input"].(ent.UpdateMstInstInput))
+		return ec.resolvers.Mutation().UpdateInst(rctx, args["token"].(string), args["id"].(int), args["input"].(ent.UpdateMstInstInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4458,7 +4457,7 @@ func (ec *executionContext) _Query_node(ctx context.Context, field graphql.Colle
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Node(rctx, args["token"].(string), args["id"].(pulid.ID))
+		return ec.resolvers.Query().Node(rctx, args["token"].(string), args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4497,7 +4496,7 @@ func (ec *executionContext) _Query_nodes(ctx context.Context, field graphql.Coll
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Nodes(rctx, args["token"].(string), args["ids"].([]pulid.ID))
+		return ec.resolvers.Query().Nodes(rctx, args["token"].(string), args["ids"].([]int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4578,7 +4577,7 @@ func (ec *executionContext) _Query_GetCustomerByID(ctx context.Context, field gr
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetCustomerByID(rctx, args["token"].(string), args["id"].(pulid.ID))
+		return ec.resolvers.Query().GetCustomerByID(rctx, args["token"].(string), args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4701,7 +4700,7 @@ func (ec *executionContext) _Query_ListInstsByCustID(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ListInstsByCustID(rctx, args["token"].(string), args["customer_id"].(pulid.ID), args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.MstInstOrder))
+		return ec.resolvers.Query().ListInstsByCustID(rctx, args["token"].(string), args["customer_id"].(int), args["after"].(*ent.Cursor), args["first"].(*int), args["before"].(*ent.Cursor), args["last"].(*int), args["orderBy"].(*ent.MstInstOrder))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4740,7 +4739,7 @@ func (ec *executionContext) _Query_GetInstByID(ctx context.Context, field graphq
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetInstByID(rctx, args["token"].(string), args["id"].(pulid.ID))
+		return ec.resolvers.Query().GetInstByID(rctx, args["token"].(string), args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8225,7 +8224,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8233,7 +8232,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			it.IDNeq, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDNeq, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8241,7 +8240,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			it.IDIn, err = ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8249,7 +8248,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			it.IDNotIn, err = ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8257,7 +8256,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			it.IDGt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDGt, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8265,7 +8264,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			it.IDGte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDGte, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8273,7 +8272,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			it.IDLt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDLt, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8281,7 +8280,7 @@ func (ec *executionContext) unmarshalInputMstCustomerWhereInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			it.IDLte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDLte, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10263,7 +10262,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerID"))
-			it.CustomerID, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerID, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10271,7 +10270,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDNEQ"))
-			it.CustomerIDNeq, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDNeq, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10279,7 +10278,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDIn"))
-			it.CustomerIDIn, err = ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
+			it.CustomerIDIn, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10287,7 +10286,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDNotIn"))
-			it.CustomerIDNotIn, err = ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
+			it.CustomerIDNotIn, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10295,7 +10294,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDGT"))
-			it.CustomerIDGt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDGt, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10303,7 +10302,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDGTE"))
-			it.CustomerIDGte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDGte, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10311,7 +10310,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDLT"))
-			it.CustomerIDLt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDLt, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10319,7 +10318,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDLTE"))
-			it.CustomerIDLte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDLte, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10327,7 +10326,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDContains"))
-			it.CustomerIDContains, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDContains, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10335,7 +10334,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDHasPrefix"))
-			it.CustomerIDHasPrefix, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDHasPrefix, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10343,7 +10342,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDHasSuffix"))
-			it.CustomerIDHasSuffix, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDHasSuffix, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10351,7 +10350,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDEqualFold"))
-			it.CustomerIDEqualFold, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDEqualFold, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10359,7 +10358,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerIDContainsFold"))
-			it.CustomerIDContainsFold, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.CustomerIDContainsFold, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10367,7 +10366,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10375,7 +10374,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			it.IDNeq, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDNeq, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10383,7 +10382,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			it.IDIn, err = ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10391,7 +10390,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			it.IDNotIn, err = ec.unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10399,7 +10398,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			it.IDGt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDGt, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10407,7 +10406,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			it.IDGte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDGte, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10415,7 +10414,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			it.IDLt, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDLt, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10423,7 +10422,7 @@ func (ec *executionContext) unmarshalInputMstInstWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			it.IDLte, err = ec.unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx, v)
+			it.IDLte, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -12324,26 +12323,31 @@ func (ec *executionContext) marshalNCustData2ᚖmyeduateᚐCustData(ctx context.
 	return ec._CustData(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx context.Context, v interface{}) (pulid.ID, error) {
-	var res pulid.ID
-	err := res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalNID2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx context.Context, sel ast.SelectionSet, v pulid.ID) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalNID2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
 }
 
-func (ec *executionContext) unmarshalNID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx context.Context, v interface{}) ([]pulid.ID, error) {
+func (ec *executionContext) unmarshalNID2ᚕintᚄ(ctx context.Context, v interface{}) ([]int, error) {
 	var vSlice []interface{}
 	if v != nil {
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]pulid.ID, len(vSlice))
+	res := make([]int, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNID2int(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -12351,10 +12355,10 @@ func (ec *executionContext) unmarshalNID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐID
 	return res, nil
 }
 
-func (ec *executionContext) marshalNID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx context.Context, sel ast.SelectionSet, v []pulid.ID) graphql.Marshaler {
+func (ec *executionContext) marshalNID2ᚕintᚄ(ctx context.Context, sel ast.SelectionSet, v []int) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, sel, v[i])
+		ret[i] = ec.marshalNID2int(ctx, sel, v[i])
 	}
 
 	for _, e := range ret {
@@ -12912,7 +12916,7 @@ func (ec *executionContext) marshalOCursor2ᚖmyeduateᚋentᚐCursor(ctx contex
 	return v
 }
 
-func (ec *executionContext) unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx context.Context, v interface{}) ([]pulid.ID, error) {
+func (ec *executionContext) unmarshalOID2ᚕintᚄ(ctx context.Context, v interface{}) ([]int, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -12921,10 +12925,10 @@ func (ec *executionContext) unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐID
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]pulid.ID, len(vSlice))
+	res := make([]int, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNID2int(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -12932,13 +12936,13 @@ func (ec *executionContext) unmarshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐID
 	return res, nil
 }
 
-func (ec *executionContext) marshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐIDᚄ(ctx context.Context, sel ast.SelectionSet, v []pulid.ID) graphql.Marshaler {
+func (ec *executionContext) marshalOID2ᚕintᚄ(ctx context.Context, sel ast.SelectionSet, v []int) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNID2myeduateᚋentᚋschemaᚋpulidᚐID(ctx, sel, v[i])
+		ret[i] = ec.marshalNID2int(ctx, sel, v[i])
 	}
 
 	for _, e := range ret {
@@ -12950,20 +12954,20 @@ func (ec *executionContext) marshalOID2ᚕmyeduateᚋentᚋschemaᚋpulidᚐID�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx context.Context, v interface{}) (*pulid.ID, error) {
+func (ec *executionContext) unmarshalOID2ᚖint(ctx context.Context, v interface{}) (*int, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(pulid.ID)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOID2ᚖmyeduateᚋentᚋschemaᚋpulidᚐID(ctx context.Context, sel ast.SelectionSet, v *pulid.ID) graphql.Marshaler {
+func (ec *executionContext) marshalOID2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	res := graphql.MarshalInt(*v)
+	return res
 }
 
 func (ec *executionContext) unmarshalOInt2ᚕintᚄ(ctx context.Context, v interface{}) ([]int, error) {

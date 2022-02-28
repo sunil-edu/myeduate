@@ -11,7 +11,6 @@ import (
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/predicate"
-	"myeduate/ent/schema/pulid"
 	"sync"
 	"time"
 
@@ -36,7 +35,7 @@ type MstCustomerMutation struct {
 	config
 	op                  Op
 	typ                 string
-	id                  *pulid.ID
+	id                  *int
 	created_at          *time.Time
 	updated_at          *time.Time
 	cust_code           *string
@@ -59,8 +58,8 @@ type MstCustomerMutation struct {
 	addcust_num_inst    *int
 	cust_time_zone      *time.Time
 	clearedFields       map[string]struct{}
-	_Cust2Inst          map[pulid.ID]struct{}
-	removed_Cust2Inst   map[pulid.ID]struct{}
+	_Cust2Inst          map[int]struct{}
+	removed_Cust2Inst   map[int]struct{}
 	cleared_Cust2Inst   bool
 	done                bool
 	oldValue            func(context.Context) (*MstCustomer, error)
@@ -87,7 +86,7 @@ func newMstCustomerMutation(c config, op Op, opts ...mstcustomerOption) *MstCust
 }
 
 // withMstCustomerID sets the ID field of the mutation.
-func withMstCustomerID(id pulid.ID) mstcustomerOption {
+func withMstCustomerID(id int) mstcustomerOption {
 	return func(m *MstCustomerMutation) {
 		var (
 			err   error
@@ -137,15 +136,9 @@ func (m MstCustomerMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of MstCustomer entities.
-func (m *MstCustomerMutation) SetID(id pulid.ID) {
-	m.id = &id
-}
-
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *MstCustomerMutation) ID() (id pulid.ID, exists bool) {
+func (m *MstCustomerMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -156,12 +149,12 @@ func (m *MstCustomerMutation) ID() (id pulid.ID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *MstCustomerMutation) IDs(ctx context.Context) ([]pulid.ID, error) {
+func (m *MstCustomerMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []pulid.ID{id}, nil
+			return []int{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -912,9 +905,9 @@ func (m *MstCustomerMutation) ResetCustTimeZone() {
 }
 
 // AddCust2InstIDs adds the "Cust2Inst" edge to the MstInst entity by ids.
-func (m *MstCustomerMutation) AddCust2InstIDs(ids ...pulid.ID) {
+func (m *MstCustomerMutation) AddCust2InstIDs(ids ...int) {
 	if m._Cust2Inst == nil {
-		m._Cust2Inst = make(map[pulid.ID]struct{})
+		m._Cust2Inst = make(map[int]struct{})
 	}
 	for i := range ids {
 		m._Cust2Inst[ids[i]] = struct{}{}
@@ -932,9 +925,9 @@ func (m *MstCustomerMutation) Cust2InstCleared() bool {
 }
 
 // RemoveCust2InstIDs removes the "Cust2Inst" edge to the MstInst entity by IDs.
-func (m *MstCustomerMutation) RemoveCust2InstIDs(ids ...pulid.ID) {
+func (m *MstCustomerMutation) RemoveCust2InstIDs(ids ...int) {
 	if m.removed_Cust2Inst == nil {
-		m.removed_Cust2Inst = make(map[pulid.ID]struct{})
+		m.removed_Cust2Inst = make(map[int]struct{})
 	}
 	for i := range ids {
 		delete(m._Cust2Inst, ids[i])
@@ -943,7 +936,7 @@ func (m *MstCustomerMutation) RemoveCust2InstIDs(ids ...pulid.ID) {
 }
 
 // RemovedCust2Inst returns the removed IDs of the "Cust2Inst" edge to the MstInst entity.
-func (m *MstCustomerMutation) RemovedCust2InstIDs() (ids []pulid.ID) {
+func (m *MstCustomerMutation) RemovedCust2InstIDs() (ids []int) {
 	for id := range m.removed_Cust2Inst {
 		ids = append(ids, id)
 	}
@@ -951,7 +944,7 @@ func (m *MstCustomerMutation) RemovedCust2InstIDs() (ids []pulid.ID) {
 }
 
 // Cust2InstIDs returns the "Cust2Inst" edge IDs in the mutation.
-func (m *MstCustomerMutation) Cust2InstIDs() (ids []pulid.ID) {
+func (m *MstCustomerMutation) Cust2InstIDs() (ids []int) {
 	for id := range m._Cust2Inst {
 		ids = append(ids, id)
 	}
@@ -1508,7 +1501,7 @@ type MstInstMutation struct {
 	config
 	op                   Op
 	typ                  string
-	id                   *pulid.ID
+	id                   *int
 	created_at           *time.Time
 	updated_at           *time.Time
 	inst_code            *string
@@ -1530,7 +1523,7 @@ type MstInstMutation struct {
 	inst_status          *string
 	inst_time_zone       *time.Time
 	clearedFields        map[string]struct{}
-	_InstfromCust        *pulid.ID
+	_InstfromCust        *int
 	cleared_InstfromCust bool
 	done                 bool
 	oldValue             func(context.Context) (*MstInst, error)
@@ -1557,7 +1550,7 @@ func newMstInstMutation(c config, op Op, opts ...mstinstOption) *MstInstMutation
 }
 
 // withMstInstID sets the ID field of the mutation.
-func withMstInstID(id pulid.ID) mstinstOption {
+func withMstInstID(id int) mstinstOption {
 	return func(m *MstInstMutation) {
 		var (
 			err   error
@@ -1607,15 +1600,9 @@ func (m MstInstMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of MstInst entities.
-func (m *MstInstMutation) SetID(id pulid.ID) {
-	m.id = &id
-}
-
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *MstInstMutation) ID() (id pulid.ID, exists bool) {
+func (m *MstInstMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1626,12 +1613,12 @@ func (m *MstInstMutation) ID() (id pulid.ID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *MstInstMutation) IDs(ctx context.Context) ([]pulid.ID, error) {
+func (m *MstInstMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []pulid.ID{id}, nil
+			return []int{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -2362,12 +2349,12 @@ func (m *MstInstMutation) ResetInstTimeZone() {
 }
 
 // SetCustomerID sets the "customer_id" field.
-func (m *MstInstMutation) SetCustomerID(s string) {
-	m._InstfromCust = &s
+func (m *MstInstMutation) SetCustomerID(i int) {
+	m._InstfromCust = &i
 }
 
 // CustomerID returns the value of the "customer_id" field in the mutation.
-func (m *MstInstMutation) CustomerID() (r string, exists bool) {
+func (m *MstInstMutation) CustomerID() (r int, exists bool) {
 	v := m._InstfromCust
 	if v == nil {
 		return
@@ -2378,7 +2365,7 @@ func (m *MstInstMutation) CustomerID() (r string, exists bool) {
 // OldCustomerID returns the old "customer_id" field's value of the MstInst entity.
 // If the MstInst object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MstInstMutation) OldCustomerID(ctx context.Context) (v string, err error) {
+func (m *MstInstMutation) OldCustomerID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCustomerID is only allowed on UpdateOne operations")
 	}
@@ -2398,7 +2385,7 @@ func (m *MstInstMutation) ResetCustomerID() {
 }
 
 // SetInstfromCustID sets the "InstfromCust" edge to the MstCustomer entity by id.
-func (m *MstInstMutation) SetInstfromCustID(id pulid.ID) {
+func (m *MstInstMutation) SetInstfromCustID(id int) {
 	m._InstfromCust = &id
 }
 
@@ -2413,7 +2400,7 @@ func (m *MstInstMutation) InstfromCustCleared() bool {
 }
 
 // InstfromCustID returns the "InstfromCust" edge ID in the mutation.
-func (m *MstInstMutation) InstfromCustID() (id pulid.ID, exists bool) {
+func (m *MstInstMutation) InstfromCustID() (id int, exists bool) {
 	if m._InstfromCust != nil {
 		return *m._InstfromCust, true
 	}
@@ -2423,7 +2410,7 @@ func (m *MstInstMutation) InstfromCustID() (id pulid.ID, exists bool) {
 // InstfromCustIDs returns the "InstfromCust" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // InstfromCustID instead. It exists only for internal usage by the builders.
-func (m *MstInstMutation) InstfromCustIDs() (ids []pulid.ID) {
+func (m *MstInstMutation) InstfromCustIDs() (ids []int) {
 	if id := m._InstfromCust; id != nil {
 		ids = append(ids, *id)
 	}
@@ -2770,7 +2757,7 @@ func (m *MstInstMutation) SetField(name string, value ent.Value) error {
 		m.SetInstTimeZone(v)
 		return nil
 	case mstinst.FieldCustomerID:
-		v, ok := value.(string)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -2783,13 +2770,16 @@ func (m *MstInstMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *MstInstMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *MstInstMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
 	return nil, false
 }
 

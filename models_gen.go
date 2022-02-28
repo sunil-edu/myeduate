@@ -4,18 +4,17 @@ package myeduate
 
 import (
 	"myeduate/ent/customtypes"
-	"myeduate/ent/schema/pulid"
 	"time"
 )
 
 type CustData struct {
-	CustomerName string   `json:"customer_name"`
-	ID           pulid.ID `json:"id"`
+	CustomerName string `json:"customer_name"`
+	ID           int    `json:"id"`
 }
 
 type InstData struct {
-	InstName string   `json:"Inst_name"`
-	ID       pulid.ID `json:"id"`
+	InstName string `json:"Inst_name"`
+	ID       int    `json:"id"`
 }
 
 // MstCustomerWhereInput is used for filtering MstCustomer objects.
@@ -276,14 +275,14 @@ type MstCustomerWhereInput struct {
 	CustTimeZoneLt    *time.Time   `json:"custTimeZoneLT"`
 	CustTimeZoneLte   *time.Time   `json:"custTimeZoneLTE"`
 	// id field predicates
-	ID      *pulid.ID  `json:"id"`
-	IDNeq   *pulid.ID  `json:"idNEQ"`
-	IDIn    []pulid.ID `json:"idIn"`
-	IDNotIn []pulid.ID `json:"idNotIn"`
-	IDGt    *pulid.ID  `json:"idGT"`
-	IDGte   *pulid.ID  `json:"idGTE"`
-	IDLt    *pulid.ID  `json:"idLT"`
-	IDLte   *pulid.ID  `json:"idLTE"`
+	ID      *int  `json:"id"`
+	IDNeq   *int  `json:"idNEQ"`
+	IDIn    []int `json:"idIn"`
+	IDNotIn []int `json:"idNotIn"`
+	IDGt    *int  `json:"idGT"`
+	IDGte   *int  `json:"idGTE"`
+	IDLt    *int  `json:"idLT"`
+	IDLte   *int  `json:"idLTE"`
 	// Cust2Inst edge predicates
 	HasCust2Inst     *bool                `json:"hasCust2Inst"`
 	HasCust2InstWith []*MstInstWhereInput `json:"hasCust2InstWith"`
@@ -552,28 +551,28 @@ type MstInstWhereInput struct {
 	InstTimeZoneLt    *time.Time   `json:"instTimeZoneLT"`
 	InstTimeZoneLte   *time.Time   `json:"instTimeZoneLTE"`
 	// customer_id field predicates
-	CustomerID             *pulid.ID  `json:"customerID"`
-	CustomerIDNeq          *pulid.ID  `json:"customerIDNEQ"`
-	CustomerIDIn           []pulid.ID `json:"customerIDIn"`
-	CustomerIDNotIn        []pulid.ID `json:"customerIDNotIn"`
-	CustomerIDGt           *pulid.ID  `json:"customerIDGT"`
-	CustomerIDGte          *pulid.ID  `json:"customerIDGTE"`
-	CustomerIDLt           *pulid.ID  `json:"customerIDLT"`
-	CustomerIDLte          *pulid.ID  `json:"customerIDLTE"`
-	CustomerIDContains     *pulid.ID  `json:"customerIDContains"`
-	CustomerIDHasPrefix    *pulid.ID  `json:"customerIDHasPrefix"`
-	CustomerIDHasSuffix    *pulid.ID  `json:"customerIDHasSuffix"`
-	CustomerIDEqualFold    *pulid.ID  `json:"customerIDEqualFold"`
-	CustomerIDContainsFold *pulid.ID  `json:"customerIDContainsFold"`
+	CustomerID             *int  `json:"customerID"`
+	CustomerIDNeq          *int  `json:"customerIDNEQ"`
+	CustomerIDIn           []int `json:"customerIDIn"`
+	CustomerIDNotIn        []int `json:"customerIDNotIn"`
+	CustomerIDGt           *int  `json:"customerIDGT"`
+	CustomerIDGte          *int  `json:"customerIDGTE"`
+	CustomerIDLt           *int  `json:"customerIDLT"`
+	CustomerIDLte          *int  `json:"customerIDLTE"`
+	CustomerIDContains     *int  `json:"customerIDContains"`
+	CustomerIDHasPrefix    *int  `json:"customerIDHasPrefix"`
+	CustomerIDHasSuffix    *int  `json:"customerIDHasSuffix"`
+	CustomerIDEqualFold    *int  `json:"customerIDEqualFold"`
+	CustomerIDContainsFold *int  `json:"customerIDContainsFold"`
 	// id field predicates
-	ID      *pulid.ID  `json:"id"`
-	IDNeq   *pulid.ID  `json:"idNEQ"`
-	IDIn    []pulid.ID `json:"idIn"`
-	IDNotIn []pulid.ID `json:"idNotIn"`
-	IDGt    *pulid.ID  `json:"idGT"`
-	IDGte   *pulid.ID  `json:"idGTE"`
-	IDLt    *pulid.ID  `json:"idLT"`
-	IDLte   *pulid.ID  `json:"idLTE"`
+	ID      *int  `json:"id"`
+	IDNeq   *int  `json:"idNEQ"`
+	IDIn    []int `json:"idIn"`
+	IDNotIn []int `json:"idNotIn"`
+	IDGt    *int  `json:"idGT"`
+	IDGte   *int  `json:"idGTE"`
+	IDLt    *int  `json:"idLT"`
+	IDLte   *int  `json:"idLTE"`
 	// InstfromCust edge predicates
 	HasInstfromCust     *bool                    `json:"hasInstfromCust"`
 	HasInstfromCustWith []*MstCustomerWhereInput `json:"hasInstfromCustWith"`

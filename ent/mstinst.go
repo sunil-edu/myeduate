@@ -8,7 +8,6 @@ import (
 	"myeduate/ent/customtypes"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
-	"myeduate/ent/schema/pulid"
 	"strings"
 	"time"
 
@@ -19,7 +18,7 @@ import (
 type MstInst struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID pulid.ID `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -61,7 +60,7 @@ type MstInst struct {
 	// InstTimeZone holds the value of the "inst_time_zone" field.
 	InstTimeZone time.Time `json:"inst_time_zone,omitempty"`
 	// CustomerID holds the value of the "customer_id" field.
-	CustomerID string `json:"customer_id,omitempty"`
+	CustomerID int `json:"customer_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MstInstQuery when eager-loading is set.
 	Edges MstInstEdges `json:"edges"`
@@ -95,9 +94,9 @@ func (*MstInst) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case mstinst.FieldID:
-			values[i] = new(pulid.ID)
-		case mstinst.FieldInstCode, mstinst.FieldInstName, mstinst.FieldInstShortName, mstinst.FieldInstAddress, mstinst.FieldInstPlace, mstinst.FieldInstState, mstinst.FieldInstPin, mstinst.FieldInstContactPerson, mstinst.FieldInstPhone, mstinst.FieldInstEmail, mstinst.FieldInstMobile, mstinst.FieldInstURL, mstinst.FieldInstBanner1, mstinst.FieldInstBanner2, mstinst.FieldInstLogoURL, mstinst.FieldInstIsActive, mstinst.FieldInstStatus, mstinst.FieldCustomerID:
+		case mstinst.FieldID, mstinst.FieldCustomerID:
+			values[i] = new(sql.NullInt64)
+		case mstinst.FieldInstCode, mstinst.FieldInstName, mstinst.FieldInstShortName, mstinst.FieldInstAddress, mstinst.FieldInstPlace, mstinst.FieldInstState, mstinst.FieldInstPin, mstinst.FieldInstContactPerson, mstinst.FieldInstPhone, mstinst.FieldInstEmail, mstinst.FieldInstMobile, mstinst.FieldInstURL, mstinst.FieldInstBanner1, mstinst.FieldInstBanner2, mstinst.FieldInstLogoURL, mstinst.FieldInstIsActive, mstinst.FieldInstStatus:
 			values[i] = new(sql.NullString)
 		case mstinst.FieldCreatedAt, mstinst.FieldUpdatedAt, mstinst.FieldInstTimeZone:
 			values[i] = new(sql.NullTime)
@@ -117,11 +116,11 @@ func (mi *MstInst) assignValues(columns []string, values []interface{}) error {
 	for i := range columns {
 		switch columns[i] {
 		case mstinst.FieldID:
-			if value, ok := values[i].(*pulid.ID); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value != nil {
-				mi.ID = *value
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
 			}
+			mi.ID = int(value.Int64)
 		case mstinst.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -243,10 +242,10 @@ func (mi *MstInst) assignValues(columns []string, values []interface{}) error {
 				mi.InstTimeZone = value.Time
 			}
 		case mstinst.FieldCustomerID:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field customer_id", values[i])
 			} else if value.Valid {
-				mi.CustomerID = value.String
+				mi.CustomerID = int(value.Int64)
 			}
 		}
 	}
@@ -322,7 +321,7 @@ func (mi *MstInst) String() string {
 	builder.WriteString(", inst_time_zone=")
 	builder.WriteString(mi.InstTimeZone.Format(time.ANSIC))
 	builder.WriteString(", customer_id=")
-	builder.WriteString(mi.CustomerID)
+	builder.WriteString(fmt.Sprintf("%v", mi.CustomerID))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -10,7 +10,6 @@ import (
 	"myeduate/ent/customtypes"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
-	"myeduate/ent/schema/pulid"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -176,29 +175,15 @@ func (mcc *MstCustomerCreate) SetCustTimeZone(t time.Time) *MstCustomerCreate {
 	return mcc
 }
 
-// SetID sets the "id" field.
-func (mcc *MstCustomerCreate) SetID(pu pulid.ID) *MstCustomerCreate {
-	mcc.mutation.SetID(pu)
-	return mcc
-}
-
-// SetNillableID sets the "id" field if the given value is not nil.
-func (mcc *MstCustomerCreate) SetNillableID(pu *pulid.ID) *MstCustomerCreate {
-	if pu != nil {
-		mcc.SetID(*pu)
-	}
-	return mcc
-}
-
 // AddCust2InstIDs adds the "Cust2Inst" edge to the MstInst entity by IDs.
-func (mcc *MstCustomerCreate) AddCust2InstIDs(ids ...pulid.ID) *MstCustomerCreate {
+func (mcc *MstCustomerCreate) AddCust2InstIDs(ids ...int) *MstCustomerCreate {
 	mcc.mutation.AddCust2InstIDs(ids...)
 	return mcc
 }
 
 // AddCust2Inst adds the "Cust2Inst" edges to the MstInst entity.
 func (mcc *MstCustomerCreate) AddCust2Inst(m ...*MstInst) *MstCustomerCreate {
-	ids := make([]pulid.ID, len(m))
+	ids := make([]int, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -292,10 +277,6 @@ func (mcc *MstCustomerCreate) defaults() {
 		v := mstcustomer.DefaultCustNumInst
 		mcc.mutation.SetCustNumInst(v)
 	}
-	if _, ok := mcc.mutation.ID(); !ok {
-		v := mstcustomer.DefaultID()
-		mcc.mutation.SetID(v)
-	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -381,13 +362,8 @@ func (mcc *MstCustomerCreate) sqlSave(ctx context.Context) (*MstCustomer, error)
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(*pulid.ID); ok {
-			_node.ID = *id
-		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
-			return nil, err
-		}
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	return _node, nil
 }
 
@@ -397,15 +373,11 @@ func (mcc *MstCustomerCreate) createSpec() (*MstCustomer, *sqlgraph.CreateSpec) 
 		_spec = &sqlgraph.CreateSpec{
 			Table: mstcustomer.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeString,
+				Type:   field.TypeInt,
 				Column: mstcustomer.FieldID,
 			},
 		}
 	)
-	if id, ok := mcc.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = &id
-	}
 	if value, ok := mcc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -575,7 +547,7 @@ func (mcc *MstCustomerCreate) createSpec() (*MstCustomer, *sqlgraph.CreateSpec) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeString,
+					Type:   field.TypeInt,
 					Column: mstinst.FieldID,
 				},
 			},
@@ -630,6 +602,10 @@ func (mccb *MstCustomerCreateBulk) Save(ctx context.Context) ([]*MstCustomer, er
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
+				if specs[i].ID.Value != nil {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
+				}
 				return nodes[i], nil
 			})
 			for i := len(builder.hooks) - 1; i >= 0; i-- {

@@ -11,7 +11,6 @@ import (
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/predicate"
-	"myeduate/ent/schema/pulid"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -112,8 +111,8 @@ func (miq *MstInstQuery) FirstX(ctx context.Context) *MstInst {
 
 // FirstID returns the first MstInst ID from the query.
 // Returns a *NotFoundError when no MstInst ID was found.
-func (miq *MstInstQuery) FirstID(ctx context.Context) (id pulid.ID, err error) {
-	var ids []pulid.ID
+func (miq *MstInstQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = miq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -125,7 +124,7 @@ func (miq *MstInstQuery) FirstID(ctx context.Context) (id pulid.ID, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (miq *MstInstQuery) FirstIDX(ctx context.Context) pulid.ID {
+func (miq *MstInstQuery) FirstIDX(ctx context.Context) int {
 	id, err := miq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -163,8 +162,8 @@ func (miq *MstInstQuery) OnlyX(ctx context.Context) *MstInst {
 // OnlyID is like Only, but returns the only MstInst ID in the query.
 // Returns a *NotSingularError when exactly one MstInst ID is not found.
 // Returns a *NotFoundError when no entities are found.
-func (miq *MstInstQuery) OnlyID(ctx context.Context) (id pulid.ID, err error) {
-	var ids []pulid.ID
+func (miq *MstInstQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = miq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -180,7 +179,7 @@ func (miq *MstInstQuery) OnlyID(ctx context.Context) (id pulid.ID, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (miq *MstInstQuery) OnlyIDX(ctx context.Context) pulid.ID {
+func (miq *MstInstQuery) OnlyIDX(ctx context.Context) int {
 	id, err := miq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -206,8 +205,8 @@ func (miq *MstInstQuery) AllX(ctx context.Context) []*MstInst {
 }
 
 // IDs executes the query and returns a list of MstInst IDs.
-func (miq *MstInstQuery) IDs(ctx context.Context) ([]pulid.ID, error) {
-	var ids []pulid.ID
+func (miq *MstInstQuery) IDs(ctx context.Context) ([]int, error) {
+	var ids []int
 	if err := miq.Select(mstinst.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -215,7 +214,7 @@ func (miq *MstInstQuery) IDs(ctx context.Context) ([]pulid.ID, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (miq *MstInstQuery) IDsX(ctx context.Context) []pulid.ID {
+func (miq *MstInstQuery) IDsX(ctx context.Context) []int {
 	ids, err := miq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -380,8 +379,8 @@ func (miq *MstInstQuery) sqlAll(ctx context.Context) ([]*MstInst, error) {
 	}
 
 	if query := miq.withInstfromCust; query != nil {
-		ids := make([]pulid.ID, 0, len(nodes))
-		nodeids := make(map[pulid.ID][]*MstInst)
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*MstInst)
 		for i := range nodes {
 			fk := nodes[i].CustomerID
 			if _, ok := nodeids[fk]; !ok {
@@ -434,7 +433,7 @@ func (miq *MstInstQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   mstinst.Table,
 			Columns: mstinst.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeString,
+				Type:   field.TypeInt,
 				Column: mstinst.FieldID,
 			},
 		},
