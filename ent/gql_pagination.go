@@ -9,8 +9,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"myeduate/ent/authparent"
+	"myeduate/ent/authstaff"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
+	"myeduate/ent/mststudent"
 	"strconv"
 	"strings"
 
@@ -233,6 +236,460 @@ const (
 	pageInfoField   = "pageInfo"
 	totalCountField = "totalCount"
 )
+
+// AuthParentEdge is the edge representation of AuthParent.
+type AuthParentEdge struct {
+	Node   *AuthParent `json:"node"`
+	Cursor Cursor      `json:"cursor"`
+}
+
+// AuthParentConnection is the connection containing edges to AuthParent.
+type AuthParentConnection struct {
+	Edges      []*AuthParentEdge `json:"edges"`
+	PageInfo   PageInfo          `json:"pageInfo"`
+	TotalCount int               `json:"totalCount"`
+}
+
+// AuthParentPaginateOption enables pagination customization.
+type AuthParentPaginateOption func(*authParentPager) error
+
+// WithAuthParentOrder configures pagination ordering.
+func WithAuthParentOrder(order *AuthParentOrder) AuthParentPaginateOption {
+	if order == nil {
+		order = DefaultAuthParentOrder
+	}
+	o := *order
+	return func(pager *authParentPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultAuthParentOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithAuthParentFilter configures pagination filter.
+func WithAuthParentFilter(filter func(*AuthParentQuery) (*AuthParentQuery, error)) AuthParentPaginateOption {
+	return func(pager *authParentPager) error {
+		if filter == nil {
+			return errors.New("AuthParentQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type authParentPager struct {
+	order  *AuthParentOrder
+	filter func(*AuthParentQuery) (*AuthParentQuery, error)
+}
+
+func newAuthParentPager(opts []AuthParentPaginateOption) (*authParentPager, error) {
+	pager := &authParentPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultAuthParentOrder
+	}
+	return pager, nil
+}
+
+func (p *authParentPager) applyFilter(query *AuthParentQuery) (*AuthParentQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *authParentPager) toCursor(ap *AuthParent) Cursor {
+	return p.order.Field.toCursor(ap)
+}
+
+func (p *authParentPager) applyCursors(query *AuthParentQuery, after, before *Cursor) *AuthParentQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultAuthParentOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *authParentPager) applyOrder(query *AuthParentQuery, reverse bool) *AuthParentQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultAuthParentOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultAuthParentOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to AuthParent.
+func (ap *AuthParentQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...AuthParentPaginateOption,
+) (*AuthParentConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newAuthParentPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if ap, err = pager.applyFilter(ap); err != nil {
+		return nil, err
+	}
+
+	conn := &AuthParentConnection{Edges: []*AuthParentEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := ap.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := ap.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	ap = pager.applyCursors(ap, after, before)
+	ap = pager.applyOrder(ap, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		ap = ap.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		ap = ap.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := ap.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *AuthParent
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *AuthParent {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *AuthParent {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*AuthParentEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &AuthParentEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+// AuthParentOrderField defines the ordering field of AuthParent.
+type AuthParentOrderField struct {
+	field    string
+	toCursor func(*AuthParent) Cursor
+}
+
+// AuthParentOrder defines the ordering of AuthParent.
+type AuthParentOrder struct {
+	Direction OrderDirection        `json:"direction"`
+	Field     *AuthParentOrderField `json:"field"`
+}
+
+// DefaultAuthParentOrder is the default ordering of AuthParent.
+var DefaultAuthParentOrder = &AuthParentOrder{
+	Direction: OrderDirectionAsc,
+	Field: &AuthParentOrderField{
+		field: authparent.FieldID,
+		toCursor: func(ap *AuthParent) Cursor {
+			return Cursor{ID: ap.ID}
+		},
+	},
+}
+
+// ToEdge converts AuthParent into AuthParentEdge.
+func (ap *AuthParent) ToEdge(order *AuthParentOrder) *AuthParentEdge {
+	if order == nil {
+		order = DefaultAuthParentOrder
+	}
+	return &AuthParentEdge{
+		Node:   ap,
+		Cursor: order.Field.toCursor(ap),
+	}
+}
+
+// AuthStaffEdge is the edge representation of AuthStaff.
+type AuthStaffEdge struct {
+	Node   *AuthStaff `json:"node"`
+	Cursor Cursor     `json:"cursor"`
+}
+
+// AuthStaffConnection is the connection containing edges to AuthStaff.
+type AuthStaffConnection struct {
+	Edges      []*AuthStaffEdge `json:"edges"`
+	PageInfo   PageInfo         `json:"pageInfo"`
+	TotalCount int              `json:"totalCount"`
+}
+
+// AuthStaffPaginateOption enables pagination customization.
+type AuthStaffPaginateOption func(*authStaffPager) error
+
+// WithAuthStaffOrder configures pagination ordering.
+func WithAuthStaffOrder(order *AuthStaffOrder) AuthStaffPaginateOption {
+	if order == nil {
+		order = DefaultAuthStaffOrder
+	}
+	o := *order
+	return func(pager *authStaffPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultAuthStaffOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithAuthStaffFilter configures pagination filter.
+func WithAuthStaffFilter(filter func(*AuthStaffQuery) (*AuthStaffQuery, error)) AuthStaffPaginateOption {
+	return func(pager *authStaffPager) error {
+		if filter == nil {
+			return errors.New("AuthStaffQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type authStaffPager struct {
+	order  *AuthStaffOrder
+	filter func(*AuthStaffQuery) (*AuthStaffQuery, error)
+}
+
+func newAuthStaffPager(opts []AuthStaffPaginateOption) (*authStaffPager, error) {
+	pager := &authStaffPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultAuthStaffOrder
+	}
+	return pager, nil
+}
+
+func (p *authStaffPager) applyFilter(query *AuthStaffQuery) (*AuthStaffQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *authStaffPager) toCursor(as *AuthStaff) Cursor {
+	return p.order.Field.toCursor(as)
+}
+
+func (p *authStaffPager) applyCursors(query *AuthStaffQuery, after, before *Cursor) *AuthStaffQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultAuthStaffOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *authStaffPager) applyOrder(query *AuthStaffQuery, reverse bool) *AuthStaffQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultAuthStaffOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultAuthStaffOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to AuthStaff.
+func (as *AuthStaffQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...AuthStaffPaginateOption,
+) (*AuthStaffConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newAuthStaffPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if as, err = pager.applyFilter(as); err != nil {
+		return nil, err
+	}
+
+	conn := &AuthStaffConnection{Edges: []*AuthStaffEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := as.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := as.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	as = pager.applyCursors(as, after, before)
+	as = pager.applyOrder(as, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		as = as.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		as = as.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := as.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *AuthStaff
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *AuthStaff {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *AuthStaff {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*AuthStaffEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &AuthStaffEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+// AuthStaffOrderField defines the ordering field of AuthStaff.
+type AuthStaffOrderField struct {
+	field    string
+	toCursor func(*AuthStaff) Cursor
+}
+
+// AuthStaffOrder defines the ordering of AuthStaff.
+type AuthStaffOrder struct {
+	Direction OrderDirection       `json:"direction"`
+	Field     *AuthStaffOrderField `json:"field"`
+}
+
+// DefaultAuthStaffOrder is the default ordering of AuthStaff.
+var DefaultAuthStaffOrder = &AuthStaffOrder{
+	Direction: OrderDirectionAsc,
+	Field: &AuthStaffOrderField{
+		field: authstaff.FieldID,
+		toCursor: func(as *AuthStaff) Cursor {
+			return Cursor{ID: as.ID}
+		},
+	},
+}
+
+// ToEdge converts AuthStaff into AuthStaffEdge.
+func (as *AuthStaff) ToEdge(order *AuthStaffOrder) *AuthStaffEdge {
+	if order == nil {
+		order = DefaultAuthStaffOrder
+	}
+	return &AuthStaffEdge{
+		Node:   as,
+		Cursor: order.Field.toCursor(as),
+	}
+}
 
 // MstCustomerEdge is the edge representation of MstCustomer.
 type MstCustomerEdge struct {
@@ -911,5 +1368,232 @@ func (mi *MstInst) ToEdge(order *MstInstOrder) *MstInstEdge {
 	return &MstInstEdge{
 		Node:   mi,
 		Cursor: order.Field.toCursor(mi),
+	}
+}
+
+// MstStudentEdge is the edge representation of MstStudent.
+type MstStudentEdge struct {
+	Node   *MstStudent `json:"node"`
+	Cursor Cursor      `json:"cursor"`
+}
+
+// MstStudentConnection is the connection containing edges to MstStudent.
+type MstStudentConnection struct {
+	Edges      []*MstStudentEdge `json:"edges"`
+	PageInfo   PageInfo          `json:"pageInfo"`
+	TotalCount int               `json:"totalCount"`
+}
+
+// MstStudentPaginateOption enables pagination customization.
+type MstStudentPaginateOption func(*mstStudentPager) error
+
+// WithMstStudentOrder configures pagination ordering.
+func WithMstStudentOrder(order *MstStudentOrder) MstStudentPaginateOption {
+	if order == nil {
+		order = DefaultMstStudentOrder
+	}
+	o := *order
+	return func(pager *mstStudentPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultMstStudentOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithMstStudentFilter configures pagination filter.
+func WithMstStudentFilter(filter func(*MstStudentQuery) (*MstStudentQuery, error)) MstStudentPaginateOption {
+	return func(pager *mstStudentPager) error {
+		if filter == nil {
+			return errors.New("MstStudentQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type mstStudentPager struct {
+	order  *MstStudentOrder
+	filter func(*MstStudentQuery) (*MstStudentQuery, error)
+}
+
+func newMstStudentPager(opts []MstStudentPaginateOption) (*mstStudentPager, error) {
+	pager := &mstStudentPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultMstStudentOrder
+	}
+	return pager, nil
+}
+
+func (p *mstStudentPager) applyFilter(query *MstStudentQuery) (*MstStudentQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *mstStudentPager) toCursor(ms *MstStudent) Cursor {
+	return p.order.Field.toCursor(ms)
+}
+
+func (p *mstStudentPager) applyCursors(query *MstStudentQuery, after, before *Cursor) *MstStudentQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultMstStudentOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *mstStudentPager) applyOrder(query *MstStudentQuery, reverse bool) *MstStudentQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultMstStudentOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultMstStudentOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to MstStudent.
+func (ms *MstStudentQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...MstStudentPaginateOption,
+) (*MstStudentConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newMstStudentPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if ms, err = pager.applyFilter(ms); err != nil {
+		return nil, err
+	}
+
+	conn := &MstStudentConnection{Edges: []*MstStudentEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := ms.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := ms.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	ms = pager.applyCursors(ms, after, before)
+	ms = pager.applyOrder(ms, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		ms = ms.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		ms = ms.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := ms.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *MstStudent
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *MstStudent {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *MstStudent {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*MstStudentEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &MstStudentEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+// MstStudentOrderField defines the ordering field of MstStudent.
+type MstStudentOrderField struct {
+	field    string
+	toCursor func(*MstStudent) Cursor
+}
+
+// MstStudentOrder defines the ordering of MstStudent.
+type MstStudentOrder struct {
+	Direction OrderDirection        `json:"direction"`
+	Field     *MstStudentOrderField `json:"field"`
+}
+
+// DefaultMstStudentOrder is the default ordering of MstStudent.
+var DefaultMstStudentOrder = &MstStudentOrder{
+	Direction: OrderDirectionAsc,
+	Field: &MstStudentOrderField{
+		field: mststudent.FieldID,
+		toCursor: func(ms *MstStudent) Cursor {
+			return Cursor{ID: ms.ID}
+		},
+	},
+}
+
+// ToEdge converts MstStudent into MstStudentEdge.
+func (ms *MstStudent) ToEdge(order *MstStudentOrder) *MstStudentEdge {
+	if order == nil {
+		order = DefaultMstStudentOrder
+	}
+	return &MstStudentEdge{
+		Node:   ms,
+		Cursor: order.Field.toCursor(ms),
 	}
 }

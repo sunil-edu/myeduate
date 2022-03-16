@@ -7,8 +7,17 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// AuthParent is the predicate function for authparent builders.
+type AuthParent func(*sql.Selector)
+
+// AuthStaff is the predicate function for authstaff builders.
+type AuthStaff func(*sql.Selector)
+
 // MstCustomer is the predicate function for mstcustomer builders.
 type MstCustomer func(*sql.Selector)
 
 // MstInst is the predicate function for mstinst builders.
 type MstInst func(*sql.Selector)
+
+// MstStudent is the predicate function for mststudent builders.
+type MstStudent func(*sql.Selector)

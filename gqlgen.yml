@@ -16,6 +16,9 @@ autobind:
   - myeduate/ent  
   - myeduate/ent/mstcustomer
   - myeduate/ent/mstinst
+  - myeduate/ent/authparent
+  - myeduate/ent/authstaff
+  - myeduate/ent/mststudent
 
 
 # This section declares type mapping between the GraphQL and go type systems

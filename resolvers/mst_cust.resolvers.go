@@ -32,8 +32,3 @@ func (r *queryResolver) GetCustomerByID(ctx context.Context, token string, id in
 func (r *queryResolver) GetCustomerIdsByNames(ctx context.Context, token string, custNames []string) ([]*myeduate.CustData, error) {
 	panic(fmt.Errorf("not implemented"))
 }
-
-// Mutation returns myeduate.MutationResolver implementation.
-func (r *Resolver) Mutation() myeduate.MutationResolver { return &mutationResolver{r} }
-
-type mutationResolver struct{ *Resolver }

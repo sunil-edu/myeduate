@@ -1,0 +1,54 @@
+
+
+type AuthStaff implements Node {
+    id:                     ID!
+    staff_first_name:       String!	
+    staff_middle_name:      String!
+    staff_last_name:        String!
+    staff_address:          String!			
+    staff_place:            String!	
+    staff_state:            String!
+    staff_pin:              String! 
+    staff_email:            String!
+    staff_mobile:           String!
+}
+
+
+input  CreateAuthStaffInput {
+    staff_first_name:       String!	
+    staff_middle_name:      String
+    staff_last_name:        String
+    staff_address:          String			
+    staff_place:            String	
+    staff_state:            String
+    staff_pin:              String 
+    staff_email:            String!
+    staff_mobile:           String!    
+
+}
+
+input UpdateAuthStaffInput{
+    
+    staff_first_name:      String!	
+    staff_middle_name:     String
+    staff_last_name:       String
+    staff_address:         String			
+    staff_place:           String	
+    staff_state:           String
+    staff_pin:             String 
+    staff_email:           String!
+    staff_mobile:          String!
+}
+
+
+
+
+
+extend type Query { 
+    GetAuthStaffUserIds(token: String!, id: [ID!]!):[UserNamesById!]!
+} 
+
+extend type Mutation {
+    AddAuthStaffUser(token: String!, input: CreateAuthStaffInput!): AuthStaff!    
+   
+}

@@ -9,6 +9,32 @@ import (
 	"myeduate/ent"
 )
 
+// The AuthParentFunc type is an adapter to allow the use of ordinary
+// function as AuthParent mutator.
+type AuthParentFunc func(context.Context, *ent.AuthParentMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AuthParentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AuthParentMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AuthParentMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The AuthStaffFunc type is an adapter to allow the use of ordinary
+// function as AuthStaff mutator.
+type AuthStaffFunc func(context.Context, *ent.AuthStaffMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AuthStaffFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AuthStaffMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AuthStaffMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The MstCustomerFunc type is an adapter to allow the use of ordinary
 // function as MstCustomer mutator.
 type MstCustomerFunc func(context.Context, *ent.MstCustomerMutation) (ent.Value, error)
@@ -31,6 +57,19 @@ func (f MstInstFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	mv, ok := m.(*ent.MstInstMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MstInstMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The MstStudentFunc type is an adapter to allow the use of ordinary
+// function as MstStudent mutator.
+type MstStudentFunc func(context.Context, *ent.MstStudentMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MstStudentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.MstStudentMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MstStudentMutation", m)
 	}
 	return f(ctx, mv)
 }

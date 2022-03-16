@@ -133,7 +133,7 @@ func (miq *MstInstQuery) FirstIDX(ctx context.Context) int {
 }
 
 // Only returns a single MstInst entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one MstInst entity is not found.
+// Returns a *NotSingularError when more than one MstInst entity is found.
 // Returns a *NotFoundError when no MstInst entities are found.
 func (miq *MstInstQuery) Only(ctx context.Context) (*MstInst, error) {
 	nodes, err := miq.Limit(2).All(ctx)
@@ -160,7 +160,7 @@ func (miq *MstInstQuery) OnlyX(ctx context.Context) *MstInst {
 }
 
 // OnlyID is like Only, but returns the only MstInst ID in the query.
-// Returns a *NotSingularError when exactly one MstInst ID is not found.
+// Returns a *NotSingularError when more than one MstInst ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (miq *MstInstQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
@@ -270,8 +270,9 @@ func (miq *MstInstQuery) Clone() *MstInstQuery {
 		predicates:       append([]predicate.MstInst{}, miq.predicates...),
 		withInstfromCust: miq.withInstfromCust.Clone(),
 		// clone intermediate query.
-		sql:  miq.sql.Clone(),
-		path: miq.path,
+		sql:    miq.sql.Clone(),
+		path:   miq.path,
+		unique: miq.unique,
 	}
 }
 

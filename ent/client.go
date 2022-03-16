@@ -10,8 +10,11 @@ import (
 
 	"myeduate/ent/migrate"
 
+	"myeduate/ent/authparent"
+	"myeduate/ent/authstaff"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
+	"myeduate/ent/mststudent"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -23,10 +26,16 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// AuthParent is the client for interacting with the AuthParent builders.
+	AuthParent *AuthParentClient
+	// AuthStaff is the client for interacting with the AuthStaff builders.
+	AuthStaff *AuthStaffClient
 	// MstCustomer is the client for interacting with the MstCustomer builders.
 	MstCustomer *MstCustomerClient
 	// MstInst is the client for interacting with the MstInst builders.
 	MstInst *MstInstClient
+	// MstStudent is the client for interacting with the MstStudent builders.
+	MstStudent *MstStudentClient
 	// additional fields for node api
 	tables tables
 }
@@ -42,8 +51,11 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.AuthParent = NewAuthParentClient(c.config)
+	c.AuthStaff = NewAuthStaffClient(c.config)
 	c.MstCustomer = NewMstCustomerClient(c.config)
 	c.MstInst = NewMstInstClient(c.config)
+	c.MstStudent = NewMstStudentClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -77,8 +89,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:         ctx,
 		config:      cfg,
+		AuthParent:  NewAuthParentClient(cfg),
+		AuthStaff:   NewAuthStaffClient(cfg),
 		MstCustomer: NewMstCustomerClient(cfg),
 		MstInst:     NewMstInstClient(cfg),
+		MstStudent:  NewMstStudentClient(cfg),
 	}, nil
 }
 
@@ -98,15 +113,18 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:         ctx,
 		config:      cfg,
+		AuthParent:  NewAuthParentClient(cfg),
+		AuthStaff:   NewAuthStaffClient(cfg),
 		MstCustomer: NewMstCustomerClient(cfg),
 		MstInst:     NewMstInstClient(cfg),
+		MstStudent:  NewMstStudentClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		MstCustomer.
+//		AuthParent.
 //		Query().
 //		Count(ctx)
 //
@@ -129,8 +147,191 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.AuthParent.Use(hooks...)
+	c.AuthStaff.Use(hooks...)
 	c.MstCustomer.Use(hooks...)
 	c.MstInst.Use(hooks...)
+	c.MstStudent.Use(hooks...)
+}
+
+// AuthParentClient is a client for the AuthParent schema.
+type AuthParentClient struct {
+	config
+}
+
+// NewAuthParentClient returns a client for the AuthParent from the given config.
+func NewAuthParentClient(c config) *AuthParentClient {
+	return &AuthParentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `authparent.Hooks(f(g(h())))`.
+func (c *AuthParentClient) Use(hooks ...Hook) {
+	c.hooks.AuthParent = append(c.hooks.AuthParent, hooks...)
+}
+
+// Create returns a create builder for AuthParent.
+func (c *AuthParentClient) Create() *AuthParentCreate {
+	mutation := newAuthParentMutation(c.config, OpCreate)
+	return &AuthParentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AuthParent entities.
+func (c *AuthParentClient) CreateBulk(builders ...*AuthParentCreate) *AuthParentCreateBulk {
+	return &AuthParentCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AuthParent.
+func (c *AuthParentClient) Update() *AuthParentUpdate {
+	mutation := newAuthParentMutation(c.config, OpUpdate)
+	return &AuthParentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AuthParentClient) UpdateOne(ap *AuthParent) *AuthParentUpdateOne {
+	mutation := newAuthParentMutation(c.config, OpUpdateOne, withAuthParent(ap))
+	return &AuthParentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AuthParentClient) UpdateOneID(id int) *AuthParentUpdateOne {
+	mutation := newAuthParentMutation(c.config, OpUpdateOne, withAuthParentID(id))
+	return &AuthParentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AuthParent.
+func (c *AuthParentClient) Delete() *AuthParentDelete {
+	mutation := newAuthParentMutation(c.config, OpDelete)
+	return &AuthParentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *AuthParentClient) DeleteOne(ap *AuthParent) *AuthParentDeleteOne {
+	return c.DeleteOneID(ap.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *AuthParentClient) DeleteOneID(id int) *AuthParentDeleteOne {
+	builder := c.Delete().Where(authparent.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AuthParentDeleteOne{builder}
+}
+
+// Query returns a query builder for AuthParent.
+func (c *AuthParentClient) Query() *AuthParentQuery {
+	return &AuthParentQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a AuthParent entity by its id.
+func (c *AuthParentClient) Get(ctx context.Context, id int) (*AuthParent, error) {
+	return c.Query().Where(authparent.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AuthParentClient) GetX(ctx context.Context, id int) *AuthParent {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AuthParentClient) Hooks() []Hook {
+	return c.hooks.AuthParent
+}
+
+// AuthStaffClient is a client for the AuthStaff schema.
+type AuthStaffClient struct {
+	config
+}
+
+// NewAuthStaffClient returns a client for the AuthStaff from the given config.
+func NewAuthStaffClient(c config) *AuthStaffClient {
+	return &AuthStaffClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `authstaff.Hooks(f(g(h())))`.
+func (c *AuthStaffClient) Use(hooks ...Hook) {
+	c.hooks.AuthStaff = append(c.hooks.AuthStaff, hooks...)
+}
+
+// Create returns a create builder for AuthStaff.
+func (c *AuthStaffClient) Create() *AuthStaffCreate {
+	mutation := newAuthStaffMutation(c.config, OpCreate)
+	return &AuthStaffCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AuthStaff entities.
+func (c *AuthStaffClient) CreateBulk(builders ...*AuthStaffCreate) *AuthStaffCreateBulk {
+	return &AuthStaffCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AuthStaff.
+func (c *AuthStaffClient) Update() *AuthStaffUpdate {
+	mutation := newAuthStaffMutation(c.config, OpUpdate)
+	return &AuthStaffUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AuthStaffClient) UpdateOne(as *AuthStaff) *AuthStaffUpdateOne {
+	mutation := newAuthStaffMutation(c.config, OpUpdateOne, withAuthStaff(as))
+	return &AuthStaffUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AuthStaffClient) UpdateOneID(id int) *AuthStaffUpdateOne {
+	mutation := newAuthStaffMutation(c.config, OpUpdateOne, withAuthStaffID(id))
+	return &AuthStaffUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AuthStaff.
+func (c *AuthStaffClient) Delete() *AuthStaffDelete {
+	mutation := newAuthStaffMutation(c.config, OpDelete)
+	return &AuthStaffDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *AuthStaffClient) DeleteOne(as *AuthStaff) *AuthStaffDeleteOne {
+	return c.DeleteOneID(as.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *AuthStaffClient) DeleteOneID(id int) *AuthStaffDeleteOne {
+	builder := c.Delete().Where(authstaff.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AuthStaffDeleteOne{builder}
+}
+
+// Query returns a query builder for AuthStaff.
+func (c *AuthStaffClient) Query() *AuthStaffQuery {
+	return &AuthStaffQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a AuthStaff entity by its id.
+func (c *AuthStaffClient) Get(ctx context.Context, id int) (*AuthStaff, error) {
+	return c.Query().Where(authstaff.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AuthStaffClient) GetX(ctx context.Context, id int) *AuthStaff {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AuthStaffClient) Hooks() []Hook {
+	return c.hooks.AuthStaff
 }
 
 // MstCustomerClient is a client for the MstCustomer schema.
@@ -343,4 +544,94 @@ func (c *MstInstClient) QueryInstfromCust(mi *MstInst) *MstCustomerQuery {
 // Hooks returns the client hooks.
 func (c *MstInstClient) Hooks() []Hook {
 	return c.hooks.MstInst
+}
+
+// MstStudentClient is a client for the MstStudent schema.
+type MstStudentClient struct {
+	config
+}
+
+// NewMstStudentClient returns a client for the MstStudent from the given config.
+func NewMstStudentClient(c config) *MstStudentClient {
+	return &MstStudentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `mststudent.Hooks(f(g(h())))`.
+func (c *MstStudentClient) Use(hooks ...Hook) {
+	c.hooks.MstStudent = append(c.hooks.MstStudent, hooks...)
+}
+
+// Create returns a create builder for MstStudent.
+func (c *MstStudentClient) Create() *MstStudentCreate {
+	mutation := newMstStudentMutation(c.config, OpCreate)
+	return &MstStudentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of MstStudent entities.
+func (c *MstStudentClient) CreateBulk(builders ...*MstStudentCreate) *MstStudentCreateBulk {
+	return &MstStudentCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for MstStudent.
+func (c *MstStudentClient) Update() *MstStudentUpdate {
+	mutation := newMstStudentMutation(c.config, OpUpdate)
+	return &MstStudentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *MstStudentClient) UpdateOne(ms *MstStudent) *MstStudentUpdateOne {
+	mutation := newMstStudentMutation(c.config, OpUpdateOne, withMstStudent(ms))
+	return &MstStudentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *MstStudentClient) UpdateOneID(id int) *MstStudentUpdateOne {
+	mutation := newMstStudentMutation(c.config, OpUpdateOne, withMstStudentID(id))
+	return &MstStudentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for MstStudent.
+func (c *MstStudentClient) Delete() *MstStudentDelete {
+	mutation := newMstStudentMutation(c.config, OpDelete)
+	return &MstStudentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *MstStudentClient) DeleteOne(ms *MstStudent) *MstStudentDeleteOne {
+	return c.DeleteOneID(ms.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *MstStudentClient) DeleteOneID(id int) *MstStudentDeleteOne {
+	builder := c.Delete().Where(mststudent.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &MstStudentDeleteOne{builder}
+}
+
+// Query returns a query builder for MstStudent.
+func (c *MstStudentClient) Query() *MstStudentQuery {
+	return &MstStudentQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a MstStudent entity by its id.
+func (c *MstStudentClient) Get(ctx context.Context, id int) (*MstStudent, error) {
+	return c.Query().Where(mststudent.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *MstStudentClient) GetX(ctx context.Context, id int) *MstStudent {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *MstStudentClient) Hooks() []Hook {
+	return c.hooks.MstStudent
 }

@@ -4,8 +4,11 @@
 package ent
 
 import (
+	"myeduate/ent/authparent"
+	"myeduate/ent/authstaff"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
+	"myeduate/ent/mststudent"
 	"myeduate/ent/schema"
 	"time"
 )
@@ -14,6 +17,60 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	authparentMixin := schema.AuthParent{}.Mixin()
+	authparentMixinFields0 := authparentMixin[0].Fields()
+	_ = authparentMixinFields0
+	authparentFields := schema.AuthParent{}.Fields()
+	_ = authparentFields
+	// authparentDescCreatedAt is the schema descriptor for created_at field.
+	authparentDescCreatedAt := authparentMixinFields0[0].Descriptor()
+	// authparent.DefaultCreatedAt holds the default value on creation for the created_at field.
+	authparent.DefaultCreatedAt = authparentDescCreatedAt.Default.(func() time.Time)
+	// authparentDescUpdatedAt is the schema descriptor for updated_at field.
+	authparentDescUpdatedAt := authparentMixinFields0[1].Descriptor()
+	// authparent.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	authparent.DefaultUpdatedAt = authparentDescUpdatedAt.Default.(func() time.Time)
+	// authparent.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	authparent.UpdateDefaultUpdatedAt = authparentDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// authparentDescParentFirstName is the schema descriptor for parent_first_name field.
+	authparentDescParentFirstName := authparentFields[0].Descriptor()
+	// authparent.ParentFirstNameValidator is a validator for the "parent_first_name" field. It is called by the builders before save.
+	authparent.ParentFirstNameValidator = authparentDescParentFirstName.Validators[0].(func(string) error)
+	// authparentDescParentEmail is the schema descriptor for parent_email field.
+	authparentDescParentEmail := authparentFields[7].Descriptor()
+	// authparent.ParentEmailValidator is a validator for the "parent_email" field. It is called by the builders before save.
+	authparent.ParentEmailValidator = authparentDescParentEmail.Validators[0].(func(string) error)
+	// authparentDescParentMobile is the schema descriptor for parent_mobile field.
+	authparentDescParentMobile := authparentFields[8].Descriptor()
+	// authparent.ParentMobileValidator is a validator for the "parent_mobile" field. It is called by the builders before save.
+	authparent.ParentMobileValidator = authparentDescParentMobile.Validators[0].(func(string) error)
+	authstaffMixin := schema.AuthStaff{}.Mixin()
+	authstaffMixinFields0 := authstaffMixin[0].Fields()
+	_ = authstaffMixinFields0
+	authstaffFields := schema.AuthStaff{}.Fields()
+	_ = authstaffFields
+	// authstaffDescCreatedAt is the schema descriptor for created_at field.
+	authstaffDescCreatedAt := authstaffMixinFields0[0].Descriptor()
+	// authstaff.DefaultCreatedAt holds the default value on creation for the created_at field.
+	authstaff.DefaultCreatedAt = authstaffDescCreatedAt.Default.(func() time.Time)
+	// authstaffDescUpdatedAt is the schema descriptor for updated_at field.
+	authstaffDescUpdatedAt := authstaffMixinFields0[1].Descriptor()
+	// authstaff.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	authstaff.DefaultUpdatedAt = authstaffDescUpdatedAt.Default.(func() time.Time)
+	// authstaff.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	authstaff.UpdateDefaultUpdatedAt = authstaffDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// authstaffDescStaffFirstName is the schema descriptor for staff_first_name field.
+	authstaffDescStaffFirstName := authstaffFields[0].Descriptor()
+	// authstaff.StaffFirstNameValidator is a validator for the "staff_first_name" field. It is called by the builders before save.
+	authstaff.StaffFirstNameValidator = authstaffDescStaffFirstName.Validators[0].(func(string) error)
+	// authstaffDescStaffEmail is the schema descriptor for staff_email field.
+	authstaffDescStaffEmail := authstaffFields[7].Descriptor()
+	// authstaff.StaffEmailValidator is a validator for the "staff_email" field. It is called by the builders before save.
+	authstaff.StaffEmailValidator = authstaffDescStaffEmail.Validators[0].(func(string) error)
+	// authstaffDescStaffMobile is the schema descriptor for staff_mobile field.
+	authstaffDescStaffMobile := authstaffFields[8].Descriptor()
+	// authstaff.StaffMobileValidator is a validator for the "staff_mobile" field. It is called by the builders before save.
+	authstaff.StaffMobileValidator = authstaffDescStaffMobile.Validators[0].(func(string) error)
 	mstcustomerMixin := schema.MstCustomer{}.Mixin()
 	mstcustomerMixinFields0 := mstcustomerMixin[0].Fields()
 	_ = mstcustomerMixinFields0
@@ -56,4 +113,27 @@ func init() {
 	mstinstDescInstName := mstinstFields[1].Descriptor()
 	// mstinst.InstNameValidator is a validator for the "inst_name" field. It is called by the builders before save.
 	mstinst.InstNameValidator = mstinstDescInstName.Validators[0].(func(string) error)
+	mststudentMixin := schema.MstStudent{}.Mixin()
+	mststudentMixinFields0 := mststudentMixin[0].Fields()
+	_ = mststudentMixinFields0
+	mststudentFields := schema.MstStudent{}.Fields()
+	_ = mststudentFields
+	// mststudentDescCreatedAt is the schema descriptor for created_at field.
+	mststudentDescCreatedAt := mststudentMixinFields0[0].Descriptor()
+	// mststudent.DefaultCreatedAt holds the default value on creation for the created_at field.
+	mststudent.DefaultCreatedAt = mststudentDescCreatedAt.Default.(func() time.Time)
+	// mststudentDescUpdatedAt is the schema descriptor for updated_at field.
+	mststudentDescUpdatedAt := mststudentMixinFields0[1].Descriptor()
+	// mststudent.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	mststudent.DefaultUpdatedAt = mststudentDescUpdatedAt.Default.(func() time.Time)
+	// mststudent.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	mststudent.UpdateDefaultUpdatedAt = mststudentDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// mststudentDescStdFirstName is the schema descriptor for std_first_name field.
+	mststudentDescStdFirstName := mststudentFields[0].Descriptor()
+	// mststudent.StdFirstNameValidator is a validator for the "std_first_name" field. It is called by the builders before save.
+	mststudent.StdFirstNameValidator = mststudentDescStdFirstName.Validators[0].(func(string) error)
+	// mststudentDescStdStudying is the schema descriptor for std_studying field.
+	mststudentDescStdStudying := mststudentFields[3].Descriptor()
+	// mststudent.DefaultStdStudying holds the default value on creation for the std_studying field.
+	mststudent.DefaultStdStudying = mststudentDescStdStudying.Default.(bool)
 }

@@ -165,6 +165,54 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
+// The AuthParentQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type AuthParentQueryRuleFunc func(context.Context, *ent.AuthParentQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f AuthParentQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AuthParentQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.AuthParentQuery", q)
+}
+
+// The AuthParentMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type AuthParentMutationRuleFunc func(context.Context, *ent.AuthParentMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f AuthParentMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.AuthParentMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.AuthParentMutation", m)
+}
+
+// The AuthStaffQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type AuthStaffQueryRuleFunc func(context.Context, *ent.AuthStaffQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f AuthStaffQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AuthStaffQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.AuthStaffQuery", q)
+}
+
+// The AuthStaffMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type AuthStaffMutationRuleFunc func(context.Context, *ent.AuthStaffMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f AuthStaffMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.AuthStaffMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.AuthStaffMutation", m)
+}
+
 // The MstCustomerQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type MstCustomerQueryRuleFunc func(context.Context, *ent.MstCustomerQuery) error
@@ -213,6 +261,30 @@ func (f MstInstMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutatio
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.MstInstMutation", m)
 }
 
+// The MstStudentQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type MstStudentQueryRuleFunc func(context.Context, *ent.MstStudentQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f MstStudentQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.MstStudentQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.MstStudentQuery", q)
+}
+
+// The MstStudentMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type MstStudentMutationRuleFunc func(context.Context, *ent.MstStudentMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f MstStudentMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.MstStudentMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.MstStudentMutation", m)
+}
+
 type (
 	// Filter is the interface that wraps the Where function
 	// for filtering nodes in queries and mutations.
@@ -248,9 +320,15 @@ var _ QueryMutationRule = FilterFunc(nil)
 
 func queryFilter(q ent.Query) (Filter, error) {
 	switch q := q.(type) {
+	case *ent.AuthParentQuery:
+		return q.Filter(), nil
+	case *ent.AuthStaffQuery:
+		return q.Filter(), nil
 	case *ent.MstCustomerQuery:
 		return q.Filter(), nil
 	case *ent.MstInstQuery:
+		return q.Filter(), nil
+	case *ent.MstStudentQuery:
 		return q.Filter(), nil
 	default:
 		return nil, Denyf("ent/privacy: unexpected query type %T for query filter", q)
@@ -259,9 +337,15 @@ func queryFilter(q ent.Query) (Filter, error) {
 
 func mutationFilter(m ent.Mutation) (Filter, error) {
 	switch m := m.(type) {
+	case *ent.AuthParentMutation:
+		return m.Filter(), nil
+	case *ent.AuthStaffMutation:
+		return m.Filter(), nil
 	case *ent.MstCustomerMutation:
 		return m.Filter(), nil
 	case *ent.MstInstMutation:
+		return m.Filter(), nil
+	case *ent.MstStudentMutation:
 		return m.Filter(), nil
 	default:
 		return nil, Denyf("ent/privacy: unexpected mutation type %T for mutation filter", m)

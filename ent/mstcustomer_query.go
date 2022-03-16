@@ -134,7 +134,7 @@ func (mcq *MstCustomerQuery) FirstIDX(ctx context.Context) int {
 }
 
 // Only returns a single MstCustomer entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one MstCustomer entity is not found.
+// Returns a *NotSingularError when more than one MstCustomer entity is found.
 // Returns a *NotFoundError when no MstCustomer entities are found.
 func (mcq *MstCustomerQuery) Only(ctx context.Context) (*MstCustomer, error) {
 	nodes, err := mcq.Limit(2).All(ctx)
@@ -161,7 +161,7 @@ func (mcq *MstCustomerQuery) OnlyX(ctx context.Context) *MstCustomer {
 }
 
 // OnlyID is like Only, but returns the only MstCustomer ID in the query.
-// Returns a *NotSingularError when exactly one MstCustomer ID is not found.
+// Returns a *NotSingularError when more than one MstCustomer ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (mcq *MstCustomerQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
@@ -271,8 +271,9 @@ func (mcq *MstCustomerQuery) Clone() *MstCustomerQuery {
 		predicates:    append([]predicate.MstCustomer{}, mcq.predicates...),
 		withCust2Inst: mcq.withCust2Inst.Clone(),
 		// clone intermediate query.
-		sql:  mcq.sql.Clone(),
-		path: mcq.path,
+		sql:    mcq.sql.Clone(),
+		path:   mcq.path,
+		unique: mcq.unique,
 	}
 }
 

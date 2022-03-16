@@ -1,0 +1,44 @@
+
+type MstStudent implements Node {
+  id: ID!
+  std_first_name: String!
+  std_middle_name: String!
+  std_last_name: String!
+  std_studying: Boolean!
+  std_status: StdStatus!
+  std_sex: Sex!
+  std_reg_no: String!
+  
+}
+
+input CreateMstStudentInput {
+  std_first_name: String!
+  std_middle_name: String
+  std_last_name: String
+  std_studying: Boolean
+  std_status: StdStatus
+  std_sex: Sex
+  std_reg_no: String
+ 
+}
+
+input UpdateMstStudentInput {
+  std_first_name: String!
+  std_middle_name: String
+  std_last_name: String
+  std_studying: Boolean
+  std_status: StdStatus
+  std_sex: Sex
+  std_reg_no: String
+ 
+}
+
+
+
+extend type Query {
+  GetStudentNamesByIds(token: String!, id: [ID!]!):[UserNamesById!]!
+}
+
+extend type Mutation {
+  AddStudent(token: String!, input: CreateMstStudentInput!): MstStudent!
+}

@@ -7,8 +7,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"myeduate/ent/authparent"
+	"myeduate/ent/authstaff"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
+	"myeduate/ent/mststudent"
 	"sync"
 	"sync/atomic"
 
@@ -46,6 +49,204 @@ type Edge struct {
 	Type string `json:"type,omitempty"` // edge type.
 	Name string `json:"name,omitempty"` // edge name.
 	IDs  []int  `json:"ids,omitempty"`  // node ids (where this edge point to).
+}
+
+func (ap *AuthParent) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     ap.ID,
+		Type:   "AuthParent",
+		Fields: make([]*Field, 11),
+		Edges:  make([]*Edge, 0),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(ap.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.UpdatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "time.Time",
+		Name:  "updated_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.ParentFirstName); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "string",
+		Name:  "parent_first_name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.ParentMiddleName); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "string",
+		Name:  "parent_middle_name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.ParentLastName); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
+		Type:  "string",
+		Name:  "parent_last_name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.ParentAddress); err != nil {
+		return nil, err
+	}
+	node.Fields[5] = &Field{
+		Type:  "string",
+		Name:  "parent_address",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.ParentPlace); err != nil {
+		return nil, err
+	}
+	node.Fields[6] = &Field{
+		Type:  "string",
+		Name:  "parent_place",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.ParentState); err != nil {
+		return nil, err
+	}
+	node.Fields[7] = &Field{
+		Type:  "string",
+		Name:  "parent_state",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.ParentPin); err != nil {
+		return nil, err
+	}
+	node.Fields[8] = &Field{
+		Type:  "string",
+		Name:  "parent_pin",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.ParentEmail); err != nil {
+		return nil, err
+	}
+	node.Fields[9] = &Field{
+		Type:  "string",
+		Name:  "parent_email",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ap.ParentMobile); err != nil {
+		return nil, err
+	}
+	node.Fields[10] = &Field{
+		Type:  "string",
+		Name:  "parent_mobile",
+		Value: string(buf),
+	}
+	return node, nil
+}
+
+func (as *AuthStaff) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     as.ID,
+		Type:   "AuthStaff",
+		Fields: make([]*Field, 11),
+		Edges:  make([]*Edge, 0),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(as.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.UpdatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "time.Time",
+		Name:  "updated_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.StaffFirstName); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "string",
+		Name:  "staff_first_name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.StaffMiddleName); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "string",
+		Name:  "staff_middle_name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.StaffLastName); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
+		Type:  "string",
+		Name:  "staff_last_name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.StaffAddress); err != nil {
+		return nil, err
+	}
+	node.Fields[5] = &Field{
+		Type:  "string",
+		Name:  "staff_address",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.StaffPlace); err != nil {
+		return nil, err
+	}
+	node.Fields[6] = &Field{
+		Type:  "string",
+		Name:  "staff_place",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.StaffState); err != nil {
+		return nil, err
+	}
+	node.Fields[7] = &Field{
+		Type:  "string",
+		Name:  "staff_state",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.StaffPin); err != nil {
+		return nil, err
+	}
+	node.Fields[8] = &Field{
+		Type:  "string",
+		Name:  "staff_pin",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.StaffEmail); err != nil {
+		return nil, err
+	}
+	node.Fields[9] = &Field{
+		Type:  "string",
+		Name:  "staff_email",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(as.StaffMobile); err != nil {
+		return nil, err
+	}
+	node.Fields[10] = &Field{
+		Type:  "string",
+		Name:  "staff_mobile",
+		Value: string(buf),
+	}
+	return node, nil
 }
 
 func (mc *MstCustomer) Node(ctx context.Context) (node *Node, err error) {
@@ -418,6 +619,89 @@ func (mi *MstInst) Node(ctx context.Context) (node *Node, err error) {
 	return node, nil
 }
 
+func (ms *MstStudent) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     ms.ID,
+		Type:   "MstStudent",
+		Fields: make([]*Field, 9),
+		Edges:  make([]*Edge, 0),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(ms.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ms.UpdatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "time.Time",
+		Name:  "updated_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ms.StdFirstName); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "string",
+		Name:  "std_first_name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ms.StdMiddleName); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "string",
+		Name:  "std_middle_name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ms.StdLastName); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
+		Type:  "string",
+		Name:  "std_last_name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ms.StdStudying); err != nil {
+		return nil, err
+	}
+	node.Fields[5] = &Field{
+		Type:  "bool",
+		Name:  "std_studying",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ms.StdStatus); err != nil {
+		return nil, err
+	}
+	node.Fields[6] = &Field{
+		Type:  "customtypes.StdStatus",
+		Name:  "std_status",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ms.StdSex); err != nil {
+		return nil, err
+	}
+	node.Fields[7] = &Field{
+		Type:  "customtypes.Sex",
+		Name:  "std_sex",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(ms.StdRegNo); err != nil {
+		return nil, err
+	}
+	node.Fields[8] = &Field{
+		Type:  "string",
+		Name:  "std_reg_no",
+		Value: string(buf),
+	}
+	return node, nil
+}
+
 func (c *Client) Node(ctx context.Context, id int) (*Node, error) {
 	n, err := c.Noder(ctx, id)
 	if err != nil {
@@ -485,6 +769,24 @@ func (c *Client) Noder(ctx context.Context, id int, opts ...NodeOption) (_ Noder
 
 func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error) {
 	switch table {
+	case authparent.Table:
+		n, err := c.AuthParent.Query().
+			Where(authparent.ID(id)).
+			CollectFields(ctx, "AuthParent").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case authstaff.Table:
+		n, err := c.AuthStaff.Query().
+			Where(authstaff.ID(id)).
+			CollectFields(ctx, "AuthStaff").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
 	case mstcustomer.Table:
 		n, err := c.MstCustomer.Query().
 			Where(mstcustomer.ID(id)).
@@ -498,6 +800,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		n, err := c.MstInst.Query().
 			Where(mstinst.ID(id)).
 			CollectFields(ctx, "MstInst").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case mststudent.Table:
+		n, err := c.MstStudent.Query().
+			Where(mststudent.ID(id)).
+			CollectFields(ctx, "MstStudent").
 			Only(ctx)
 		if err != nil {
 			return nil, err
@@ -576,6 +887,32 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
+	case authparent.Table:
+		nodes, err := c.AuthParent.Query().
+			Where(authparent.IDIn(ids...)).
+			CollectFields(ctx, "AuthParent").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case authstaff.Table:
+		nodes, err := c.AuthStaff.Query().
+			Where(authstaff.IDIn(ids...)).
+			CollectFields(ctx, "AuthStaff").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case mstcustomer.Table:
 		nodes, err := c.MstCustomer.Query().
 			Where(mstcustomer.IDIn(ids...)).
@@ -593,6 +930,19 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		nodes, err := c.MstInst.Query().
 			Where(mstinst.IDIn(ids...)).
 			CollectFields(ctx, "MstInst").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case mststudent.Table:
+		nodes, err := c.MstStudent.Query().
+			Where(mststudent.IDIn(ids...)).
+			CollectFields(ctx, "MstStudent").
 			All(ctx)
 		if err != nil {
 			return nil, err

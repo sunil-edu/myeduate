@@ -128,6 +128,14 @@ enum ParentType {
 }
 
 
+type UserNamesById {
+  first_name:    String!
+  middle_name:   String
+  last_name:     String
+  id:                   ID!
+}
+
+
 extend type Query {
   node(token: String!, id: ID!): Node
   nodes(token: String!, ids: [ID!]!): [Node]!

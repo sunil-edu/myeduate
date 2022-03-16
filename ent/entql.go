@@ -4,8 +4,11 @@
 package ent
 
 import (
+	"myeduate/ent/authparent"
+	"myeduate/ent/authstaff"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
+	"myeduate/ent/mststudent"
 	"myeduate/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
@@ -16,8 +19,56 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 2)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 5)}
 	graph.Nodes[0] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   authparent.Table,
+			Columns: authparent.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: authparent.FieldID,
+			},
+		},
+		Type: "AuthParent",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			authparent.FieldCreatedAt:        {Type: field.TypeTime, Column: authparent.FieldCreatedAt},
+			authparent.FieldUpdatedAt:        {Type: field.TypeTime, Column: authparent.FieldUpdatedAt},
+			authparent.FieldParentFirstName:  {Type: field.TypeString, Column: authparent.FieldParentFirstName},
+			authparent.FieldParentMiddleName: {Type: field.TypeString, Column: authparent.FieldParentMiddleName},
+			authparent.FieldParentLastName:   {Type: field.TypeString, Column: authparent.FieldParentLastName},
+			authparent.FieldParentAddress:    {Type: field.TypeString, Column: authparent.FieldParentAddress},
+			authparent.FieldParentPlace:      {Type: field.TypeString, Column: authparent.FieldParentPlace},
+			authparent.FieldParentState:      {Type: field.TypeString, Column: authparent.FieldParentState},
+			authparent.FieldParentPin:        {Type: field.TypeString, Column: authparent.FieldParentPin},
+			authparent.FieldParentEmail:      {Type: field.TypeString, Column: authparent.FieldParentEmail},
+			authparent.FieldParentMobile:     {Type: field.TypeString, Column: authparent.FieldParentMobile},
+		},
+	}
+	graph.Nodes[1] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   authstaff.Table,
+			Columns: authstaff.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: authstaff.FieldID,
+			},
+		},
+		Type: "AuthStaff",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			authstaff.FieldCreatedAt:       {Type: field.TypeTime, Column: authstaff.FieldCreatedAt},
+			authstaff.FieldUpdatedAt:       {Type: field.TypeTime, Column: authstaff.FieldUpdatedAt},
+			authstaff.FieldStaffFirstName:  {Type: field.TypeString, Column: authstaff.FieldStaffFirstName},
+			authstaff.FieldStaffMiddleName: {Type: field.TypeString, Column: authstaff.FieldStaffMiddleName},
+			authstaff.FieldStaffLastName:   {Type: field.TypeString, Column: authstaff.FieldStaffLastName},
+			authstaff.FieldStaffAddress:    {Type: field.TypeString, Column: authstaff.FieldStaffAddress},
+			authstaff.FieldStaffPlace:      {Type: field.TypeString, Column: authstaff.FieldStaffPlace},
+			authstaff.FieldStaffState:      {Type: field.TypeString, Column: authstaff.FieldStaffState},
+			authstaff.FieldStaffPin:        {Type: field.TypeString, Column: authstaff.FieldStaffPin},
+			authstaff.FieldStaffEmail:      {Type: field.TypeString, Column: authstaff.FieldStaffEmail},
+			authstaff.FieldStaffMobile:     {Type: field.TypeString, Column: authstaff.FieldStaffMobile},
+		},
+	}
+	graph.Nodes[2] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   mstcustomer.Table,
 			Columns: mstcustomer.Columns,
@@ -50,7 +101,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			mstcustomer.FieldCustTimeZone:      {Type: field.TypeTime, Column: mstcustomer.FieldCustTimeZone},
 		},
 	}
-	graph.Nodes[1] = &sqlgraph.Node{
+	graph.Nodes[3] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   mstinst.Table,
 			Columns: mstinst.Columns,
@@ -82,6 +133,28 @@ var schemaGraph = func() *sqlgraph.Schema {
 			mstinst.FieldInstStatus:        {Type: field.TypeString, Column: mstinst.FieldInstStatus},
 			mstinst.FieldInstTimeZone:      {Type: field.TypeTime, Column: mstinst.FieldInstTimeZone},
 			mstinst.FieldCustomerID:        {Type: field.TypeInt, Column: mstinst.FieldCustomerID},
+		},
+	}
+	graph.Nodes[4] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   mststudent.Table,
+			Columns: mststudent.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: mststudent.FieldID,
+			},
+		},
+		Type: "MstStudent",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			mststudent.FieldCreatedAt:     {Type: field.TypeTime, Column: mststudent.FieldCreatedAt},
+			mststudent.FieldUpdatedAt:     {Type: field.TypeTime, Column: mststudent.FieldUpdatedAt},
+			mststudent.FieldStdFirstName:  {Type: field.TypeString, Column: mststudent.FieldStdFirstName},
+			mststudent.FieldStdMiddleName: {Type: field.TypeString, Column: mststudent.FieldStdMiddleName},
+			mststudent.FieldStdLastName:   {Type: field.TypeString, Column: mststudent.FieldStdLastName},
+			mststudent.FieldStdStudying:   {Type: field.TypeBool, Column: mststudent.FieldStdStudying},
+			mststudent.FieldStdStatus:     {Type: field.TypeEnum, Column: mststudent.FieldStdStatus},
+			mststudent.FieldStdSex:        {Type: field.TypeEnum, Column: mststudent.FieldStdSex},
+			mststudent.FieldStdRegNo:      {Type: field.TypeString, Column: mststudent.FieldStdRegNo},
 		},
 	}
 	graph.MustAddE(
@@ -118,6 +191,194 @@ type predicateAdder interface {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (apq *AuthParentQuery) addPredicate(pred func(s *sql.Selector)) {
+	apq.predicates = append(apq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the AuthParentQuery builder.
+func (apq *AuthParentQuery) Filter() *AuthParentFilter {
+	return &AuthParentFilter{apq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *AuthParentMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the AuthParentMutation builder.
+func (m *AuthParentMutation) Filter() *AuthParentFilter {
+	return &AuthParentFilter{m}
+}
+
+// AuthParentFilter provides a generic filtering capability at runtime for AuthParentQuery.
+type AuthParentFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *AuthParentFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int predicate on the id field.
+func (f *AuthParentFilter) WhereID(p entql.IntP) {
+	f.Where(p.Field(authparent.FieldID))
+}
+
+// WhereCreatedAt applies the entql time.Time predicate on the created_at field.
+func (f *AuthParentFilter) WhereCreatedAt(p entql.TimeP) {
+	f.Where(p.Field(authparent.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql time.Time predicate on the updated_at field.
+func (f *AuthParentFilter) WhereUpdatedAt(p entql.TimeP) {
+	f.Where(p.Field(authparent.FieldUpdatedAt))
+}
+
+// WhereParentFirstName applies the entql string predicate on the parent_first_name field.
+func (f *AuthParentFilter) WhereParentFirstName(p entql.StringP) {
+	f.Where(p.Field(authparent.FieldParentFirstName))
+}
+
+// WhereParentMiddleName applies the entql string predicate on the parent_middle_name field.
+func (f *AuthParentFilter) WhereParentMiddleName(p entql.StringP) {
+	f.Where(p.Field(authparent.FieldParentMiddleName))
+}
+
+// WhereParentLastName applies the entql string predicate on the parent_last_name field.
+func (f *AuthParentFilter) WhereParentLastName(p entql.StringP) {
+	f.Where(p.Field(authparent.FieldParentLastName))
+}
+
+// WhereParentAddress applies the entql string predicate on the parent_address field.
+func (f *AuthParentFilter) WhereParentAddress(p entql.StringP) {
+	f.Where(p.Field(authparent.FieldParentAddress))
+}
+
+// WhereParentPlace applies the entql string predicate on the parent_place field.
+func (f *AuthParentFilter) WhereParentPlace(p entql.StringP) {
+	f.Where(p.Field(authparent.FieldParentPlace))
+}
+
+// WhereParentState applies the entql string predicate on the parent_state field.
+func (f *AuthParentFilter) WhereParentState(p entql.StringP) {
+	f.Where(p.Field(authparent.FieldParentState))
+}
+
+// WhereParentPin applies the entql string predicate on the parent_pin field.
+func (f *AuthParentFilter) WhereParentPin(p entql.StringP) {
+	f.Where(p.Field(authparent.FieldParentPin))
+}
+
+// WhereParentEmail applies the entql string predicate on the parent_email field.
+func (f *AuthParentFilter) WhereParentEmail(p entql.StringP) {
+	f.Where(p.Field(authparent.FieldParentEmail))
+}
+
+// WhereParentMobile applies the entql string predicate on the parent_mobile field.
+func (f *AuthParentFilter) WhereParentMobile(p entql.StringP) {
+	f.Where(p.Field(authparent.FieldParentMobile))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (asq *AuthStaffQuery) addPredicate(pred func(s *sql.Selector)) {
+	asq.predicates = append(asq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the AuthStaffQuery builder.
+func (asq *AuthStaffQuery) Filter() *AuthStaffFilter {
+	return &AuthStaffFilter{asq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *AuthStaffMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the AuthStaffMutation builder.
+func (m *AuthStaffMutation) Filter() *AuthStaffFilter {
+	return &AuthStaffFilter{m}
+}
+
+// AuthStaffFilter provides a generic filtering capability at runtime for AuthStaffQuery.
+type AuthStaffFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *AuthStaffFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int predicate on the id field.
+func (f *AuthStaffFilter) WhereID(p entql.IntP) {
+	f.Where(p.Field(authstaff.FieldID))
+}
+
+// WhereCreatedAt applies the entql time.Time predicate on the created_at field.
+func (f *AuthStaffFilter) WhereCreatedAt(p entql.TimeP) {
+	f.Where(p.Field(authstaff.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql time.Time predicate on the updated_at field.
+func (f *AuthStaffFilter) WhereUpdatedAt(p entql.TimeP) {
+	f.Where(p.Field(authstaff.FieldUpdatedAt))
+}
+
+// WhereStaffFirstName applies the entql string predicate on the staff_first_name field.
+func (f *AuthStaffFilter) WhereStaffFirstName(p entql.StringP) {
+	f.Where(p.Field(authstaff.FieldStaffFirstName))
+}
+
+// WhereStaffMiddleName applies the entql string predicate on the staff_middle_name field.
+func (f *AuthStaffFilter) WhereStaffMiddleName(p entql.StringP) {
+	f.Where(p.Field(authstaff.FieldStaffMiddleName))
+}
+
+// WhereStaffLastName applies the entql string predicate on the staff_last_name field.
+func (f *AuthStaffFilter) WhereStaffLastName(p entql.StringP) {
+	f.Where(p.Field(authstaff.FieldStaffLastName))
+}
+
+// WhereStaffAddress applies the entql string predicate on the staff_address field.
+func (f *AuthStaffFilter) WhereStaffAddress(p entql.StringP) {
+	f.Where(p.Field(authstaff.FieldStaffAddress))
+}
+
+// WhereStaffPlace applies the entql string predicate on the staff_place field.
+func (f *AuthStaffFilter) WhereStaffPlace(p entql.StringP) {
+	f.Where(p.Field(authstaff.FieldStaffPlace))
+}
+
+// WhereStaffState applies the entql string predicate on the staff_state field.
+func (f *AuthStaffFilter) WhereStaffState(p entql.StringP) {
+	f.Where(p.Field(authstaff.FieldStaffState))
+}
+
+// WhereStaffPin applies the entql string predicate on the staff_pin field.
+func (f *AuthStaffFilter) WhereStaffPin(p entql.StringP) {
+	f.Where(p.Field(authstaff.FieldStaffPin))
+}
+
+// WhereStaffEmail applies the entql string predicate on the staff_email field.
+func (f *AuthStaffFilter) WhereStaffEmail(p entql.StringP) {
+	f.Where(p.Field(authstaff.FieldStaffEmail))
+}
+
+// WhereStaffMobile applies the entql string predicate on the staff_mobile field.
+func (f *AuthStaffFilter) WhereStaffMobile(p entql.StringP) {
+	f.Where(p.Field(authstaff.FieldStaffMobile))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (mcq *MstCustomerQuery) addPredicate(pred func(s *sql.Selector)) {
 	mcq.predicates = append(mcq.predicates, pred)
 }
@@ -145,7 +406,7 @@ type MstCustomerFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MstCustomerFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -298,7 +559,7 @@ type MstInstFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MstInstFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -426,4 +687,88 @@ func (f *MstInstFilter) WhereHasInstfromCustWith(preds ...predicate.MstCustomer)
 			p(s)
 		}
 	})))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (msq *MstStudentQuery) addPredicate(pred func(s *sql.Selector)) {
+	msq.predicates = append(msq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the MstStudentQuery builder.
+func (msq *MstStudentQuery) Filter() *MstStudentFilter {
+	return &MstStudentFilter{msq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *MstStudentMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the MstStudentMutation builder.
+func (m *MstStudentMutation) Filter() *MstStudentFilter {
+	return &MstStudentFilter{m}
+}
+
+// MstStudentFilter provides a generic filtering capability at runtime for MstStudentQuery.
+type MstStudentFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *MstStudentFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int predicate on the id field.
+func (f *MstStudentFilter) WhereID(p entql.IntP) {
+	f.Where(p.Field(mststudent.FieldID))
+}
+
+// WhereCreatedAt applies the entql time.Time predicate on the created_at field.
+func (f *MstStudentFilter) WhereCreatedAt(p entql.TimeP) {
+	f.Where(p.Field(mststudent.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql time.Time predicate on the updated_at field.
+func (f *MstStudentFilter) WhereUpdatedAt(p entql.TimeP) {
+	f.Where(p.Field(mststudent.FieldUpdatedAt))
+}
+
+// WhereStdFirstName applies the entql string predicate on the std_first_name field.
+func (f *MstStudentFilter) WhereStdFirstName(p entql.StringP) {
+	f.Where(p.Field(mststudent.FieldStdFirstName))
+}
+
+// WhereStdMiddleName applies the entql string predicate on the std_middle_name field.
+func (f *MstStudentFilter) WhereStdMiddleName(p entql.StringP) {
+	f.Where(p.Field(mststudent.FieldStdMiddleName))
+}
+
+// WhereStdLastName applies the entql string predicate on the std_last_name field.
+func (f *MstStudentFilter) WhereStdLastName(p entql.StringP) {
+	f.Where(p.Field(mststudent.FieldStdLastName))
+}
+
+// WhereStdStudying applies the entql bool predicate on the std_studying field.
+func (f *MstStudentFilter) WhereStdStudying(p entql.BoolP) {
+	f.Where(p.Field(mststudent.FieldStdStudying))
+}
+
+// WhereStdStatus applies the entql string predicate on the std_status field.
+func (f *MstStudentFilter) WhereStdStatus(p entql.StringP) {
+	f.Where(p.Field(mststudent.FieldStdStatus))
+}
+
+// WhereStdSex applies the entql string predicate on the std_sex field.
+func (f *MstStudentFilter) WhereStdSex(p entql.StringP) {
+	f.Where(p.Field(mststudent.FieldStdSex))
+}
+
+// WhereStdRegNo applies the entql string predicate on the std_reg_no field.
+func (f *MstStudentFilter) WhereStdRegNo(p entql.StringP) {
+	f.Where(p.Field(mststudent.FieldStdRegNo))
 }

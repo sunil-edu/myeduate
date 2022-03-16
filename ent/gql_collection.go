@@ -10,6 +10,30 @@ import (
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ap *AuthParentQuery) CollectFields(ctx context.Context, satisfies ...string) *AuthParentQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		ap = ap.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return ap
+}
+
+func (ap *AuthParentQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *AuthParentQuery {
+	return ap
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (as *AuthStaffQuery) CollectFields(ctx context.Context, satisfies ...string) *AuthStaffQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		as = as.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return as
+}
+
+func (as *AuthStaffQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *AuthStaffQuery {
+	return as
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (mc *MstCustomerQuery) CollectFields(ctx context.Context, satisfies ...string) *MstCustomerQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		mc = mc.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
@@ -47,4 +71,16 @@ func (mi *MstInstQuery) collectField(ctx *graphql.OperationContext, field graphq
 		}
 	}
 	return mi
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ms *MstStudentQuery) CollectFields(ctx context.Context, satisfies ...string) *MstStudentQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		ms = ms.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return ms
+}
+
+func (ms *MstStudentQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *MstStudentQuery {
+	return ms
 }

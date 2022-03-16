@@ -8,6 +8,206 @@ import (
 	"time"
 )
 
+// CreateAuthParentInput represents a mutation input for creating authparents.
+type CreateAuthParentInput struct {
+	CreatedAt        *time.Time
+	UpdatedAt        *time.Time
+	ParentFirstName  string
+	ParentMiddleName string
+	ParentLastName   string
+	ParentAddress    string
+	ParentPlace      string
+	ParentState      string
+	ParentPin        string
+	ParentEmail      string
+	ParentMobile     string
+}
+
+// Mutate applies the CreateAuthParentInput on the AuthParentCreate builder.
+func (i *CreateAuthParentInput) Mutate(m *AuthParentCreate) {
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	m.SetParentFirstName(i.ParentFirstName)
+	m.SetParentMiddleName(i.ParentMiddleName)
+	m.SetParentLastName(i.ParentLastName)
+	m.SetParentAddress(i.ParentAddress)
+	m.SetParentPlace(i.ParentPlace)
+	m.SetParentState(i.ParentState)
+	m.SetParentPin(i.ParentPin)
+	m.SetParentEmail(i.ParentEmail)
+	m.SetParentMobile(i.ParentMobile)
+}
+
+// SetInput applies the change-set in the CreateAuthParentInput on the create builder.
+func (c *AuthParentCreate) SetInput(i CreateAuthParentInput) *AuthParentCreate {
+	i.Mutate(c)
+	return c
+}
+
+// UpdateAuthParentInput represents a mutation input for updating authparents.
+type UpdateAuthParentInput struct {
+	UpdatedAt        *time.Time
+	ParentFirstName  *string
+	ParentMiddleName *string
+	ParentLastName   *string
+	ParentAddress    *string
+	ParentPlace      *string
+	ParentState      *string
+	ParentPin        *string
+	ParentEmail      *string
+	ParentMobile     *string
+}
+
+// Mutate applies the UpdateAuthParentInput on the AuthParentMutation.
+func (i *UpdateAuthParentInput) Mutate(m *AuthParentMutation) {
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.ParentFirstName; v != nil {
+		m.SetParentFirstName(*v)
+	}
+	if v := i.ParentMiddleName; v != nil {
+		m.SetParentMiddleName(*v)
+	}
+	if v := i.ParentLastName; v != nil {
+		m.SetParentLastName(*v)
+	}
+	if v := i.ParentAddress; v != nil {
+		m.SetParentAddress(*v)
+	}
+	if v := i.ParentPlace; v != nil {
+		m.SetParentPlace(*v)
+	}
+	if v := i.ParentState; v != nil {
+		m.SetParentState(*v)
+	}
+	if v := i.ParentPin; v != nil {
+		m.SetParentPin(*v)
+	}
+	if v := i.ParentEmail; v != nil {
+		m.SetParentEmail(*v)
+	}
+	if v := i.ParentMobile; v != nil {
+		m.SetParentMobile(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateAuthParentInput on the update builder.
+func (u *AuthParentUpdate) SetInput(i UpdateAuthParentInput) *AuthParentUpdate {
+	i.Mutate(u.Mutation())
+	return u
+}
+
+// SetInput applies the change-set in the UpdateAuthParentInput on the update-one builder.
+func (u *AuthParentUpdateOne) SetInput(i UpdateAuthParentInput) *AuthParentUpdateOne {
+	i.Mutate(u.Mutation())
+	return u
+}
+
+// CreateAuthStaffInput represents a mutation input for creating authstaffs.
+type CreateAuthStaffInput struct {
+	CreatedAt       *time.Time
+	UpdatedAt       *time.Time
+	StaffFirstName  string
+	StaffMiddleName string
+	StaffLastName   string
+	StaffAddress    string
+	StaffPlace      string
+	StaffState      string
+	StaffPin        string
+	StaffEmail      string
+	StaffMobile     string
+}
+
+// Mutate applies the CreateAuthStaffInput on the AuthStaffCreate builder.
+func (i *CreateAuthStaffInput) Mutate(m *AuthStaffCreate) {
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	m.SetStaffFirstName(i.StaffFirstName)
+	m.SetStaffMiddleName(i.StaffMiddleName)
+	m.SetStaffLastName(i.StaffLastName)
+	m.SetStaffAddress(i.StaffAddress)
+	m.SetStaffPlace(i.StaffPlace)
+	m.SetStaffState(i.StaffState)
+	m.SetStaffPin(i.StaffPin)
+	m.SetStaffEmail(i.StaffEmail)
+	m.SetStaffMobile(i.StaffMobile)
+}
+
+// SetInput applies the change-set in the CreateAuthStaffInput on the create builder.
+func (c *AuthStaffCreate) SetInput(i CreateAuthStaffInput) *AuthStaffCreate {
+	i.Mutate(c)
+	return c
+}
+
+// UpdateAuthStaffInput represents a mutation input for updating authstaffs.
+type UpdateAuthStaffInput struct {
+	UpdatedAt       *time.Time
+	StaffFirstName  *string
+	StaffMiddleName *string
+	StaffLastName   *string
+	StaffAddress    *string
+	StaffPlace      *string
+	StaffState      *string
+	StaffPin        *string
+	StaffEmail      *string
+	StaffMobile     *string
+}
+
+// Mutate applies the UpdateAuthStaffInput on the AuthStaffMutation.
+func (i *UpdateAuthStaffInput) Mutate(m *AuthStaffMutation) {
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.StaffFirstName; v != nil {
+		m.SetStaffFirstName(*v)
+	}
+	if v := i.StaffMiddleName; v != nil {
+		m.SetStaffMiddleName(*v)
+	}
+	if v := i.StaffLastName; v != nil {
+		m.SetStaffLastName(*v)
+	}
+	if v := i.StaffAddress; v != nil {
+		m.SetStaffAddress(*v)
+	}
+	if v := i.StaffPlace; v != nil {
+		m.SetStaffPlace(*v)
+	}
+	if v := i.StaffState; v != nil {
+		m.SetStaffState(*v)
+	}
+	if v := i.StaffPin; v != nil {
+		m.SetStaffPin(*v)
+	}
+	if v := i.StaffEmail; v != nil {
+		m.SetStaffEmail(*v)
+	}
+	if v := i.StaffMobile; v != nil {
+		m.SetStaffMobile(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateAuthStaffInput on the update builder.
+func (u *AuthStaffUpdate) SetInput(i UpdateAuthStaffInput) *AuthStaffUpdate {
+	i.Mutate(u.Mutation())
+	return u
+}
+
+// SetInput applies the change-set in the UpdateAuthStaffInput on the update-one builder.
+func (u *AuthStaffUpdateOne) SetInput(i UpdateAuthStaffInput) *AuthStaffUpdateOne {
+	i.Mutate(u.Mutation())
+	return u
+}
+
 // CreateMstCustomerInput represents a mutation input for creating mstcustomers.
 type CreateMstCustomerInput struct {
 	CreatedAt         *time.Time
@@ -346,6 +546,98 @@ func (u *MstInstUpdate) SetInput(i UpdateMstInstInput) *MstInstUpdate {
 
 // SetInput applies the change-set in the UpdateMstInstInput on the update-one builder.
 func (u *MstInstUpdateOne) SetInput(i UpdateMstInstInput) *MstInstUpdateOne {
+	i.Mutate(u.Mutation())
+	return u
+}
+
+// CreateMstStudentInput represents a mutation input for creating mststudents.
+type CreateMstStudentInput struct {
+	CreatedAt     *time.Time
+	UpdatedAt     *time.Time
+	StdFirstName  string
+	StdMiddleName string
+	StdLastName   string
+	StdStudying   *bool
+	StdStatus     *customtypes.StdStatus
+	StdSex        customtypes.Sex
+	StdRegNo      string
+}
+
+// Mutate applies the CreateMstStudentInput on the MstStudentCreate builder.
+func (i *CreateMstStudentInput) Mutate(m *MstStudentCreate) {
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	m.SetStdFirstName(i.StdFirstName)
+	m.SetStdMiddleName(i.StdMiddleName)
+	m.SetStdLastName(i.StdLastName)
+	if v := i.StdStudying; v != nil {
+		m.SetStdStudying(*v)
+	}
+	if v := i.StdStatus; v != nil {
+		m.SetStdStatus(*v)
+	}
+	m.SetStdSex(i.StdSex)
+	m.SetStdRegNo(i.StdRegNo)
+}
+
+// SetInput applies the change-set in the CreateMstStudentInput on the create builder.
+func (c *MstStudentCreate) SetInput(i CreateMstStudentInput) *MstStudentCreate {
+	i.Mutate(c)
+	return c
+}
+
+// UpdateMstStudentInput represents a mutation input for updating mststudents.
+type UpdateMstStudentInput struct {
+	UpdatedAt     *time.Time
+	StdFirstName  *string
+	StdMiddleName *string
+	StdLastName   *string
+	StdStudying   *bool
+	StdStatus     *customtypes.StdStatus
+	StdSex        *customtypes.Sex
+	StdRegNo      *string
+}
+
+// Mutate applies the UpdateMstStudentInput on the MstStudentMutation.
+func (i *UpdateMstStudentInput) Mutate(m *MstStudentMutation) {
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.StdFirstName; v != nil {
+		m.SetStdFirstName(*v)
+	}
+	if v := i.StdMiddleName; v != nil {
+		m.SetStdMiddleName(*v)
+	}
+	if v := i.StdLastName; v != nil {
+		m.SetStdLastName(*v)
+	}
+	if v := i.StdStudying; v != nil {
+		m.SetStdStudying(*v)
+	}
+	if v := i.StdStatus; v != nil {
+		m.SetStdStatus(*v)
+	}
+	if v := i.StdSex; v != nil {
+		m.SetStdSex(*v)
+	}
+	if v := i.StdRegNo; v != nil {
+		m.SetStdRegNo(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateMstStudentInput on the update builder.
+func (u *MstStudentUpdate) SetInput(i UpdateMstStudentInput) *MstStudentUpdate {
+	i.Mutate(u.Mutation())
+	return u
+}
+
+// SetInput applies the change-set in the UpdateMstStudentInput on the update-one builder.
+func (u *MstStudentUpdateOne) SetInput(i UpdateMstStudentInput) *MstStudentUpdateOne {
 	i.Mutate(u.Mutation())
 	return u
 }

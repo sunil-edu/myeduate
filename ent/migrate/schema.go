@@ -9,6 +9,48 @@ import (
 )
 
 var (
+	// AuthParentsColumns holds the columns for the "auth_parents" table.
+	AuthParentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "parent_first_name", Type: field.TypeString},
+		{Name: "parent_middle_name", Type: field.TypeString},
+		{Name: "parent_last_name", Type: field.TypeString},
+		{Name: "parent_address", Type: field.TypeString},
+		{Name: "parent_place", Type: field.TypeString},
+		{Name: "parent_state", Type: field.TypeString},
+		{Name: "parent_pin", Type: field.TypeString},
+		{Name: "parent_email", Type: field.TypeString, Unique: true},
+		{Name: "parent_mobile", Type: field.TypeString, Unique: true},
+	}
+	// AuthParentsTable holds the schema information for the "auth_parents" table.
+	AuthParentsTable = &schema.Table{
+		Name:       "auth_parents",
+		Columns:    AuthParentsColumns,
+		PrimaryKey: []*schema.Column{AuthParentsColumns[0]},
+	}
+	// AuthStaffsColumns holds the columns for the "auth_staffs" table.
+	AuthStaffsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "staff_first_name", Type: field.TypeString},
+		{Name: "staff_middle_name", Type: field.TypeString},
+		{Name: "staff_last_name", Type: field.TypeString},
+		{Name: "staff_address", Type: field.TypeString},
+		{Name: "staff_place", Type: field.TypeString},
+		{Name: "staff_state", Type: field.TypeString},
+		{Name: "staff_pin", Type: field.TypeString},
+		{Name: "staff_email", Type: field.TypeString, Unique: true},
+		{Name: "staff_mobile", Type: field.TypeString, Unique: true},
+	}
+	// AuthStaffsTable holds the schema information for the "auth_staffs" table.
+	AuthStaffsTable = &schema.Table{
+		Name:       "auth_staffs",
+		Columns:    AuthStaffsColumns,
+		PrimaryKey: []*schema.Column{AuthStaffsColumns[0]},
+	}
 	// MstCustomersColumns holds the columns for the "mst_customers" table.
 	MstCustomersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -62,7 +104,7 @@ var (
 		{Name: "inst_is_active", Type: field.TypeEnum, Enums: []string{"ACTIVE", "INACTIVE"}, Default: "ACTIVE"},
 		{Name: "inst_status", Type: field.TypeString},
 		{Name: "inst_time_zone", Type: field.TypeTime, SchemaType: map[string]string{"postgres": "DATE"}},
-		{Name: "customer_id", Type: field.TypeInt, Nullable: true},
+		{Name: "customer_id", Type: field.TypeInt},
 	}
 	// MstInstsTable holds the schema information for the "mst_insts" table.
 	MstInstsTable = &schema.Table{
@@ -74,14 +116,36 @@ var (
 				Symbol:     "mst_insts_mst_customers_Cust2Inst",
 				Columns:    []*schema.Column{MstInstsColumns[21]},
 				RefColumns: []*schema.Column{MstCustomersColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
+	// MstStudentsColumns holds the columns for the "mst_students" table.
+	MstStudentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "std_first_name", Type: field.TypeString},
+		{Name: "std_middle_name", Type: field.TypeString},
+		{Name: "std_last_name", Type: field.TypeString},
+		{Name: "std_studying", Type: field.TypeBool, Default: true},
+		{Name: "std_status", Type: field.TypeEnum, Enums: []string{"CUR", "TC", "DET", "NE"}, Default: "CUR"},
+		{Name: "std_sex", Type: field.TypeEnum, Enums: []string{"MALE", "FEMALE"}},
+		{Name: "std_reg_no", Type: field.TypeString},
+	}
+	// MstStudentsTable holds the schema information for the "mst_students" table.
+	MstStudentsTable = &schema.Table{
+		Name:       "mst_students",
+		Columns:    MstStudentsColumns,
+		PrimaryKey: []*schema.Column{MstStudentsColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AuthParentsTable,
+		AuthStaffsTable,
 		MstCustomersTable,
 		MstInstsTable,
+		MstStudentsTable,
 	}
 )
 

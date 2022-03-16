@@ -5,12 +5,1345 @@ package ent
 
 import (
 	"fmt"
+	"myeduate/ent/authparent"
+	"myeduate/ent/authstaff"
 	"myeduate/ent/customtypes"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
+	"myeduate/ent/mststudent"
 	"myeduate/ent/predicate"
 	"time"
 )
+
+// AuthParentWhereInput represents a where input for filtering AuthParent queries.
+type AuthParentWhereInput struct {
+	Not *AuthParentWhereInput   `json:"not,omitempty"`
+	Or  []*AuthParentWhereInput `json:"or,omitempty"`
+	And []*AuthParentWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "parent_first_name" field predicates.
+	ParentFirstName             *string  `json:"parentFirstName,omitempty"`
+	ParentFirstNameNEQ          *string  `json:"parentFirstNameNEQ,omitempty"`
+	ParentFirstNameIn           []string `json:"parentFirstNameIn,omitempty"`
+	ParentFirstNameNotIn        []string `json:"parentFirstNameNotIn,omitempty"`
+	ParentFirstNameGT           *string  `json:"parentFirstNameGT,omitempty"`
+	ParentFirstNameGTE          *string  `json:"parentFirstNameGTE,omitempty"`
+	ParentFirstNameLT           *string  `json:"parentFirstNameLT,omitempty"`
+	ParentFirstNameLTE          *string  `json:"parentFirstNameLTE,omitempty"`
+	ParentFirstNameContains     *string  `json:"parentFirstNameContains,omitempty"`
+	ParentFirstNameHasPrefix    *string  `json:"parentFirstNameHasPrefix,omitempty"`
+	ParentFirstNameHasSuffix    *string  `json:"parentFirstNameHasSuffix,omitempty"`
+	ParentFirstNameEqualFold    *string  `json:"parentFirstNameEqualFold,omitempty"`
+	ParentFirstNameContainsFold *string  `json:"parentFirstNameContainsFold,omitempty"`
+
+	// "parent_middle_name" field predicates.
+	ParentMiddleName             *string  `json:"parentMiddleName,omitempty"`
+	ParentMiddleNameNEQ          *string  `json:"parentMiddleNameNEQ,omitempty"`
+	ParentMiddleNameIn           []string `json:"parentMiddleNameIn,omitempty"`
+	ParentMiddleNameNotIn        []string `json:"parentMiddleNameNotIn,omitempty"`
+	ParentMiddleNameGT           *string  `json:"parentMiddleNameGT,omitempty"`
+	ParentMiddleNameGTE          *string  `json:"parentMiddleNameGTE,omitempty"`
+	ParentMiddleNameLT           *string  `json:"parentMiddleNameLT,omitempty"`
+	ParentMiddleNameLTE          *string  `json:"parentMiddleNameLTE,omitempty"`
+	ParentMiddleNameContains     *string  `json:"parentMiddleNameContains,omitempty"`
+	ParentMiddleNameHasPrefix    *string  `json:"parentMiddleNameHasPrefix,omitempty"`
+	ParentMiddleNameHasSuffix    *string  `json:"parentMiddleNameHasSuffix,omitempty"`
+	ParentMiddleNameEqualFold    *string  `json:"parentMiddleNameEqualFold,omitempty"`
+	ParentMiddleNameContainsFold *string  `json:"parentMiddleNameContainsFold,omitempty"`
+
+	// "parent_last_name" field predicates.
+	ParentLastName             *string  `json:"parentLastName,omitempty"`
+	ParentLastNameNEQ          *string  `json:"parentLastNameNEQ,omitempty"`
+	ParentLastNameIn           []string `json:"parentLastNameIn,omitempty"`
+	ParentLastNameNotIn        []string `json:"parentLastNameNotIn,omitempty"`
+	ParentLastNameGT           *string  `json:"parentLastNameGT,omitempty"`
+	ParentLastNameGTE          *string  `json:"parentLastNameGTE,omitempty"`
+	ParentLastNameLT           *string  `json:"parentLastNameLT,omitempty"`
+	ParentLastNameLTE          *string  `json:"parentLastNameLTE,omitempty"`
+	ParentLastNameContains     *string  `json:"parentLastNameContains,omitempty"`
+	ParentLastNameHasPrefix    *string  `json:"parentLastNameHasPrefix,omitempty"`
+	ParentLastNameHasSuffix    *string  `json:"parentLastNameHasSuffix,omitempty"`
+	ParentLastNameEqualFold    *string  `json:"parentLastNameEqualFold,omitempty"`
+	ParentLastNameContainsFold *string  `json:"parentLastNameContainsFold,omitempty"`
+
+	// "parent_address" field predicates.
+	ParentAddress             *string  `json:"parentAddress,omitempty"`
+	ParentAddressNEQ          *string  `json:"parentAddressNEQ,omitempty"`
+	ParentAddressIn           []string `json:"parentAddressIn,omitempty"`
+	ParentAddressNotIn        []string `json:"parentAddressNotIn,omitempty"`
+	ParentAddressGT           *string  `json:"parentAddressGT,omitempty"`
+	ParentAddressGTE          *string  `json:"parentAddressGTE,omitempty"`
+	ParentAddressLT           *string  `json:"parentAddressLT,omitempty"`
+	ParentAddressLTE          *string  `json:"parentAddressLTE,omitempty"`
+	ParentAddressContains     *string  `json:"parentAddressContains,omitempty"`
+	ParentAddressHasPrefix    *string  `json:"parentAddressHasPrefix,omitempty"`
+	ParentAddressHasSuffix    *string  `json:"parentAddressHasSuffix,omitempty"`
+	ParentAddressEqualFold    *string  `json:"parentAddressEqualFold,omitempty"`
+	ParentAddressContainsFold *string  `json:"parentAddressContainsFold,omitempty"`
+
+	// "parent_place" field predicates.
+	ParentPlace             *string  `json:"parentPlace,omitempty"`
+	ParentPlaceNEQ          *string  `json:"parentPlaceNEQ,omitempty"`
+	ParentPlaceIn           []string `json:"parentPlaceIn,omitempty"`
+	ParentPlaceNotIn        []string `json:"parentPlaceNotIn,omitempty"`
+	ParentPlaceGT           *string  `json:"parentPlaceGT,omitempty"`
+	ParentPlaceGTE          *string  `json:"parentPlaceGTE,omitempty"`
+	ParentPlaceLT           *string  `json:"parentPlaceLT,omitempty"`
+	ParentPlaceLTE          *string  `json:"parentPlaceLTE,omitempty"`
+	ParentPlaceContains     *string  `json:"parentPlaceContains,omitempty"`
+	ParentPlaceHasPrefix    *string  `json:"parentPlaceHasPrefix,omitempty"`
+	ParentPlaceHasSuffix    *string  `json:"parentPlaceHasSuffix,omitempty"`
+	ParentPlaceEqualFold    *string  `json:"parentPlaceEqualFold,omitempty"`
+	ParentPlaceContainsFold *string  `json:"parentPlaceContainsFold,omitempty"`
+
+	// "parent_state" field predicates.
+	ParentState             *string  `json:"parentState,omitempty"`
+	ParentStateNEQ          *string  `json:"parentStateNEQ,omitempty"`
+	ParentStateIn           []string `json:"parentStateIn,omitempty"`
+	ParentStateNotIn        []string `json:"parentStateNotIn,omitempty"`
+	ParentStateGT           *string  `json:"parentStateGT,omitempty"`
+	ParentStateGTE          *string  `json:"parentStateGTE,omitempty"`
+	ParentStateLT           *string  `json:"parentStateLT,omitempty"`
+	ParentStateLTE          *string  `json:"parentStateLTE,omitempty"`
+	ParentStateContains     *string  `json:"parentStateContains,omitempty"`
+	ParentStateHasPrefix    *string  `json:"parentStateHasPrefix,omitempty"`
+	ParentStateHasSuffix    *string  `json:"parentStateHasSuffix,omitempty"`
+	ParentStateEqualFold    *string  `json:"parentStateEqualFold,omitempty"`
+	ParentStateContainsFold *string  `json:"parentStateContainsFold,omitempty"`
+
+	// "parent_pin" field predicates.
+	ParentPin             *string  `json:"parentPin,omitempty"`
+	ParentPinNEQ          *string  `json:"parentPinNEQ,omitempty"`
+	ParentPinIn           []string `json:"parentPinIn,omitempty"`
+	ParentPinNotIn        []string `json:"parentPinNotIn,omitempty"`
+	ParentPinGT           *string  `json:"parentPinGT,omitempty"`
+	ParentPinGTE          *string  `json:"parentPinGTE,omitempty"`
+	ParentPinLT           *string  `json:"parentPinLT,omitempty"`
+	ParentPinLTE          *string  `json:"parentPinLTE,omitempty"`
+	ParentPinContains     *string  `json:"parentPinContains,omitempty"`
+	ParentPinHasPrefix    *string  `json:"parentPinHasPrefix,omitempty"`
+	ParentPinHasSuffix    *string  `json:"parentPinHasSuffix,omitempty"`
+	ParentPinEqualFold    *string  `json:"parentPinEqualFold,omitempty"`
+	ParentPinContainsFold *string  `json:"parentPinContainsFold,omitempty"`
+
+	// "parent_email" field predicates.
+	ParentEmail             *string  `json:"parentEmail,omitempty"`
+	ParentEmailNEQ          *string  `json:"parentEmailNEQ,omitempty"`
+	ParentEmailIn           []string `json:"parentEmailIn,omitempty"`
+	ParentEmailNotIn        []string `json:"parentEmailNotIn,omitempty"`
+	ParentEmailGT           *string  `json:"parentEmailGT,omitempty"`
+	ParentEmailGTE          *string  `json:"parentEmailGTE,omitempty"`
+	ParentEmailLT           *string  `json:"parentEmailLT,omitempty"`
+	ParentEmailLTE          *string  `json:"parentEmailLTE,omitempty"`
+	ParentEmailContains     *string  `json:"parentEmailContains,omitempty"`
+	ParentEmailHasPrefix    *string  `json:"parentEmailHasPrefix,omitempty"`
+	ParentEmailHasSuffix    *string  `json:"parentEmailHasSuffix,omitempty"`
+	ParentEmailEqualFold    *string  `json:"parentEmailEqualFold,omitempty"`
+	ParentEmailContainsFold *string  `json:"parentEmailContainsFold,omitempty"`
+
+	// "parent_mobile" field predicates.
+	ParentMobile             *string  `json:"parentMobile,omitempty"`
+	ParentMobileNEQ          *string  `json:"parentMobileNEQ,omitempty"`
+	ParentMobileIn           []string `json:"parentMobileIn,omitempty"`
+	ParentMobileNotIn        []string `json:"parentMobileNotIn,omitempty"`
+	ParentMobileGT           *string  `json:"parentMobileGT,omitempty"`
+	ParentMobileGTE          *string  `json:"parentMobileGTE,omitempty"`
+	ParentMobileLT           *string  `json:"parentMobileLT,omitempty"`
+	ParentMobileLTE          *string  `json:"parentMobileLTE,omitempty"`
+	ParentMobileContains     *string  `json:"parentMobileContains,omitempty"`
+	ParentMobileHasPrefix    *string  `json:"parentMobileHasPrefix,omitempty"`
+	ParentMobileHasSuffix    *string  `json:"parentMobileHasSuffix,omitempty"`
+	ParentMobileEqualFold    *string  `json:"parentMobileEqualFold,omitempty"`
+	ParentMobileContainsFold *string  `json:"parentMobileContainsFold,omitempty"`
+}
+
+// Filter applies the AuthParentWhereInput filter on the AuthParentQuery builder.
+func (i *AuthParentWhereInput) Filter(q *AuthParentQuery) (*AuthParentQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// P returns a predicate for filtering authparents.
+// An error is returned if the input is empty or invalid.
+func (i *AuthParentWhereInput) P() (predicate.AuthParent, error) {
+	var predicates []predicate.AuthParent
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, authparent.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.AuthParent, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, authparent.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.AuthParent, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, authparent.And(and...))
+	}
+	if i.ID != nil {
+		predicates = append(predicates, authparent.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, authparent.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, authparent.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, authparent.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, authparent.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, authparent.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, authparent.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, authparent.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, authparent.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, authparent.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, authparent.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, authparent.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, authparent.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, authparent.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, authparent.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, authparent.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, authparent.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, authparent.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, authparent.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, authparent.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, authparent.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, authparent.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, authparent.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, authparent.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.ParentFirstName != nil {
+		predicates = append(predicates, authparent.ParentFirstNameEQ(*i.ParentFirstName))
+	}
+	if i.ParentFirstNameNEQ != nil {
+		predicates = append(predicates, authparent.ParentFirstNameNEQ(*i.ParentFirstNameNEQ))
+	}
+	if len(i.ParentFirstNameIn) > 0 {
+		predicates = append(predicates, authparent.ParentFirstNameIn(i.ParentFirstNameIn...))
+	}
+	if len(i.ParentFirstNameNotIn) > 0 {
+		predicates = append(predicates, authparent.ParentFirstNameNotIn(i.ParentFirstNameNotIn...))
+	}
+	if i.ParentFirstNameGT != nil {
+		predicates = append(predicates, authparent.ParentFirstNameGT(*i.ParentFirstNameGT))
+	}
+	if i.ParentFirstNameGTE != nil {
+		predicates = append(predicates, authparent.ParentFirstNameGTE(*i.ParentFirstNameGTE))
+	}
+	if i.ParentFirstNameLT != nil {
+		predicates = append(predicates, authparent.ParentFirstNameLT(*i.ParentFirstNameLT))
+	}
+	if i.ParentFirstNameLTE != nil {
+		predicates = append(predicates, authparent.ParentFirstNameLTE(*i.ParentFirstNameLTE))
+	}
+	if i.ParentFirstNameContains != nil {
+		predicates = append(predicates, authparent.ParentFirstNameContains(*i.ParentFirstNameContains))
+	}
+	if i.ParentFirstNameHasPrefix != nil {
+		predicates = append(predicates, authparent.ParentFirstNameHasPrefix(*i.ParentFirstNameHasPrefix))
+	}
+	if i.ParentFirstNameHasSuffix != nil {
+		predicates = append(predicates, authparent.ParentFirstNameHasSuffix(*i.ParentFirstNameHasSuffix))
+	}
+	if i.ParentFirstNameEqualFold != nil {
+		predicates = append(predicates, authparent.ParentFirstNameEqualFold(*i.ParentFirstNameEqualFold))
+	}
+	if i.ParentFirstNameContainsFold != nil {
+		predicates = append(predicates, authparent.ParentFirstNameContainsFold(*i.ParentFirstNameContainsFold))
+	}
+	if i.ParentMiddleName != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameEQ(*i.ParentMiddleName))
+	}
+	if i.ParentMiddleNameNEQ != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameNEQ(*i.ParentMiddleNameNEQ))
+	}
+	if len(i.ParentMiddleNameIn) > 0 {
+		predicates = append(predicates, authparent.ParentMiddleNameIn(i.ParentMiddleNameIn...))
+	}
+	if len(i.ParentMiddleNameNotIn) > 0 {
+		predicates = append(predicates, authparent.ParentMiddleNameNotIn(i.ParentMiddleNameNotIn...))
+	}
+	if i.ParentMiddleNameGT != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameGT(*i.ParentMiddleNameGT))
+	}
+	if i.ParentMiddleNameGTE != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameGTE(*i.ParentMiddleNameGTE))
+	}
+	if i.ParentMiddleNameLT != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameLT(*i.ParentMiddleNameLT))
+	}
+	if i.ParentMiddleNameLTE != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameLTE(*i.ParentMiddleNameLTE))
+	}
+	if i.ParentMiddleNameContains != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameContains(*i.ParentMiddleNameContains))
+	}
+	if i.ParentMiddleNameHasPrefix != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameHasPrefix(*i.ParentMiddleNameHasPrefix))
+	}
+	if i.ParentMiddleNameHasSuffix != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameHasSuffix(*i.ParentMiddleNameHasSuffix))
+	}
+	if i.ParentMiddleNameEqualFold != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameEqualFold(*i.ParentMiddleNameEqualFold))
+	}
+	if i.ParentMiddleNameContainsFold != nil {
+		predicates = append(predicates, authparent.ParentMiddleNameContainsFold(*i.ParentMiddleNameContainsFold))
+	}
+	if i.ParentLastName != nil {
+		predicates = append(predicates, authparent.ParentLastNameEQ(*i.ParentLastName))
+	}
+	if i.ParentLastNameNEQ != nil {
+		predicates = append(predicates, authparent.ParentLastNameNEQ(*i.ParentLastNameNEQ))
+	}
+	if len(i.ParentLastNameIn) > 0 {
+		predicates = append(predicates, authparent.ParentLastNameIn(i.ParentLastNameIn...))
+	}
+	if len(i.ParentLastNameNotIn) > 0 {
+		predicates = append(predicates, authparent.ParentLastNameNotIn(i.ParentLastNameNotIn...))
+	}
+	if i.ParentLastNameGT != nil {
+		predicates = append(predicates, authparent.ParentLastNameGT(*i.ParentLastNameGT))
+	}
+	if i.ParentLastNameGTE != nil {
+		predicates = append(predicates, authparent.ParentLastNameGTE(*i.ParentLastNameGTE))
+	}
+	if i.ParentLastNameLT != nil {
+		predicates = append(predicates, authparent.ParentLastNameLT(*i.ParentLastNameLT))
+	}
+	if i.ParentLastNameLTE != nil {
+		predicates = append(predicates, authparent.ParentLastNameLTE(*i.ParentLastNameLTE))
+	}
+	if i.ParentLastNameContains != nil {
+		predicates = append(predicates, authparent.ParentLastNameContains(*i.ParentLastNameContains))
+	}
+	if i.ParentLastNameHasPrefix != nil {
+		predicates = append(predicates, authparent.ParentLastNameHasPrefix(*i.ParentLastNameHasPrefix))
+	}
+	if i.ParentLastNameHasSuffix != nil {
+		predicates = append(predicates, authparent.ParentLastNameHasSuffix(*i.ParentLastNameHasSuffix))
+	}
+	if i.ParentLastNameEqualFold != nil {
+		predicates = append(predicates, authparent.ParentLastNameEqualFold(*i.ParentLastNameEqualFold))
+	}
+	if i.ParentLastNameContainsFold != nil {
+		predicates = append(predicates, authparent.ParentLastNameContainsFold(*i.ParentLastNameContainsFold))
+	}
+	if i.ParentAddress != nil {
+		predicates = append(predicates, authparent.ParentAddressEQ(*i.ParentAddress))
+	}
+	if i.ParentAddressNEQ != nil {
+		predicates = append(predicates, authparent.ParentAddressNEQ(*i.ParentAddressNEQ))
+	}
+	if len(i.ParentAddressIn) > 0 {
+		predicates = append(predicates, authparent.ParentAddressIn(i.ParentAddressIn...))
+	}
+	if len(i.ParentAddressNotIn) > 0 {
+		predicates = append(predicates, authparent.ParentAddressNotIn(i.ParentAddressNotIn...))
+	}
+	if i.ParentAddressGT != nil {
+		predicates = append(predicates, authparent.ParentAddressGT(*i.ParentAddressGT))
+	}
+	if i.ParentAddressGTE != nil {
+		predicates = append(predicates, authparent.ParentAddressGTE(*i.ParentAddressGTE))
+	}
+	if i.ParentAddressLT != nil {
+		predicates = append(predicates, authparent.ParentAddressLT(*i.ParentAddressLT))
+	}
+	if i.ParentAddressLTE != nil {
+		predicates = append(predicates, authparent.ParentAddressLTE(*i.ParentAddressLTE))
+	}
+	if i.ParentAddressContains != nil {
+		predicates = append(predicates, authparent.ParentAddressContains(*i.ParentAddressContains))
+	}
+	if i.ParentAddressHasPrefix != nil {
+		predicates = append(predicates, authparent.ParentAddressHasPrefix(*i.ParentAddressHasPrefix))
+	}
+	if i.ParentAddressHasSuffix != nil {
+		predicates = append(predicates, authparent.ParentAddressHasSuffix(*i.ParentAddressHasSuffix))
+	}
+	if i.ParentAddressEqualFold != nil {
+		predicates = append(predicates, authparent.ParentAddressEqualFold(*i.ParentAddressEqualFold))
+	}
+	if i.ParentAddressContainsFold != nil {
+		predicates = append(predicates, authparent.ParentAddressContainsFold(*i.ParentAddressContainsFold))
+	}
+	if i.ParentPlace != nil {
+		predicates = append(predicates, authparent.ParentPlaceEQ(*i.ParentPlace))
+	}
+	if i.ParentPlaceNEQ != nil {
+		predicates = append(predicates, authparent.ParentPlaceNEQ(*i.ParentPlaceNEQ))
+	}
+	if len(i.ParentPlaceIn) > 0 {
+		predicates = append(predicates, authparent.ParentPlaceIn(i.ParentPlaceIn...))
+	}
+	if len(i.ParentPlaceNotIn) > 0 {
+		predicates = append(predicates, authparent.ParentPlaceNotIn(i.ParentPlaceNotIn...))
+	}
+	if i.ParentPlaceGT != nil {
+		predicates = append(predicates, authparent.ParentPlaceGT(*i.ParentPlaceGT))
+	}
+	if i.ParentPlaceGTE != nil {
+		predicates = append(predicates, authparent.ParentPlaceGTE(*i.ParentPlaceGTE))
+	}
+	if i.ParentPlaceLT != nil {
+		predicates = append(predicates, authparent.ParentPlaceLT(*i.ParentPlaceLT))
+	}
+	if i.ParentPlaceLTE != nil {
+		predicates = append(predicates, authparent.ParentPlaceLTE(*i.ParentPlaceLTE))
+	}
+	if i.ParentPlaceContains != nil {
+		predicates = append(predicates, authparent.ParentPlaceContains(*i.ParentPlaceContains))
+	}
+	if i.ParentPlaceHasPrefix != nil {
+		predicates = append(predicates, authparent.ParentPlaceHasPrefix(*i.ParentPlaceHasPrefix))
+	}
+	if i.ParentPlaceHasSuffix != nil {
+		predicates = append(predicates, authparent.ParentPlaceHasSuffix(*i.ParentPlaceHasSuffix))
+	}
+	if i.ParentPlaceEqualFold != nil {
+		predicates = append(predicates, authparent.ParentPlaceEqualFold(*i.ParentPlaceEqualFold))
+	}
+	if i.ParentPlaceContainsFold != nil {
+		predicates = append(predicates, authparent.ParentPlaceContainsFold(*i.ParentPlaceContainsFold))
+	}
+	if i.ParentState != nil {
+		predicates = append(predicates, authparent.ParentStateEQ(*i.ParentState))
+	}
+	if i.ParentStateNEQ != nil {
+		predicates = append(predicates, authparent.ParentStateNEQ(*i.ParentStateNEQ))
+	}
+	if len(i.ParentStateIn) > 0 {
+		predicates = append(predicates, authparent.ParentStateIn(i.ParentStateIn...))
+	}
+	if len(i.ParentStateNotIn) > 0 {
+		predicates = append(predicates, authparent.ParentStateNotIn(i.ParentStateNotIn...))
+	}
+	if i.ParentStateGT != nil {
+		predicates = append(predicates, authparent.ParentStateGT(*i.ParentStateGT))
+	}
+	if i.ParentStateGTE != nil {
+		predicates = append(predicates, authparent.ParentStateGTE(*i.ParentStateGTE))
+	}
+	if i.ParentStateLT != nil {
+		predicates = append(predicates, authparent.ParentStateLT(*i.ParentStateLT))
+	}
+	if i.ParentStateLTE != nil {
+		predicates = append(predicates, authparent.ParentStateLTE(*i.ParentStateLTE))
+	}
+	if i.ParentStateContains != nil {
+		predicates = append(predicates, authparent.ParentStateContains(*i.ParentStateContains))
+	}
+	if i.ParentStateHasPrefix != nil {
+		predicates = append(predicates, authparent.ParentStateHasPrefix(*i.ParentStateHasPrefix))
+	}
+	if i.ParentStateHasSuffix != nil {
+		predicates = append(predicates, authparent.ParentStateHasSuffix(*i.ParentStateHasSuffix))
+	}
+	if i.ParentStateEqualFold != nil {
+		predicates = append(predicates, authparent.ParentStateEqualFold(*i.ParentStateEqualFold))
+	}
+	if i.ParentStateContainsFold != nil {
+		predicates = append(predicates, authparent.ParentStateContainsFold(*i.ParentStateContainsFold))
+	}
+	if i.ParentPin != nil {
+		predicates = append(predicates, authparent.ParentPinEQ(*i.ParentPin))
+	}
+	if i.ParentPinNEQ != nil {
+		predicates = append(predicates, authparent.ParentPinNEQ(*i.ParentPinNEQ))
+	}
+	if len(i.ParentPinIn) > 0 {
+		predicates = append(predicates, authparent.ParentPinIn(i.ParentPinIn...))
+	}
+	if len(i.ParentPinNotIn) > 0 {
+		predicates = append(predicates, authparent.ParentPinNotIn(i.ParentPinNotIn...))
+	}
+	if i.ParentPinGT != nil {
+		predicates = append(predicates, authparent.ParentPinGT(*i.ParentPinGT))
+	}
+	if i.ParentPinGTE != nil {
+		predicates = append(predicates, authparent.ParentPinGTE(*i.ParentPinGTE))
+	}
+	if i.ParentPinLT != nil {
+		predicates = append(predicates, authparent.ParentPinLT(*i.ParentPinLT))
+	}
+	if i.ParentPinLTE != nil {
+		predicates = append(predicates, authparent.ParentPinLTE(*i.ParentPinLTE))
+	}
+	if i.ParentPinContains != nil {
+		predicates = append(predicates, authparent.ParentPinContains(*i.ParentPinContains))
+	}
+	if i.ParentPinHasPrefix != nil {
+		predicates = append(predicates, authparent.ParentPinHasPrefix(*i.ParentPinHasPrefix))
+	}
+	if i.ParentPinHasSuffix != nil {
+		predicates = append(predicates, authparent.ParentPinHasSuffix(*i.ParentPinHasSuffix))
+	}
+	if i.ParentPinEqualFold != nil {
+		predicates = append(predicates, authparent.ParentPinEqualFold(*i.ParentPinEqualFold))
+	}
+	if i.ParentPinContainsFold != nil {
+		predicates = append(predicates, authparent.ParentPinContainsFold(*i.ParentPinContainsFold))
+	}
+	if i.ParentEmail != nil {
+		predicates = append(predicates, authparent.ParentEmailEQ(*i.ParentEmail))
+	}
+	if i.ParentEmailNEQ != nil {
+		predicates = append(predicates, authparent.ParentEmailNEQ(*i.ParentEmailNEQ))
+	}
+	if len(i.ParentEmailIn) > 0 {
+		predicates = append(predicates, authparent.ParentEmailIn(i.ParentEmailIn...))
+	}
+	if len(i.ParentEmailNotIn) > 0 {
+		predicates = append(predicates, authparent.ParentEmailNotIn(i.ParentEmailNotIn...))
+	}
+	if i.ParentEmailGT != nil {
+		predicates = append(predicates, authparent.ParentEmailGT(*i.ParentEmailGT))
+	}
+	if i.ParentEmailGTE != nil {
+		predicates = append(predicates, authparent.ParentEmailGTE(*i.ParentEmailGTE))
+	}
+	if i.ParentEmailLT != nil {
+		predicates = append(predicates, authparent.ParentEmailLT(*i.ParentEmailLT))
+	}
+	if i.ParentEmailLTE != nil {
+		predicates = append(predicates, authparent.ParentEmailLTE(*i.ParentEmailLTE))
+	}
+	if i.ParentEmailContains != nil {
+		predicates = append(predicates, authparent.ParentEmailContains(*i.ParentEmailContains))
+	}
+	if i.ParentEmailHasPrefix != nil {
+		predicates = append(predicates, authparent.ParentEmailHasPrefix(*i.ParentEmailHasPrefix))
+	}
+	if i.ParentEmailHasSuffix != nil {
+		predicates = append(predicates, authparent.ParentEmailHasSuffix(*i.ParentEmailHasSuffix))
+	}
+	if i.ParentEmailEqualFold != nil {
+		predicates = append(predicates, authparent.ParentEmailEqualFold(*i.ParentEmailEqualFold))
+	}
+	if i.ParentEmailContainsFold != nil {
+		predicates = append(predicates, authparent.ParentEmailContainsFold(*i.ParentEmailContainsFold))
+	}
+	if i.ParentMobile != nil {
+		predicates = append(predicates, authparent.ParentMobileEQ(*i.ParentMobile))
+	}
+	if i.ParentMobileNEQ != nil {
+		predicates = append(predicates, authparent.ParentMobileNEQ(*i.ParentMobileNEQ))
+	}
+	if len(i.ParentMobileIn) > 0 {
+		predicates = append(predicates, authparent.ParentMobileIn(i.ParentMobileIn...))
+	}
+	if len(i.ParentMobileNotIn) > 0 {
+		predicates = append(predicates, authparent.ParentMobileNotIn(i.ParentMobileNotIn...))
+	}
+	if i.ParentMobileGT != nil {
+		predicates = append(predicates, authparent.ParentMobileGT(*i.ParentMobileGT))
+	}
+	if i.ParentMobileGTE != nil {
+		predicates = append(predicates, authparent.ParentMobileGTE(*i.ParentMobileGTE))
+	}
+	if i.ParentMobileLT != nil {
+		predicates = append(predicates, authparent.ParentMobileLT(*i.ParentMobileLT))
+	}
+	if i.ParentMobileLTE != nil {
+		predicates = append(predicates, authparent.ParentMobileLTE(*i.ParentMobileLTE))
+	}
+	if i.ParentMobileContains != nil {
+		predicates = append(predicates, authparent.ParentMobileContains(*i.ParentMobileContains))
+	}
+	if i.ParentMobileHasPrefix != nil {
+		predicates = append(predicates, authparent.ParentMobileHasPrefix(*i.ParentMobileHasPrefix))
+	}
+	if i.ParentMobileHasSuffix != nil {
+		predicates = append(predicates, authparent.ParentMobileHasSuffix(*i.ParentMobileHasSuffix))
+	}
+	if i.ParentMobileEqualFold != nil {
+		predicates = append(predicates, authparent.ParentMobileEqualFold(*i.ParentMobileEqualFold))
+	}
+	if i.ParentMobileContainsFold != nil {
+		predicates = append(predicates, authparent.ParentMobileContainsFold(*i.ParentMobileContainsFold))
+	}
+
+	switch len(predicates) {
+	case 0:
+		return nil, fmt.Errorf("myeduate/ent: empty predicate AuthParentWhereInput")
+	case 1:
+		return predicates[0], nil
+	default:
+		return authparent.And(predicates...), nil
+	}
+}
+
+// AuthStaffWhereInput represents a where input for filtering AuthStaff queries.
+type AuthStaffWhereInput struct {
+	Not *AuthStaffWhereInput   `json:"not,omitempty"`
+	Or  []*AuthStaffWhereInput `json:"or,omitempty"`
+	And []*AuthStaffWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "staff_first_name" field predicates.
+	StaffFirstName             *string  `json:"staffFirstName,omitempty"`
+	StaffFirstNameNEQ          *string  `json:"staffFirstNameNEQ,omitempty"`
+	StaffFirstNameIn           []string `json:"staffFirstNameIn,omitempty"`
+	StaffFirstNameNotIn        []string `json:"staffFirstNameNotIn,omitempty"`
+	StaffFirstNameGT           *string  `json:"staffFirstNameGT,omitempty"`
+	StaffFirstNameGTE          *string  `json:"staffFirstNameGTE,omitempty"`
+	StaffFirstNameLT           *string  `json:"staffFirstNameLT,omitempty"`
+	StaffFirstNameLTE          *string  `json:"staffFirstNameLTE,omitempty"`
+	StaffFirstNameContains     *string  `json:"staffFirstNameContains,omitempty"`
+	StaffFirstNameHasPrefix    *string  `json:"staffFirstNameHasPrefix,omitempty"`
+	StaffFirstNameHasSuffix    *string  `json:"staffFirstNameHasSuffix,omitempty"`
+	StaffFirstNameEqualFold    *string  `json:"staffFirstNameEqualFold,omitempty"`
+	StaffFirstNameContainsFold *string  `json:"staffFirstNameContainsFold,omitempty"`
+
+	// "staff_middle_name" field predicates.
+	StaffMiddleName             *string  `json:"staffMiddleName,omitempty"`
+	StaffMiddleNameNEQ          *string  `json:"staffMiddleNameNEQ,omitempty"`
+	StaffMiddleNameIn           []string `json:"staffMiddleNameIn,omitempty"`
+	StaffMiddleNameNotIn        []string `json:"staffMiddleNameNotIn,omitempty"`
+	StaffMiddleNameGT           *string  `json:"staffMiddleNameGT,omitempty"`
+	StaffMiddleNameGTE          *string  `json:"staffMiddleNameGTE,omitempty"`
+	StaffMiddleNameLT           *string  `json:"staffMiddleNameLT,omitempty"`
+	StaffMiddleNameLTE          *string  `json:"staffMiddleNameLTE,omitempty"`
+	StaffMiddleNameContains     *string  `json:"staffMiddleNameContains,omitempty"`
+	StaffMiddleNameHasPrefix    *string  `json:"staffMiddleNameHasPrefix,omitempty"`
+	StaffMiddleNameHasSuffix    *string  `json:"staffMiddleNameHasSuffix,omitempty"`
+	StaffMiddleNameEqualFold    *string  `json:"staffMiddleNameEqualFold,omitempty"`
+	StaffMiddleNameContainsFold *string  `json:"staffMiddleNameContainsFold,omitempty"`
+
+	// "staff_last_name" field predicates.
+	StaffLastName             *string  `json:"staffLastName,omitempty"`
+	StaffLastNameNEQ          *string  `json:"staffLastNameNEQ,omitempty"`
+	StaffLastNameIn           []string `json:"staffLastNameIn,omitempty"`
+	StaffLastNameNotIn        []string `json:"staffLastNameNotIn,omitempty"`
+	StaffLastNameGT           *string  `json:"staffLastNameGT,omitempty"`
+	StaffLastNameGTE          *string  `json:"staffLastNameGTE,omitempty"`
+	StaffLastNameLT           *string  `json:"staffLastNameLT,omitempty"`
+	StaffLastNameLTE          *string  `json:"staffLastNameLTE,omitempty"`
+	StaffLastNameContains     *string  `json:"staffLastNameContains,omitempty"`
+	StaffLastNameHasPrefix    *string  `json:"staffLastNameHasPrefix,omitempty"`
+	StaffLastNameHasSuffix    *string  `json:"staffLastNameHasSuffix,omitempty"`
+	StaffLastNameEqualFold    *string  `json:"staffLastNameEqualFold,omitempty"`
+	StaffLastNameContainsFold *string  `json:"staffLastNameContainsFold,omitempty"`
+
+	// "staff_address" field predicates.
+	StaffAddress             *string  `json:"staffAddress,omitempty"`
+	StaffAddressNEQ          *string  `json:"staffAddressNEQ,omitempty"`
+	StaffAddressIn           []string `json:"staffAddressIn,omitempty"`
+	StaffAddressNotIn        []string `json:"staffAddressNotIn,omitempty"`
+	StaffAddressGT           *string  `json:"staffAddressGT,omitempty"`
+	StaffAddressGTE          *string  `json:"staffAddressGTE,omitempty"`
+	StaffAddressLT           *string  `json:"staffAddressLT,omitempty"`
+	StaffAddressLTE          *string  `json:"staffAddressLTE,omitempty"`
+	StaffAddressContains     *string  `json:"staffAddressContains,omitempty"`
+	StaffAddressHasPrefix    *string  `json:"staffAddressHasPrefix,omitempty"`
+	StaffAddressHasSuffix    *string  `json:"staffAddressHasSuffix,omitempty"`
+	StaffAddressEqualFold    *string  `json:"staffAddressEqualFold,omitempty"`
+	StaffAddressContainsFold *string  `json:"staffAddressContainsFold,omitempty"`
+
+	// "staff_place" field predicates.
+	StaffPlace             *string  `json:"staffPlace,omitempty"`
+	StaffPlaceNEQ          *string  `json:"staffPlaceNEQ,omitempty"`
+	StaffPlaceIn           []string `json:"staffPlaceIn,omitempty"`
+	StaffPlaceNotIn        []string `json:"staffPlaceNotIn,omitempty"`
+	StaffPlaceGT           *string  `json:"staffPlaceGT,omitempty"`
+	StaffPlaceGTE          *string  `json:"staffPlaceGTE,omitempty"`
+	StaffPlaceLT           *string  `json:"staffPlaceLT,omitempty"`
+	StaffPlaceLTE          *string  `json:"staffPlaceLTE,omitempty"`
+	StaffPlaceContains     *string  `json:"staffPlaceContains,omitempty"`
+	StaffPlaceHasPrefix    *string  `json:"staffPlaceHasPrefix,omitempty"`
+	StaffPlaceHasSuffix    *string  `json:"staffPlaceHasSuffix,omitempty"`
+	StaffPlaceEqualFold    *string  `json:"staffPlaceEqualFold,omitempty"`
+	StaffPlaceContainsFold *string  `json:"staffPlaceContainsFold,omitempty"`
+
+	// "staff_state" field predicates.
+	StaffState             *string  `json:"staffState,omitempty"`
+	StaffStateNEQ          *string  `json:"staffStateNEQ,omitempty"`
+	StaffStateIn           []string `json:"staffStateIn,omitempty"`
+	StaffStateNotIn        []string `json:"staffStateNotIn,omitempty"`
+	StaffStateGT           *string  `json:"staffStateGT,omitempty"`
+	StaffStateGTE          *string  `json:"staffStateGTE,omitempty"`
+	StaffStateLT           *string  `json:"staffStateLT,omitempty"`
+	StaffStateLTE          *string  `json:"staffStateLTE,omitempty"`
+	StaffStateContains     *string  `json:"staffStateContains,omitempty"`
+	StaffStateHasPrefix    *string  `json:"staffStateHasPrefix,omitempty"`
+	StaffStateHasSuffix    *string  `json:"staffStateHasSuffix,omitempty"`
+	StaffStateEqualFold    *string  `json:"staffStateEqualFold,omitempty"`
+	StaffStateContainsFold *string  `json:"staffStateContainsFold,omitempty"`
+
+	// "staff_pin" field predicates.
+	StaffPin             *string  `json:"staffPin,omitempty"`
+	StaffPinNEQ          *string  `json:"staffPinNEQ,omitempty"`
+	StaffPinIn           []string `json:"staffPinIn,omitempty"`
+	StaffPinNotIn        []string `json:"staffPinNotIn,omitempty"`
+	StaffPinGT           *string  `json:"staffPinGT,omitempty"`
+	StaffPinGTE          *string  `json:"staffPinGTE,omitempty"`
+	StaffPinLT           *string  `json:"staffPinLT,omitempty"`
+	StaffPinLTE          *string  `json:"staffPinLTE,omitempty"`
+	StaffPinContains     *string  `json:"staffPinContains,omitempty"`
+	StaffPinHasPrefix    *string  `json:"staffPinHasPrefix,omitempty"`
+	StaffPinHasSuffix    *string  `json:"staffPinHasSuffix,omitempty"`
+	StaffPinEqualFold    *string  `json:"staffPinEqualFold,omitempty"`
+	StaffPinContainsFold *string  `json:"staffPinContainsFold,omitempty"`
+
+	// "staff_email" field predicates.
+	StaffEmail             *string  `json:"staffEmail,omitempty"`
+	StaffEmailNEQ          *string  `json:"staffEmailNEQ,omitempty"`
+	StaffEmailIn           []string `json:"staffEmailIn,omitempty"`
+	StaffEmailNotIn        []string `json:"staffEmailNotIn,omitempty"`
+	StaffEmailGT           *string  `json:"staffEmailGT,omitempty"`
+	StaffEmailGTE          *string  `json:"staffEmailGTE,omitempty"`
+	StaffEmailLT           *string  `json:"staffEmailLT,omitempty"`
+	StaffEmailLTE          *string  `json:"staffEmailLTE,omitempty"`
+	StaffEmailContains     *string  `json:"staffEmailContains,omitempty"`
+	StaffEmailHasPrefix    *string  `json:"staffEmailHasPrefix,omitempty"`
+	StaffEmailHasSuffix    *string  `json:"staffEmailHasSuffix,omitempty"`
+	StaffEmailEqualFold    *string  `json:"staffEmailEqualFold,omitempty"`
+	StaffEmailContainsFold *string  `json:"staffEmailContainsFold,omitempty"`
+
+	// "staff_mobile" field predicates.
+	StaffMobile             *string  `json:"staffMobile,omitempty"`
+	StaffMobileNEQ          *string  `json:"staffMobileNEQ,omitempty"`
+	StaffMobileIn           []string `json:"staffMobileIn,omitempty"`
+	StaffMobileNotIn        []string `json:"staffMobileNotIn,omitempty"`
+	StaffMobileGT           *string  `json:"staffMobileGT,omitempty"`
+	StaffMobileGTE          *string  `json:"staffMobileGTE,omitempty"`
+	StaffMobileLT           *string  `json:"staffMobileLT,omitempty"`
+	StaffMobileLTE          *string  `json:"staffMobileLTE,omitempty"`
+	StaffMobileContains     *string  `json:"staffMobileContains,omitempty"`
+	StaffMobileHasPrefix    *string  `json:"staffMobileHasPrefix,omitempty"`
+	StaffMobileHasSuffix    *string  `json:"staffMobileHasSuffix,omitempty"`
+	StaffMobileEqualFold    *string  `json:"staffMobileEqualFold,omitempty"`
+	StaffMobileContainsFold *string  `json:"staffMobileContainsFold,omitempty"`
+}
+
+// Filter applies the AuthStaffWhereInput filter on the AuthStaffQuery builder.
+func (i *AuthStaffWhereInput) Filter(q *AuthStaffQuery) (*AuthStaffQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// P returns a predicate for filtering authstaffs.
+// An error is returned if the input is empty or invalid.
+func (i *AuthStaffWhereInput) P() (predicate.AuthStaff, error) {
+	var predicates []predicate.AuthStaff
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, authstaff.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.AuthStaff, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, authstaff.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.AuthStaff, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, authstaff.And(and...))
+	}
+	if i.ID != nil {
+		predicates = append(predicates, authstaff.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, authstaff.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, authstaff.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, authstaff.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, authstaff.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, authstaff.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, authstaff.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, authstaff.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, authstaff.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, authstaff.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, authstaff.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, authstaff.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, authstaff.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, authstaff.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, authstaff.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, authstaff.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, authstaff.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, authstaff.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, authstaff.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, authstaff.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, authstaff.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, authstaff.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, authstaff.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, authstaff.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.StaffFirstName != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameEQ(*i.StaffFirstName))
+	}
+	if i.StaffFirstNameNEQ != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameNEQ(*i.StaffFirstNameNEQ))
+	}
+	if len(i.StaffFirstNameIn) > 0 {
+		predicates = append(predicates, authstaff.StaffFirstNameIn(i.StaffFirstNameIn...))
+	}
+	if len(i.StaffFirstNameNotIn) > 0 {
+		predicates = append(predicates, authstaff.StaffFirstNameNotIn(i.StaffFirstNameNotIn...))
+	}
+	if i.StaffFirstNameGT != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameGT(*i.StaffFirstNameGT))
+	}
+	if i.StaffFirstNameGTE != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameGTE(*i.StaffFirstNameGTE))
+	}
+	if i.StaffFirstNameLT != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameLT(*i.StaffFirstNameLT))
+	}
+	if i.StaffFirstNameLTE != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameLTE(*i.StaffFirstNameLTE))
+	}
+	if i.StaffFirstNameContains != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameContains(*i.StaffFirstNameContains))
+	}
+	if i.StaffFirstNameHasPrefix != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameHasPrefix(*i.StaffFirstNameHasPrefix))
+	}
+	if i.StaffFirstNameHasSuffix != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameHasSuffix(*i.StaffFirstNameHasSuffix))
+	}
+	if i.StaffFirstNameEqualFold != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameEqualFold(*i.StaffFirstNameEqualFold))
+	}
+	if i.StaffFirstNameContainsFold != nil {
+		predicates = append(predicates, authstaff.StaffFirstNameContainsFold(*i.StaffFirstNameContainsFold))
+	}
+	if i.StaffMiddleName != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameEQ(*i.StaffMiddleName))
+	}
+	if i.StaffMiddleNameNEQ != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameNEQ(*i.StaffMiddleNameNEQ))
+	}
+	if len(i.StaffMiddleNameIn) > 0 {
+		predicates = append(predicates, authstaff.StaffMiddleNameIn(i.StaffMiddleNameIn...))
+	}
+	if len(i.StaffMiddleNameNotIn) > 0 {
+		predicates = append(predicates, authstaff.StaffMiddleNameNotIn(i.StaffMiddleNameNotIn...))
+	}
+	if i.StaffMiddleNameGT != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameGT(*i.StaffMiddleNameGT))
+	}
+	if i.StaffMiddleNameGTE != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameGTE(*i.StaffMiddleNameGTE))
+	}
+	if i.StaffMiddleNameLT != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameLT(*i.StaffMiddleNameLT))
+	}
+	if i.StaffMiddleNameLTE != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameLTE(*i.StaffMiddleNameLTE))
+	}
+	if i.StaffMiddleNameContains != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameContains(*i.StaffMiddleNameContains))
+	}
+	if i.StaffMiddleNameHasPrefix != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameHasPrefix(*i.StaffMiddleNameHasPrefix))
+	}
+	if i.StaffMiddleNameHasSuffix != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameHasSuffix(*i.StaffMiddleNameHasSuffix))
+	}
+	if i.StaffMiddleNameEqualFold != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameEqualFold(*i.StaffMiddleNameEqualFold))
+	}
+	if i.StaffMiddleNameContainsFold != nil {
+		predicates = append(predicates, authstaff.StaffMiddleNameContainsFold(*i.StaffMiddleNameContainsFold))
+	}
+	if i.StaffLastName != nil {
+		predicates = append(predicates, authstaff.StaffLastNameEQ(*i.StaffLastName))
+	}
+	if i.StaffLastNameNEQ != nil {
+		predicates = append(predicates, authstaff.StaffLastNameNEQ(*i.StaffLastNameNEQ))
+	}
+	if len(i.StaffLastNameIn) > 0 {
+		predicates = append(predicates, authstaff.StaffLastNameIn(i.StaffLastNameIn...))
+	}
+	if len(i.StaffLastNameNotIn) > 0 {
+		predicates = append(predicates, authstaff.StaffLastNameNotIn(i.StaffLastNameNotIn...))
+	}
+	if i.StaffLastNameGT != nil {
+		predicates = append(predicates, authstaff.StaffLastNameGT(*i.StaffLastNameGT))
+	}
+	if i.StaffLastNameGTE != nil {
+		predicates = append(predicates, authstaff.StaffLastNameGTE(*i.StaffLastNameGTE))
+	}
+	if i.StaffLastNameLT != nil {
+		predicates = append(predicates, authstaff.StaffLastNameLT(*i.StaffLastNameLT))
+	}
+	if i.StaffLastNameLTE != nil {
+		predicates = append(predicates, authstaff.StaffLastNameLTE(*i.StaffLastNameLTE))
+	}
+	if i.StaffLastNameContains != nil {
+		predicates = append(predicates, authstaff.StaffLastNameContains(*i.StaffLastNameContains))
+	}
+	if i.StaffLastNameHasPrefix != nil {
+		predicates = append(predicates, authstaff.StaffLastNameHasPrefix(*i.StaffLastNameHasPrefix))
+	}
+	if i.StaffLastNameHasSuffix != nil {
+		predicates = append(predicates, authstaff.StaffLastNameHasSuffix(*i.StaffLastNameHasSuffix))
+	}
+	if i.StaffLastNameEqualFold != nil {
+		predicates = append(predicates, authstaff.StaffLastNameEqualFold(*i.StaffLastNameEqualFold))
+	}
+	if i.StaffLastNameContainsFold != nil {
+		predicates = append(predicates, authstaff.StaffLastNameContainsFold(*i.StaffLastNameContainsFold))
+	}
+	if i.StaffAddress != nil {
+		predicates = append(predicates, authstaff.StaffAddressEQ(*i.StaffAddress))
+	}
+	if i.StaffAddressNEQ != nil {
+		predicates = append(predicates, authstaff.StaffAddressNEQ(*i.StaffAddressNEQ))
+	}
+	if len(i.StaffAddressIn) > 0 {
+		predicates = append(predicates, authstaff.StaffAddressIn(i.StaffAddressIn...))
+	}
+	if len(i.StaffAddressNotIn) > 0 {
+		predicates = append(predicates, authstaff.StaffAddressNotIn(i.StaffAddressNotIn...))
+	}
+	if i.StaffAddressGT != nil {
+		predicates = append(predicates, authstaff.StaffAddressGT(*i.StaffAddressGT))
+	}
+	if i.StaffAddressGTE != nil {
+		predicates = append(predicates, authstaff.StaffAddressGTE(*i.StaffAddressGTE))
+	}
+	if i.StaffAddressLT != nil {
+		predicates = append(predicates, authstaff.StaffAddressLT(*i.StaffAddressLT))
+	}
+	if i.StaffAddressLTE != nil {
+		predicates = append(predicates, authstaff.StaffAddressLTE(*i.StaffAddressLTE))
+	}
+	if i.StaffAddressContains != nil {
+		predicates = append(predicates, authstaff.StaffAddressContains(*i.StaffAddressContains))
+	}
+	if i.StaffAddressHasPrefix != nil {
+		predicates = append(predicates, authstaff.StaffAddressHasPrefix(*i.StaffAddressHasPrefix))
+	}
+	if i.StaffAddressHasSuffix != nil {
+		predicates = append(predicates, authstaff.StaffAddressHasSuffix(*i.StaffAddressHasSuffix))
+	}
+	if i.StaffAddressEqualFold != nil {
+		predicates = append(predicates, authstaff.StaffAddressEqualFold(*i.StaffAddressEqualFold))
+	}
+	if i.StaffAddressContainsFold != nil {
+		predicates = append(predicates, authstaff.StaffAddressContainsFold(*i.StaffAddressContainsFold))
+	}
+	if i.StaffPlace != nil {
+		predicates = append(predicates, authstaff.StaffPlaceEQ(*i.StaffPlace))
+	}
+	if i.StaffPlaceNEQ != nil {
+		predicates = append(predicates, authstaff.StaffPlaceNEQ(*i.StaffPlaceNEQ))
+	}
+	if len(i.StaffPlaceIn) > 0 {
+		predicates = append(predicates, authstaff.StaffPlaceIn(i.StaffPlaceIn...))
+	}
+	if len(i.StaffPlaceNotIn) > 0 {
+		predicates = append(predicates, authstaff.StaffPlaceNotIn(i.StaffPlaceNotIn...))
+	}
+	if i.StaffPlaceGT != nil {
+		predicates = append(predicates, authstaff.StaffPlaceGT(*i.StaffPlaceGT))
+	}
+	if i.StaffPlaceGTE != nil {
+		predicates = append(predicates, authstaff.StaffPlaceGTE(*i.StaffPlaceGTE))
+	}
+	if i.StaffPlaceLT != nil {
+		predicates = append(predicates, authstaff.StaffPlaceLT(*i.StaffPlaceLT))
+	}
+	if i.StaffPlaceLTE != nil {
+		predicates = append(predicates, authstaff.StaffPlaceLTE(*i.StaffPlaceLTE))
+	}
+	if i.StaffPlaceContains != nil {
+		predicates = append(predicates, authstaff.StaffPlaceContains(*i.StaffPlaceContains))
+	}
+	if i.StaffPlaceHasPrefix != nil {
+		predicates = append(predicates, authstaff.StaffPlaceHasPrefix(*i.StaffPlaceHasPrefix))
+	}
+	if i.StaffPlaceHasSuffix != nil {
+		predicates = append(predicates, authstaff.StaffPlaceHasSuffix(*i.StaffPlaceHasSuffix))
+	}
+	if i.StaffPlaceEqualFold != nil {
+		predicates = append(predicates, authstaff.StaffPlaceEqualFold(*i.StaffPlaceEqualFold))
+	}
+	if i.StaffPlaceContainsFold != nil {
+		predicates = append(predicates, authstaff.StaffPlaceContainsFold(*i.StaffPlaceContainsFold))
+	}
+	if i.StaffState != nil {
+		predicates = append(predicates, authstaff.StaffStateEQ(*i.StaffState))
+	}
+	if i.StaffStateNEQ != nil {
+		predicates = append(predicates, authstaff.StaffStateNEQ(*i.StaffStateNEQ))
+	}
+	if len(i.StaffStateIn) > 0 {
+		predicates = append(predicates, authstaff.StaffStateIn(i.StaffStateIn...))
+	}
+	if len(i.StaffStateNotIn) > 0 {
+		predicates = append(predicates, authstaff.StaffStateNotIn(i.StaffStateNotIn...))
+	}
+	if i.StaffStateGT != nil {
+		predicates = append(predicates, authstaff.StaffStateGT(*i.StaffStateGT))
+	}
+	if i.StaffStateGTE != nil {
+		predicates = append(predicates, authstaff.StaffStateGTE(*i.StaffStateGTE))
+	}
+	if i.StaffStateLT != nil {
+		predicates = append(predicates, authstaff.StaffStateLT(*i.StaffStateLT))
+	}
+	if i.StaffStateLTE != nil {
+		predicates = append(predicates, authstaff.StaffStateLTE(*i.StaffStateLTE))
+	}
+	if i.StaffStateContains != nil {
+		predicates = append(predicates, authstaff.StaffStateContains(*i.StaffStateContains))
+	}
+	if i.StaffStateHasPrefix != nil {
+		predicates = append(predicates, authstaff.StaffStateHasPrefix(*i.StaffStateHasPrefix))
+	}
+	if i.StaffStateHasSuffix != nil {
+		predicates = append(predicates, authstaff.StaffStateHasSuffix(*i.StaffStateHasSuffix))
+	}
+	if i.StaffStateEqualFold != nil {
+		predicates = append(predicates, authstaff.StaffStateEqualFold(*i.StaffStateEqualFold))
+	}
+	if i.StaffStateContainsFold != nil {
+		predicates = append(predicates, authstaff.StaffStateContainsFold(*i.StaffStateContainsFold))
+	}
+	if i.StaffPin != nil {
+		predicates = append(predicates, authstaff.StaffPinEQ(*i.StaffPin))
+	}
+	if i.StaffPinNEQ != nil {
+		predicates = append(predicates, authstaff.StaffPinNEQ(*i.StaffPinNEQ))
+	}
+	if len(i.StaffPinIn) > 0 {
+		predicates = append(predicates, authstaff.StaffPinIn(i.StaffPinIn...))
+	}
+	if len(i.StaffPinNotIn) > 0 {
+		predicates = append(predicates, authstaff.StaffPinNotIn(i.StaffPinNotIn...))
+	}
+	if i.StaffPinGT != nil {
+		predicates = append(predicates, authstaff.StaffPinGT(*i.StaffPinGT))
+	}
+	if i.StaffPinGTE != nil {
+		predicates = append(predicates, authstaff.StaffPinGTE(*i.StaffPinGTE))
+	}
+	if i.StaffPinLT != nil {
+		predicates = append(predicates, authstaff.StaffPinLT(*i.StaffPinLT))
+	}
+	if i.StaffPinLTE != nil {
+		predicates = append(predicates, authstaff.StaffPinLTE(*i.StaffPinLTE))
+	}
+	if i.StaffPinContains != nil {
+		predicates = append(predicates, authstaff.StaffPinContains(*i.StaffPinContains))
+	}
+	if i.StaffPinHasPrefix != nil {
+		predicates = append(predicates, authstaff.StaffPinHasPrefix(*i.StaffPinHasPrefix))
+	}
+	if i.StaffPinHasSuffix != nil {
+		predicates = append(predicates, authstaff.StaffPinHasSuffix(*i.StaffPinHasSuffix))
+	}
+	if i.StaffPinEqualFold != nil {
+		predicates = append(predicates, authstaff.StaffPinEqualFold(*i.StaffPinEqualFold))
+	}
+	if i.StaffPinContainsFold != nil {
+		predicates = append(predicates, authstaff.StaffPinContainsFold(*i.StaffPinContainsFold))
+	}
+	if i.StaffEmail != nil {
+		predicates = append(predicates, authstaff.StaffEmailEQ(*i.StaffEmail))
+	}
+	if i.StaffEmailNEQ != nil {
+		predicates = append(predicates, authstaff.StaffEmailNEQ(*i.StaffEmailNEQ))
+	}
+	if len(i.StaffEmailIn) > 0 {
+		predicates = append(predicates, authstaff.StaffEmailIn(i.StaffEmailIn...))
+	}
+	if len(i.StaffEmailNotIn) > 0 {
+		predicates = append(predicates, authstaff.StaffEmailNotIn(i.StaffEmailNotIn...))
+	}
+	if i.StaffEmailGT != nil {
+		predicates = append(predicates, authstaff.StaffEmailGT(*i.StaffEmailGT))
+	}
+	if i.StaffEmailGTE != nil {
+		predicates = append(predicates, authstaff.StaffEmailGTE(*i.StaffEmailGTE))
+	}
+	if i.StaffEmailLT != nil {
+		predicates = append(predicates, authstaff.StaffEmailLT(*i.StaffEmailLT))
+	}
+	if i.StaffEmailLTE != nil {
+		predicates = append(predicates, authstaff.StaffEmailLTE(*i.StaffEmailLTE))
+	}
+	if i.StaffEmailContains != nil {
+		predicates = append(predicates, authstaff.StaffEmailContains(*i.StaffEmailContains))
+	}
+	if i.StaffEmailHasPrefix != nil {
+		predicates = append(predicates, authstaff.StaffEmailHasPrefix(*i.StaffEmailHasPrefix))
+	}
+	if i.StaffEmailHasSuffix != nil {
+		predicates = append(predicates, authstaff.StaffEmailHasSuffix(*i.StaffEmailHasSuffix))
+	}
+	if i.StaffEmailEqualFold != nil {
+		predicates = append(predicates, authstaff.StaffEmailEqualFold(*i.StaffEmailEqualFold))
+	}
+	if i.StaffEmailContainsFold != nil {
+		predicates = append(predicates, authstaff.StaffEmailContainsFold(*i.StaffEmailContainsFold))
+	}
+	if i.StaffMobile != nil {
+		predicates = append(predicates, authstaff.StaffMobileEQ(*i.StaffMobile))
+	}
+	if i.StaffMobileNEQ != nil {
+		predicates = append(predicates, authstaff.StaffMobileNEQ(*i.StaffMobileNEQ))
+	}
+	if len(i.StaffMobileIn) > 0 {
+		predicates = append(predicates, authstaff.StaffMobileIn(i.StaffMobileIn...))
+	}
+	if len(i.StaffMobileNotIn) > 0 {
+		predicates = append(predicates, authstaff.StaffMobileNotIn(i.StaffMobileNotIn...))
+	}
+	if i.StaffMobileGT != nil {
+		predicates = append(predicates, authstaff.StaffMobileGT(*i.StaffMobileGT))
+	}
+	if i.StaffMobileGTE != nil {
+		predicates = append(predicates, authstaff.StaffMobileGTE(*i.StaffMobileGTE))
+	}
+	if i.StaffMobileLT != nil {
+		predicates = append(predicates, authstaff.StaffMobileLT(*i.StaffMobileLT))
+	}
+	if i.StaffMobileLTE != nil {
+		predicates = append(predicates, authstaff.StaffMobileLTE(*i.StaffMobileLTE))
+	}
+	if i.StaffMobileContains != nil {
+		predicates = append(predicates, authstaff.StaffMobileContains(*i.StaffMobileContains))
+	}
+	if i.StaffMobileHasPrefix != nil {
+		predicates = append(predicates, authstaff.StaffMobileHasPrefix(*i.StaffMobileHasPrefix))
+	}
+	if i.StaffMobileHasSuffix != nil {
+		predicates = append(predicates, authstaff.StaffMobileHasSuffix(*i.StaffMobileHasSuffix))
+	}
+	if i.StaffMobileEqualFold != nil {
+		predicates = append(predicates, authstaff.StaffMobileEqualFold(*i.StaffMobileEqualFold))
+	}
+	if i.StaffMobileContainsFold != nil {
+		predicates = append(predicates, authstaff.StaffMobileContainsFold(*i.StaffMobileContainsFold))
+	}
+
+	switch len(predicates) {
+	case 0:
+		return nil, fmt.Errorf("myeduate/ent: empty predicate AuthStaffWhereInput")
+	case 1:
+		return predicates[0], nil
+	default:
+		return authstaff.And(predicates...), nil
+	}
+}
 
 // MstCustomerWhereInput represents a where input for filtering MstCustomer queries.
 type MstCustomerWhereInput struct {
@@ -2241,5 +3574,446 @@ func (i *MstInstWhereInput) P() (predicate.MstInst, error) {
 		return predicates[0], nil
 	default:
 		return mstinst.And(predicates...), nil
+	}
+}
+
+// MstStudentWhereInput represents a where input for filtering MstStudent queries.
+type MstStudentWhereInput struct {
+	Not *MstStudentWhereInput   `json:"not,omitempty"`
+	Or  []*MstStudentWhereInput `json:"or,omitempty"`
+	And []*MstStudentWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "std_first_name" field predicates.
+	StdFirstName             *string  `json:"stdFirstName,omitempty"`
+	StdFirstNameNEQ          *string  `json:"stdFirstNameNEQ,omitempty"`
+	StdFirstNameIn           []string `json:"stdFirstNameIn,omitempty"`
+	StdFirstNameNotIn        []string `json:"stdFirstNameNotIn,omitempty"`
+	StdFirstNameGT           *string  `json:"stdFirstNameGT,omitempty"`
+	StdFirstNameGTE          *string  `json:"stdFirstNameGTE,omitempty"`
+	StdFirstNameLT           *string  `json:"stdFirstNameLT,omitempty"`
+	StdFirstNameLTE          *string  `json:"stdFirstNameLTE,omitempty"`
+	StdFirstNameContains     *string  `json:"stdFirstNameContains,omitempty"`
+	StdFirstNameHasPrefix    *string  `json:"stdFirstNameHasPrefix,omitempty"`
+	StdFirstNameHasSuffix    *string  `json:"stdFirstNameHasSuffix,omitempty"`
+	StdFirstNameEqualFold    *string  `json:"stdFirstNameEqualFold,omitempty"`
+	StdFirstNameContainsFold *string  `json:"stdFirstNameContainsFold,omitempty"`
+
+	// "std_middle_name" field predicates.
+	StdMiddleName             *string  `json:"stdMiddleName,omitempty"`
+	StdMiddleNameNEQ          *string  `json:"stdMiddleNameNEQ,omitempty"`
+	StdMiddleNameIn           []string `json:"stdMiddleNameIn,omitempty"`
+	StdMiddleNameNotIn        []string `json:"stdMiddleNameNotIn,omitempty"`
+	StdMiddleNameGT           *string  `json:"stdMiddleNameGT,omitempty"`
+	StdMiddleNameGTE          *string  `json:"stdMiddleNameGTE,omitempty"`
+	StdMiddleNameLT           *string  `json:"stdMiddleNameLT,omitempty"`
+	StdMiddleNameLTE          *string  `json:"stdMiddleNameLTE,omitempty"`
+	StdMiddleNameContains     *string  `json:"stdMiddleNameContains,omitempty"`
+	StdMiddleNameHasPrefix    *string  `json:"stdMiddleNameHasPrefix,omitempty"`
+	StdMiddleNameHasSuffix    *string  `json:"stdMiddleNameHasSuffix,omitempty"`
+	StdMiddleNameEqualFold    *string  `json:"stdMiddleNameEqualFold,omitempty"`
+	StdMiddleNameContainsFold *string  `json:"stdMiddleNameContainsFold,omitempty"`
+
+	// "std_last_name" field predicates.
+	StdLastName             *string  `json:"stdLastName,omitempty"`
+	StdLastNameNEQ          *string  `json:"stdLastNameNEQ,omitempty"`
+	StdLastNameIn           []string `json:"stdLastNameIn,omitempty"`
+	StdLastNameNotIn        []string `json:"stdLastNameNotIn,omitempty"`
+	StdLastNameGT           *string  `json:"stdLastNameGT,omitempty"`
+	StdLastNameGTE          *string  `json:"stdLastNameGTE,omitempty"`
+	StdLastNameLT           *string  `json:"stdLastNameLT,omitempty"`
+	StdLastNameLTE          *string  `json:"stdLastNameLTE,omitempty"`
+	StdLastNameContains     *string  `json:"stdLastNameContains,omitempty"`
+	StdLastNameHasPrefix    *string  `json:"stdLastNameHasPrefix,omitempty"`
+	StdLastNameHasSuffix    *string  `json:"stdLastNameHasSuffix,omitempty"`
+	StdLastNameEqualFold    *string  `json:"stdLastNameEqualFold,omitempty"`
+	StdLastNameContainsFold *string  `json:"stdLastNameContainsFold,omitempty"`
+
+	// "std_studying" field predicates.
+	StdStudying    *bool `json:"stdStudying,omitempty"`
+	StdStudyingNEQ *bool `json:"stdStudyingNEQ,omitempty"`
+
+	// "std_status" field predicates.
+	StdStatus      *customtypes.StdStatus  `json:"stdStatus,omitempty"`
+	StdStatusNEQ   *customtypes.StdStatus  `json:"stdStatusNEQ,omitempty"`
+	StdStatusIn    []customtypes.StdStatus `json:"stdStatusIn,omitempty"`
+	StdStatusNotIn []customtypes.StdStatus `json:"stdStatusNotIn,omitempty"`
+
+	// "std_sex" field predicates.
+	StdSex      *customtypes.Sex  `json:"stdSex,omitempty"`
+	StdSexNEQ   *customtypes.Sex  `json:"stdSexNEQ,omitempty"`
+	StdSexIn    []customtypes.Sex `json:"stdSexIn,omitempty"`
+	StdSexNotIn []customtypes.Sex `json:"stdSexNotIn,omitempty"`
+
+	// "std_reg_no" field predicates.
+	StdRegNo             *string  `json:"stdRegNo,omitempty"`
+	StdRegNoNEQ          *string  `json:"stdRegNoNEQ,omitempty"`
+	StdRegNoIn           []string `json:"stdRegNoIn,omitempty"`
+	StdRegNoNotIn        []string `json:"stdRegNoNotIn,omitempty"`
+	StdRegNoGT           *string  `json:"stdRegNoGT,omitempty"`
+	StdRegNoGTE          *string  `json:"stdRegNoGTE,omitempty"`
+	StdRegNoLT           *string  `json:"stdRegNoLT,omitempty"`
+	StdRegNoLTE          *string  `json:"stdRegNoLTE,omitempty"`
+	StdRegNoContains     *string  `json:"stdRegNoContains,omitempty"`
+	StdRegNoHasPrefix    *string  `json:"stdRegNoHasPrefix,omitempty"`
+	StdRegNoHasSuffix    *string  `json:"stdRegNoHasSuffix,omitempty"`
+	StdRegNoEqualFold    *string  `json:"stdRegNoEqualFold,omitempty"`
+	StdRegNoContainsFold *string  `json:"stdRegNoContainsFold,omitempty"`
+}
+
+// Filter applies the MstStudentWhereInput filter on the MstStudentQuery builder.
+func (i *MstStudentWhereInput) Filter(q *MstStudentQuery) (*MstStudentQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// P returns a predicate for filtering mststudents.
+// An error is returned if the input is empty or invalid.
+func (i *MstStudentWhereInput) P() (predicate.MstStudent, error) {
+	var predicates []predicate.MstStudent
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, mststudent.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.MstStudent, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, mststudent.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.MstStudent, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, mststudent.And(and...))
+	}
+	if i.ID != nil {
+		predicates = append(predicates, mststudent.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, mststudent.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, mststudent.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, mststudent.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, mststudent.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, mststudent.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, mststudent.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, mststudent.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, mststudent.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, mststudent.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, mststudent.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, mststudent.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, mststudent.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, mststudent.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, mststudent.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, mststudent.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, mststudent.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, mststudent.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, mststudent.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, mststudent.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, mststudent.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, mststudent.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, mststudent.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, mststudent.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.StdFirstName != nil {
+		predicates = append(predicates, mststudent.StdFirstNameEQ(*i.StdFirstName))
+	}
+	if i.StdFirstNameNEQ != nil {
+		predicates = append(predicates, mststudent.StdFirstNameNEQ(*i.StdFirstNameNEQ))
+	}
+	if len(i.StdFirstNameIn) > 0 {
+		predicates = append(predicates, mststudent.StdFirstNameIn(i.StdFirstNameIn...))
+	}
+	if len(i.StdFirstNameNotIn) > 0 {
+		predicates = append(predicates, mststudent.StdFirstNameNotIn(i.StdFirstNameNotIn...))
+	}
+	if i.StdFirstNameGT != nil {
+		predicates = append(predicates, mststudent.StdFirstNameGT(*i.StdFirstNameGT))
+	}
+	if i.StdFirstNameGTE != nil {
+		predicates = append(predicates, mststudent.StdFirstNameGTE(*i.StdFirstNameGTE))
+	}
+	if i.StdFirstNameLT != nil {
+		predicates = append(predicates, mststudent.StdFirstNameLT(*i.StdFirstNameLT))
+	}
+	if i.StdFirstNameLTE != nil {
+		predicates = append(predicates, mststudent.StdFirstNameLTE(*i.StdFirstNameLTE))
+	}
+	if i.StdFirstNameContains != nil {
+		predicates = append(predicates, mststudent.StdFirstNameContains(*i.StdFirstNameContains))
+	}
+	if i.StdFirstNameHasPrefix != nil {
+		predicates = append(predicates, mststudent.StdFirstNameHasPrefix(*i.StdFirstNameHasPrefix))
+	}
+	if i.StdFirstNameHasSuffix != nil {
+		predicates = append(predicates, mststudent.StdFirstNameHasSuffix(*i.StdFirstNameHasSuffix))
+	}
+	if i.StdFirstNameEqualFold != nil {
+		predicates = append(predicates, mststudent.StdFirstNameEqualFold(*i.StdFirstNameEqualFold))
+	}
+	if i.StdFirstNameContainsFold != nil {
+		predicates = append(predicates, mststudent.StdFirstNameContainsFold(*i.StdFirstNameContainsFold))
+	}
+	if i.StdMiddleName != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameEQ(*i.StdMiddleName))
+	}
+	if i.StdMiddleNameNEQ != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameNEQ(*i.StdMiddleNameNEQ))
+	}
+	if len(i.StdMiddleNameIn) > 0 {
+		predicates = append(predicates, mststudent.StdMiddleNameIn(i.StdMiddleNameIn...))
+	}
+	if len(i.StdMiddleNameNotIn) > 0 {
+		predicates = append(predicates, mststudent.StdMiddleNameNotIn(i.StdMiddleNameNotIn...))
+	}
+	if i.StdMiddleNameGT != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameGT(*i.StdMiddleNameGT))
+	}
+	if i.StdMiddleNameGTE != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameGTE(*i.StdMiddleNameGTE))
+	}
+	if i.StdMiddleNameLT != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameLT(*i.StdMiddleNameLT))
+	}
+	if i.StdMiddleNameLTE != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameLTE(*i.StdMiddleNameLTE))
+	}
+	if i.StdMiddleNameContains != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameContains(*i.StdMiddleNameContains))
+	}
+	if i.StdMiddleNameHasPrefix != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameHasPrefix(*i.StdMiddleNameHasPrefix))
+	}
+	if i.StdMiddleNameHasSuffix != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameHasSuffix(*i.StdMiddleNameHasSuffix))
+	}
+	if i.StdMiddleNameEqualFold != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameEqualFold(*i.StdMiddleNameEqualFold))
+	}
+	if i.StdMiddleNameContainsFold != nil {
+		predicates = append(predicates, mststudent.StdMiddleNameContainsFold(*i.StdMiddleNameContainsFold))
+	}
+	if i.StdLastName != nil {
+		predicates = append(predicates, mststudent.StdLastNameEQ(*i.StdLastName))
+	}
+	if i.StdLastNameNEQ != nil {
+		predicates = append(predicates, mststudent.StdLastNameNEQ(*i.StdLastNameNEQ))
+	}
+	if len(i.StdLastNameIn) > 0 {
+		predicates = append(predicates, mststudent.StdLastNameIn(i.StdLastNameIn...))
+	}
+	if len(i.StdLastNameNotIn) > 0 {
+		predicates = append(predicates, mststudent.StdLastNameNotIn(i.StdLastNameNotIn...))
+	}
+	if i.StdLastNameGT != nil {
+		predicates = append(predicates, mststudent.StdLastNameGT(*i.StdLastNameGT))
+	}
+	if i.StdLastNameGTE != nil {
+		predicates = append(predicates, mststudent.StdLastNameGTE(*i.StdLastNameGTE))
+	}
+	if i.StdLastNameLT != nil {
+		predicates = append(predicates, mststudent.StdLastNameLT(*i.StdLastNameLT))
+	}
+	if i.StdLastNameLTE != nil {
+		predicates = append(predicates, mststudent.StdLastNameLTE(*i.StdLastNameLTE))
+	}
+	if i.StdLastNameContains != nil {
+		predicates = append(predicates, mststudent.StdLastNameContains(*i.StdLastNameContains))
+	}
+	if i.StdLastNameHasPrefix != nil {
+		predicates = append(predicates, mststudent.StdLastNameHasPrefix(*i.StdLastNameHasPrefix))
+	}
+	if i.StdLastNameHasSuffix != nil {
+		predicates = append(predicates, mststudent.StdLastNameHasSuffix(*i.StdLastNameHasSuffix))
+	}
+	if i.StdLastNameEqualFold != nil {
+		predicates = append(predicates, mststudent.StdLastNameEqualFold(*i.StdLastNameEqualFold))
+	}
+	if i.StdLastNameContainsFold != nil {
+		predicates = append(predicates, mststudent.StdLastNameContainsFold(*i.StdLastNameContainsFold))
+	}
+	if i.StdStudying != nil {
+		predicates = append(predicates, mststudent.StdStudyingEQ(*i.StdStudying))
+	}
+	if i.StdStudyingNEQ != nil {
+		predicates = append(predicates, mststudent.StdStudyingNEQ(*i.StdStudyingNEQ))
+	}
+	if i.StdStatus != nil {
+		predicates = append(predicates, mststudent.StdStatusEQ(*i.StdStatus))
+	}
+	if i.StdStatusNEQ != nil {
+		predicates = append(predicates, mststudent.StdStatusNEQ(*i.StdStatusNEQ))
+	}
+	if len(i.StdStatusIn) > 0 {
+		predicates = append(predicates, mststudent.StdStatusIn(i.StdStatusIn...))
+	}
+	if len(i.StdStatusNotIn) > 0 {
+		predicates = append(predicates, mststudent.StdStatusNotIn(i.StdStatusNotIn...))
+	}
+	if i.StdSex != nil {
+		predicates = append(predicates, mststudent.StdSexEQ(*i.StdSex))
+	}
+	if i.StdSexNEQ != nil {
+		predicates = append(predicates, mststudent.StdSexNEQ(*i.StdSexNEQ))
+	}
+	if len(i.StdSexIn) > 0 {
+		predicates = append(predicates, mststudent.StdSexIn(i.StdSexIn...))
+	}
+	if len(i.StdSexNotIn) > 0 {
+		predicates = append(predicates, mststudent.StdSexNotIn(i.StdSexNotIn...))
+	}
+	if i.StdRegNo != nil {
+		predicates = append(predicates, mststudent.StdRegNoEQ(*i.StdRegNo))
+	}
+	if i.StdRegNoNEQ != nil {
+		predicates = append(predicates, mststudent.StdRegNoNEQ(*i.StdRegNoNEQ))
+	}
+	if len(i.StdRegNoIn) > 0 {
+		predicates = append(predicates, mststudent.StdRegNoIn(i.StdRegNoIn...))
+	}
+	if len(i.StdRegNoNotIn) > 0 {
+		predicates = append(predicates, mststudent.StdRegNoNotIn(i.StdRegNoNotIn...))
+	}
+	if i.StdRegNoGT != nil {
+		predicates = append(predicates, mststudent.StdRegNoGT(*i.StdRegNoGT))
+	}
+	if i.StdRegNoGTE != nil {
+		predicates = append(predicates, mststudent.StdRegNoGTE(*i.StdRegNoGTE))
+	}
+	if i.StdRegNoLT != nil {
+		predicates = append(predicates, mststudent.StdRegNoLT(*i.StdRegNoLT))
+	}
+	if i.StdRegNoLTE != nil {
+		predicates = append(predicates, mststudent.StdRegNoLTE(*i.StdRegNoLTE))
+	}
+	if i.StdRegNoContains != nil {
+		predicates = append(predicates, mststudent.StdRegNoContains(*i.StdRegNoContains))
+	}
+	if i.StdRegNoHasPrefix != nil {
+		predicates = append(predicates, mststudent.StdRegNoHasPrefix(*i.StdRegNoHasPrefix))
+	}
+	if i.StdRegNoHasSuffix != nil {
+		predicates = append(predicates, mststudent.StdRegNoHasSuffix(*i.StdRegNoHasSuffix))
+	}
+	if i.StdRegNoEqualFold != nil {
+		predicates = append(predicates, mststudent.StdRegNoEqualFold(*i.StdRegNoEqualFold))
+	}
+	if i.StdRegNoContainsFold != nil {
+		predicates = append(predicates, mststudent.StdRegNoContainsFold(*i.StdRegNoContainsFold))
+	}
+
+	switch len(predicates) {
+	case 0:
+		return nil, fmt.Errorf("myeduate/ent: empty predicate MstStudentWhereInput")
+	case 1:
+		return predicates[0], nil
+	default:
+		return mststudent.And(predicates...), nil
 	}
 }

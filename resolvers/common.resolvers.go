@@ -5,7 +5,6 @@ package resolvers
 
 import (
 	"context"
-	"myeduate"
 	"myeduate/ent"
 )
 
@@ -16,8 +15,3 @@ func (r *queryResolver) Node(ctx context.Context, token string, id int) (ent.Nod
 func (r *queryResolver) Nodes(ctx context.Context, token string, ids []int) ([]ent.Noder, error) {
 	return r.client.Noders(ctx, ids)
 }
-
-// Query returns myeduate.QueryResolver implementation.
-func (r *Resolver) Query() myeduate.QueryResolver { return &queryResolver{r} }
-
-type queryResolver struct{ *Resolver }
