@@ -2,30 +2,23 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"myeduate/ent"
 	"myeduate/ent/migrate"
 	"myeduate/logger"
-	"myeduate/resolvers"
+	"myeduate/routes"
 	"myeduate/utils"
 	"net/http"
 	"time"
 
 	_ "myeduate/ent/runtime"
 
-	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/schema"
 
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/handler/extension"
-	"github.com/99designs/gqlgen/graphql/handler/lru"
-	"github.com/99designs/gqlgen/graphql/handler/transport"
-	"github.com/99designs/gqlgen/graphql/playground"
-
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	_ "github.com/lib/pq"
 	"go.uber.org/zap"
@@ -79,55 +72,16 @@ func main() {
 		})
 	})
 
-	// create a new serve mux and register the handlers
-	route := mux.NewRouter()
+	app := echo.New()
 
-	// CORS
-	ch := cors(config.AllowOrigins)
+	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{config.AllowOrigins},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
-	// create a new server
-	s := http.Server{
-		Addr:    config.ServerAddr, // configure the bind address
-		Handler: ch(route),         // set the default handler
-		//		ErrorLog:     l.StandardLogger(&hclog.StandardLoggerOptions{}), // set the logger for the server
-		ReadTimeout:  5 * time.Second,   // max time to read request from the client
-		WriteTimeout: 10 * time.Second,  // max time to write response to the client
-		IdleTimeout:  120 * time.Second, // max time for connections using TCP Keep-Alive
-	}
-	// Configure the server and start listening on :8081.
-	srv := handler.New(resolvers.NewSchema(client))
+	routes.Init(app, client)
 
-	srv.AddTransport(&transport.Websocket{
-		Upgrader: websocket.Upgrader{
-			CheckOrigin: func(r *http.Request) bool {
-				return true
-			},
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-		},
-		KeepAlivePingInterval: 10 * time.Second,
-	})
-
-	srv.AddTransport(transport.Options{})
-	srv.AddTransport(transport.GET{})
-	srv.AddTransport(transport.POST{})
-	srv.AddTransport(transport.MultipartForm{})
-
-	srv.SetQueryCache(lru.New(1000))
-
-	srv.Use(extension.Introspection{})
-	srv.Use(extension.AutomaticPersistedQuery{
-		Cache: lru.New(100),
-	})
-
-	srv.Use(entgql.Transactioner{TxOpener: client})
-
-	route.Handle("/", playground.Handler("myeduate", "/query"))
-	route.Handle("/query", srv)
-	fmt.Printf("listening on : %v \n", config.ServerAddr)
-	if err := s.ListenAndServe(); err != nil {
-		log.Fatal("http server terminated", err)
-	}
+	app.Logger.Fatal(app.Start(":8081"))
 }
 
 func cors(allowedOrigins string) mux.MiddlewareFunc {
