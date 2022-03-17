@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"myeduate/ent/authparent"
 	"myeduate/ent/authstaff"
+	"myeduate/ent/msgchannelmessage"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/mststudent"
@@ -244,6 +245,113 @@ func (as *AuthStaff) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[10] = &Field{
 		Type:  "string",
 		Name:  "staff_mobile",
+		Value: string(buf),
+	}
+	return node, nil
+}
+
+func (mcm *MsgChannelMessage) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     mcm.ID,
+		Type:   "MsgChannelMessage",
+		Fields: make([]*Field, 12),
+		Edges:  make([]*Edge, 0),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(mcm.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.UpdatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "time.Time",
+		Name:  "updated_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgDate); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "time.Time",
+		Name:  "msg_date",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgIsExpiry); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "bool",
+		Name:  "msg_is_expiry",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgExpiryDate); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
+		Type:  "time.Time",
+		Name:  "msg_expiry_date",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgIsText); err != nil {
+		return nil, err
+	}
+	node.Fields[5] = &Field{
+		Type:  "bool",
+		Name:  "msg_is_text",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgContent); err != nil {
+		return nil, err
+	}
+	node.Fields[6] = &Field{
+		Type:  "string",
+		Name:  "msg_content",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgMediaType); err != nil {
+		return nil, err
+	}
+	node.Fields[7] = &Field{
+		Type:  "string",
+		Name:  "msg_media_type",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgMediaContent); err != nil {
+		return nil, err
+	}
+	node.Fields[8] = &Field{
+		Type:  "string",
+		Name:  "msg_media_content",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgActive); err != nil {
+		return nil, err
+	}
+	node.Fields[9] = &Field{
+		Type:  "bool",
+		Name:  "msg_active",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgIsIndividual); err != nil {
+		return nil, err
+	}
+	node.Fields[10] = &Field{
+		Type:  "bool",
+		Name:  "msg_is_individual",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(mcm.MsgRecvOrSent); err != nil {
+		return nil, err
+	}
+	node.Fields[11] = &Field{
+		Type:  "string",
+		Name:  "msg_recv_or_sent",
 		Value: string(buf),
 	}
 	return node, nil
@@ -787,6 +895,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			return nil, err
 		}
 		return n, nil
+	case msgchannelmessage.Table:
+		n, err := c.MsgChannelMessage.Query().
+			Where(msgchannelmessage.ID(id)).
+			CollectFields(ctx, "MsgChannelMessage").
+			Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
 	case mstcustomer.Table:
 		n, err := c.MstCustomer.Query().
 			Where(mstcustomer.ID(id)).
@@ -904,6 +1021,19 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		nodes, err := c.AuthStaff.Query().
 			Where(authstaff.IDIn(ids...)).
 			CollectFields(ctx, "AuthStaff").
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case msgchannelmessage.Table:
+		nodes, err := c.MsgChannelMessage.Query().
+			Where(msgchannelmessage.IDIn(ids...)).
+			CollectFields(ctx, "MsgChannelMessage").
 			All(ctx)
 		if err != nil {
 			return nil, err

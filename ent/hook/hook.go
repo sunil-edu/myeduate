@@ -35,6 +35,19 @@ func (f AuthStaffFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	return f(ctx, mv)
 }
 
+// The MsgChannelMessageFunc type is an adapter to allow the use of ordinary
+// function as MsgChannelMessage mutator.
+type MsgChannelMessageFunc func(context.Context, *ent.MsgChannelMessageMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MsgChannelMessageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.MsgChannelMessageMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MsgChannelMessageMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The MstCustomerFunc type is an adapter to allow the use of ordinary
 // function as MstCustomer mutator.
 type MstCustomerFunc func(context.Context, *ent.MstCustomerMutation) (ent.Value, error)

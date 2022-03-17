@@ -34,6 +34,18 @@ func (as *AuthStaffQuery) collectField(ctx *graphql.OperationContext, field grap
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (mcm *MsgChannelMessageQuery) CollectFields(ctx context.Context, satisfies ...string) *MsgChannelMessageQuery {
+	if fc := graphql.GetFieldContext(ctx); fc != nil {
+		mcm = mcm.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)
+	}
+	return mcm
+}
+
+func (mcm *MsgChannelMessageQuery) collectField(ctx *graphql.OperationContext, field graphql.CollectedField, satisfies ...string) *MsgChannelMessageQuery {
+	return mcm
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (mc *MstCustomerQuery) CollectFields(ctx context.Context, satisfies ...string) *MstCustomerQuery {
 	if fc := graphql.GetFieldContext(ctx); fc != nil {
 		mc = mc.collectField(graphql.GetOperationContext(ctx), fc.Field, satisfies...)

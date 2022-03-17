@@ -208,6 +208,130 @@ func (u *AuthStaffUpdateOne) SetInput(i UpdateAuthStaffInput) *AuthStaffUpdateOn
 	return u
 }
 
+// CreateMsgChannelMessageInput represents a mutation input for creating msgchannelmessages.
+type CreateMsgChannelMessageInput struct {
+	CreatedAt       *time.Time
+	UpdatedAt       *time.Time
+	MsgDate         *time.Time
+	MsgIsExpiry     *bool
+	MsgExpiryDate   *time.Time
+	MsgIsText       *bool
+	MsgContent      string
+	MsgMediaType    string
+	MsgMediaContent string
+	MsgActive       *bool
+	MsgIsIndividual bool
+	MsgRecvOrSent   string
+}
+
+// Mutate applies the CreateMsgChannelMessageInput on the MsgChannelMessageCreate builder.
+func (i *CreateMsgChannelMessageInput) Mutate(m *MsgChannelMessageCreate) {
+	if v := i.CreatedAt; v != nil {
+		m.SetCreatedAt(*v)
+	}
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if v := i.MsgDate; v != nil {
+		m.SetMsgDate(*v)
+	}
+	if v := i.MsgIsExpiry; v != nil {
+		m.SetMsgIsExpiry(*v)
+	}
+	if v := i.MsgExpiryDate; v != nil {
+		m.SetMsgExpiryDate(*v)
+	}
+	if v := i.MsgIsText; v != nil {
+		m.SetMsgIsText(*v)
+	}
+	m.SetMsgContent(i.MsgContent)
+	m.SetMsgMediaType(i.MsgMediaType)
+	m.SetMsgMediaContent(i.MsgMediaContent)
+	if v := i.MsgActive; v != nil {
+		m.SetMsgActive(*v)
+	}
+	m.SetMsgIsIndividual(i.MsgIsIndividual)
+	m.SetMsgRecvOrSent(i.MsgRecvOrSent)
+}
+
+// SetInput applies the change-set in the CreateMsgChannelMessageInput on the create builder.
+func (c *MsgChannelMessageCreate) SetInput(i CreateMsgChannelMessageInput) *MsgChannelMessageCreate {
+	i.Mutate(c)
+	return c
+}
+
+// UpdateMsgChannelMessageInput represents a mutation input for updating msgchannelmessages.
+type UpdateMsgChannelMessageInput struct {
+	UpdatedAt          *time.Time
+	MsgDate            *time.Time
+	ClearMsgDate       bool
+	MsgIsExpiry        *bool
+	MsgExpiryDate      *time.Time
+	ClearMsgExpiryDate bool
+	MsgIsText          *bool
+	MsgContent         *string
+	MsgMediaType       *string
+	MsgMediaContent    *string
+	MsgActive          *bool
+	MsgIsIndividual    *bool
+	MsgRecvOrSent      *string
+}
+
+// Mutate applies the UpdateMsgChannelMessageInput on the MsgChannelMessageMutation.
+func (i *UpdateMsgChannelMessageInput) Mutate(m *MsgChannelMessageMutation) {
+	if v := i.UpdatedAt; v != nil {
+		m.SetUpdatedAt(*v)
+	}
+	if i.ClearMsgDate {
+		m.ClearMsgDate()
+	}
+	if v := i.MsgDate; v != nil {
+		m.SetMsgDate(*v)
+	}
+	if v := i.MsgIsExpiry; v != nil {
+		m.SetMsgIsExpiry(*v)
+	}
+	if i.ClearMsgExpiryDate {
+		m.ClearMsgExpiryDate()
+	}
+	if v := i.MsgExpiryDate; v != nil {
+		m.SetMsgExpiryDate(*v)
+	}
+	if v := i.MsgIsText; v != nil {
+		m.SetMsgIsText(*v)
+	}
+	if v := i.MsgContent; v != nil {
+		m.SetMsgContent(*v)
+	}
+	if v := i.MsgMediaType; v != nil {
+		m.SetMsgMediaType(*v)
+	}
+	if v := i.MsgMediaContent; v != nil {
+		m.SetMsgMediaContent(*v)
+	}
+	if v := i.MsgActive; v != nil {
+		m.SetMsgActive(*v)
+	}
+	if v := i.MsgIsIndividual; v != nil {
+		m.SetMsgIsIndividual(*v)
+	}
+	if v := i.MsgRecvOrSent; v != nil {
+		m.SetMsgRecvOrSent(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateMsgChannelMessageInput on the update builder.
+func (u *MsgChannelMessageUpdate) SetInput(i UpdateMsgChannelMessageInput) *MsgChannelMessageUpdate {
+	i.Mutate(u.Mutation())
+	return u
+}
+
+// SetInput applies the change-set in the UpdateMsgChannelMessageInput on the update-one builder.
+func (u *MsgChannelMessageUpdateOne) SetInput(i UpdateMsgChannelMessageInput) *MsgChannelMessageUpdateOne {
+	i.Mutate(u.Mutation())
+	return u
+}
+
 // CreateMstCustomerInput represents a mutation input for creating mstcustomers.
 type CreateMstCustomerInput struct {
 	CreatedAt         *time.Time

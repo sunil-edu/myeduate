@@ -6,6 +6,7 @@ package ent
 import (
 	"myeduate/ent/authparent"
 	"myeduate/ent/authstaff"
+	"myeduate/ent/msgchannelmessage"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/mststudent"
@@ -19,7 +20,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 5)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 6)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   authparent.Table,
@@ -70,6 +71,31 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
+			Table:   msgchannelmessage.Table,
+			Columns: msgchannelmessage.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: msgchannelmessage.FieldID,
+			},
+		},
+		Type: "MsgChannelMessage",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			msgchannelmessage.FieldCreatedAt:       {Type: field.TypeTime, Column: msgchannelmessage.FieldCreatedAt},
+			msgchannelmessage.FieldUpdatedAt:       {Type: field.TypeTime, Column: msgchannelmessage.FieldUpdatedAt},
+			msgchannelmessage.FieldMsgDate:         {Type: field.TypeTime, Column: msgchannelmessage.FieldMsgDate},
+			msgchannelmessage.FieldMsgIsExpiry:     {Type: field.TypeBool, Column: msgchannelmessage.FieldMsgIsExpiry},
+			msgchannelmessage.FieldMsgExpiryDate:   {Type: field.TypeTime, Column: msgchannelmessage.FieldMsgExpiryDate},
+			msgchannelmessage.FieldMsgIsText:       {Type: field.TypeBool, Column: msgchannelmessage.FieldMsgIsText},
+			msgchannelmessage.FieldMsgContent:      {Type: field.TypeString, Column: msgchannelmessage.FieldMsgContent},
+			msgchannelmessage.FieldMsgMediaType:    {Type: field.TypeString, Column: msgchannelmessage.FieldMsgMediaType},
+			msgchannelmessage.FieldMsgMediaContent: {Type: field.TypeString, Column: msgchannelmessage.FieldMsgMediaContent},
+			msgchannelmessage.FieldMsgActive:       {Type: field.TypeBool, Column: msgchannelmessage.FieldMsgActive},
+			msgchannelmessage.FieldMsgIsIndividual: {Type: field.TypeBool, Column: msgchannelmessage.FieldMsgIsIndividual},
+			msgchannelmessage.FieldMsgRecvOrSent:   {Type: field.TypeString, Column: msgchannelmessage.FieldMsgRecvOrSent},
+		},
+	}
+	graph.Nodes[3] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
 			Table:   mstcustomer.Table,
 			Columns: mstcustomer.Columns,
 			ID: &sqlgraph.FieldSpec{
@@ -101,7 +127,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			mstcustomer.FieldCustTimeZone:      {Type: field.TypeTime, Column: mstcustomer.FieldCustTimeZone},
 		},
 	}
-	graph.Nodes[3] = &sqlgraph.Node{
+	graph.Nodes[4] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   mstinst.Table,
 			Columns: mstinst.Columns,
@@ -135,7 +161,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			mstinst.FieldCustomerID:        {Type: field.TypeInt, Column: mstinst.FieldCustomerID},
 		},
 	}
-	graph.Nodes[4] = &sqlgraph.Node{
+	graph.Nodes[5] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   mststudent.Table,
 			Columns: mststudent.Columns,
@@ -379,6 +405,105 @@ func (f *AuthStaffFilter) WhereStaffMobile(p entql.StringP) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (mcmq *MsgChannelMessageQuery) addPredicate(pred func(s *sql.Selector)) {
+	mcmq.predicates = append(mcmq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the MsgChannelMessageQuery builder.
+func (mcmq *MsgChannelMessageQuery) Filter() *MsgChannelMessageFilter {
+	return &MsgChannelMessageFilter{mcmq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *MsgChannelMessageMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the MsgChannelMessageMutation builder.
+func (m *MsgChannelMessageMutation) Filter() *MsgChannelMessageFilter {
+	return &MsgChannelMessageFilter{m}
+}
+
+// MsgChannelMessageFilter provides a generic filtering capability at runtime for MsgChannelMessageQuery.
+type MsgChannelMessageFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *MsgChannelMessageFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int predicate on the id field.
+func (f *MsgChannelMessageFilter) WhereID(p entql.IntP) {
+	f.Where(p.Field(msgchannelmessage.FieldID))
+}
+
+// WhereCreatedAt applies the entql time.Time predicate on the created_at field.
+func (f *MsgChannelMessageFilter) WhereCreatedAt(p entql.TimeP) {
+	f.Where(p.Field(msgchannelmessage.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql time.Time predicate on the updated_at field.
+func (f *MsgChannelMessageFilter) WhereUpdatedAt(p entql.TimeP) {
+	f.Where(p.Field(msgchannelmessage.FieldUpdatedAt))
+}
+
+// WhereMsgDate applies the entql time.Time predicate on the msg_date field.
+func (f *MsgChannelMessageFilter) WhereMsgDate(p entql.TimeP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgDate))
+}
+
+// WhereMsgIsExpiry applies the entql bool predicate on the msg_is_expiry field.
+func (f *MsgChannelMessageFilter) WhereMsgIsExpiry(p entql.BoolP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgIsExpiry))
+}
+
+// WhereMsgExpiryDate applies the entql time.Time predicate on the msg_expiry_date field.
+func (f *MsgChannelMessageFilter) WhereMsgExpiryDate(p entql.TimeP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgExpiryDate))
+}
+
+// WhereMsgIsText applies the entql bool predicate on the msg_is_text field.
+func (f *MsgChannelMessageFilter) WhereMsgIsText(p entql.BoolP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgIsText))
+}
+
+// WhereMsgContent applies the entql string predicate on the msg_content field.
+func (f *MsgChannelMessageFilter) WhereMsgContent(p entql.StringP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgContent))
+}
+
+// WhereMsgMediaType applies the entql string predicate on the msg_media_type field.
+func (f *MsgChannelMessageFilter) WhereMsgMediaType(p entql.StringP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgMediaType))
+}
+
+// WhereMsgMediaContent applies the entql string predicate on the msg_media_content field.
+func (f *MsgChannelMessageFilter) WhereMsgMediaContent(p entql.StringP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgMediaContent))
+}
+
+// WhereMsgActive applies the entql bool predicate on the msg_active field.
+func (f *MsgChannelMessageFilter) WhereMsgActive(p entql.BoolP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgActive))
+}
+
+// WhereMsgIsIndividual applies the entql bool predicate on the msg_is_individual field.
+func (f *MsgChannelMessageFilter) WhereMsgIsIndividual(p entql.BoolP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgIsIndividual))
+}
+
+// WhereMsgRecvOrSent applies the entql string predicate on the msg_recv_or_sent field.
+func (f *MsgChannelMessageFilter) WhereMsgRecvOrSent(p entql.StringP) {
+	f.Where(p.Field(msgchannelmessage.FieldMsgRecvOrSent))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (mcq *MstCustomerQuery) addPredicate(pred func(s *sql.Selector)) {
 	mcq.predicates = append(mcq.predicates, pred)
 }
@@ -406,7 +531,7 @@ type MstCustomerFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MstCustomerFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -559,7 +684,7 @@ type MstInstFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MstInstFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -717,7 +842,7 @@ type MstStudentFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MstStudentFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[5].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

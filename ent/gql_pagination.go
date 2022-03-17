@@ -11,6 +11,7 @@ import (
 	"io"
 	"myeduate/ent/authparent"
 	"myeduate/ent/authstaff"
+	"myeduate/ent/msgchannelmessage"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/mststudent"
@@ -688,6 +689,276 @@ func (as *AuthStaff) ToEdge(order *AuthStaffOrder) *AuthStaffEdge {
 	return &AuthStaffEdge{
 		Node:   as,
 		Cursor: order.Field.toCursor(as),
+	}
+}
+
+// MsgChannelMessageEdge is the edge representation of MsgChannelMessage.
+type MsgChannelMessageEdge struct {
+	Node   *MsgChannelMessage `json:"node"`
+	Cursor Cursor             `json:"cursor"`
+}
+
+// MsgChannelMessageConnection is the connection containing edges to MsgChannelMessage.
+type MsgChannelMessageConnection struct {
+	Edges      []*MsgChannelMessageEdge `json:"edges"`
+	PageInfo   PageInfo                 `json:"pageInfo"`
+	TotalCount int                      `json:"totalCount"`
+}
+
+// MsgChannelMessagePaginateOption enables pagination customization.
+type MsgChannelMessagePaginateOption func(*msgChannelMessagePager) error
+
+// WithMsgChannelMessageOrder configures pagination ordering.
+func WithMsgChannelMessageOrder(order *MsgChannelMessageOrder) MsgChannelMessagePaginateOption {
+	if order == nil {
+		order = DefaultMsgChannelMessageOrder
+	}
+	o := *order
+	return func(pager *msgChannelMessagePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultMsgChannelMessageOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithMsgChannelMessageFilter configures pagination filter.
+func WithMsgChannelMessageFilter(filter func(*MsgChannelMessageQuery) (*MsgChannelMessageQuery, error)) MsgChannelMessagePaginateOption {
+	return func(pager *msgChannelMessagePager) error {
+		if filter == nil {
+			return errors.New("MsgChannelMessageQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type msgChannelMessagePager struct {
+	order  *MsgChannelMessageOrder
+	filter func(*MsgChannelMessageQuery) (*MsgChannelMessageQuery, error)
+}
+
+func newMsgChannelMessagePager(opts []MsgChannelMessagePaginateOption) (*msgChannelMessagePager, error) {
+	pager := &msgChannelMessagePager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultMsgChannelMessageOrder
+	}
+	return pager, nil
+}
+
+func (p *msgChannelMessagePager) applyFilter(query *MsgChannelMessageQuery) (*MsgChannelMessageQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *msgChannelMessagePager) toCursor(mcm *MsgChannelMessage) Cursor {
+	return p.order.Field.toCursor(mcm)
+}
+
+func (p *msgChannelMessagePager) applyCursors(query *MsgChannelMessageQuery, after, before *Cursor) *MsgChannelMessageQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultMsgChannelMessageOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *msgChannelMessagePager) applyOrder(query *MsgChannelMessageQuery, reverse bool) *MsgChannelMessageQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultMsgChannelMessageOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultMsgChannelMessageOrder.Field.field))
+	}
+	return query
+}
+
+// Paginate executes the query and returns a relay based cursor connection to MsgChannelMessage.
+func (mcm *MsgChannelMessageQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...MsgChannelMessagePaginateOption,
+) (*MsgChannelMessageConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newMsgChannelMessagePager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if mcm, err = pager.applyFilter(mcm); err != nil {
+		return nil, err
+	}
+
+	conn := &MsgChannelMessageConnection{Edges: []*MsgChannelMessageEdge{}}
+	if !hasCollectedField(ctx, edgesField) || first != nil && *first == 0 || last != nil && *last == 0 {
+		if hasCollectedField(ctx, totalCountField) ||
+			hasCollectedField(ctx, pageInfoField) {
+			count, err := mcm.Count(ctx)
+			if err != nil {
+				return nil, err
+			}
+			conn.TotalCount = count
+			conn.PageInfo.HasNextPage = first != nil && count > 0
+			conn.PageInfo.HasPreviousPage = last != nil && count > 0
+		}
+		return conn, nil
+	}
+
+	if (after != nil || first != nil || before != nil || last != nil) && hasCollectedField(ctx, totalCountField) {
+		count, err := mcm.Clone().Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		conn.TotalCount = count
+	}
+
+	mcm = pager.applyCursors(mcm, after, before)
+	mcm = pager.applyOrder(mcm, last != nil)
+	var limit int
+	if first != nil {
+		limit = *first + 1
+	} else if last != nil {
+		limit = *last + 1
+	}
+	if limit > 0 {
+		mcm = mcm.Limit(limit)
+	}
+
+	if field := getCollectedField(ctx, edgesField, nodeField); field != nil {
+		mcm = mcm.collectField(graphql.GetOperationContext(ctx), *field)
+	}
+
+	nodes, err := mcm.All(ctx)
+	if err != nil || len(nodes) == 0 {
+		return conn, err
+	}
+
+	if len(nodes) == limit {
+		conn.PageInfo.HasNextPage = first != nil
+		conn.PageInfo.HasPreviousPage = last != nil
+		nodes = nodes[:len(nodes)-1]
+	}
+
+	var nodeAt func(int) *MsgChannelMessage
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *MsgChannelMessage {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *MsgChannelMessage {
+			return nodes[i]
+		}
+	}
+
+	conn.Edges = make([]*MsgChannelMessageEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		conn.Edges[i] = &MsgChannelMessageEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+
+	conn.PageInfo.StartCursor = &conn.Edges[0].Cursor
+	conn.PageInfo.EndCursor = &conn.Edges[len(conn.Edges)-1].Cursor
+	if conn.TotalCount == 0 {
+		conn.TotalCount = len(nodes)
+	}
+
+	return conn, nil
+}
+
+var (
+	// MsgChannelMessageOrderFieldMsgDate orders MsgChannelMessage by msg_date.
+	MsgChannelMessageOrderFieldMsgDate = &MsgChannelMessageOrderField{
+		field: msgchannelmessage.FieldMsgDate,
+		toCursor: func(mcm *MsgChannelMessage) Cursor {
+			return Cursor{
+				ID:    mcm.ID,
+				Value: mcm.MsgDate,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f MsgChannelMessageOrderField) String() string {
+	var str string
+	switch f.field {
+	case msgchannelmessage.FieldMsgDate:
+		str = "MSG_DATE"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f MsgChannelMessageOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *MsgChannelMessageOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("MsgChannelMessageOrderField %T must be a string", v)
+	}
+	switch str {
+	case "MSG_DATE":
+		*f = *MsgChannelMessageOrderFieldMsgDate
+	default:
+		return fmt.Errorf("%s is not a valid MsgChannelMessageOrderField", str)
+	}
+	return nil
+}
+
+// MsgChannelMessageOrderField defines the ordering field of MsgChannelMessage.
+type MsgChannelMessageOrderField struct {
+	field    string
+	toCursor func(*MsgChannelMessage) Cursor
+}
+
+// MsgChannelMessageOrder defines the ordering of MsgChannelMessage.
+type MsgChannelMessageOrder struct {
+	Direction OrderDirection               `json:"direction"`
+	Field     *MsgChannelMessageOrderField `json:"field"`
+}
+
+// DefaultMsgChannelMessageOrder is the default ordering of MsgChannelMessage.
+var DefaultMsgChannelMessageOrder = &MsgChannelMessageOrder{
+	Direction: OrderDirectionAsc,
+	Field: &MsgChannelMessageOrderField{
+		field: msgchannelmessage.FieldID,
+		toCursor: func(mcm *MsgChannelMessage) Cursor {
+			return Cursor{ID: mcm.ID}
+		},
+	},
+}
+
+// ToEdge converts MsgChannelMessage into MsgChannelMessageEdge.
+func (mcm *MsgChannelMessage) ToEdge(order *MsgChannelMessageOrder) *MsgChannelMessageEdge {
+	if order == nil {
+		order = DefaultMsgChannelMessageOrder
+	}
+	return &MsgChannelMessageEdge{
+		Node:   mcm,
+		Cursor: order.Field.toCursor(mcm),
 	}
 }
 

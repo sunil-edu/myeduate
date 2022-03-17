@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"myeduate/ent/authparent"
 	"myeduate/ent/authstaff"
+	"myeduate/ent/msgchannelmessage"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/mststudent"
@@ -34,11 +35,12 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		authparent.Table:  authparent.ValidColumn,
-		authstaff.Table:   authstaff.ValidColumn,
-		mstcustomer.Table: mstcustomer.ValidColumn,
-		mstinst.Table:     mstinst.ValidColumn,
-		mststudent.Table:  mststudent.ValidColumn,
+		authparent.Table:        authparent.ValidColumn,
+		authstaff.Table:         authstaff.ValidColumn,
+		msgchannelmessage.Table: msgchannelmessage.ValidColumn,
+		mstcustomer.Table:       mstcustomer.ValidColumn,
+		mstinst.Table:           mstinst.ValidColumn,
+		mststudent.Table:        mststudent.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

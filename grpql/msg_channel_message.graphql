@@ -1,0 +1,78 @@
+type MsgChannelMessageConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [MsgChannelMessageEdge]
+}
+
+type MsgChannelMessageEdge {
+  node: MsgChannelMessage
+  cursor: Cursor!
+}
+
+# These enums are matched the entgql annotations in the ent/schema/MsgChannelMessage.go
+enum MsgChannelMessageOrderField {
+  CREATED_AT
+}
+
+input MsgChannelMessageOrder {
+  direction: OrderDirection!
+  field: MsgChannelMessageOrderField
+}
+
+type MsgChannelMessage implements Node {
+  id:                 ID!
+  msg_date:           Time!
+  msg_is_expiry:      Boolean!
+  msg_expiry_date:    Time!
+  msg_is_text:        Boolean!
+  msg_content:        String!
+  msg_media_type:     String!
+  msg_media_content:  String!
+  msg_active:         Boolean!
+  msg_is_individual:  Boolean!
+  msg_recv_or_sent:   String!
+  created_at:         Time!     
+
+
+}
+
+input CreateMsgChannelMessageInput {
+  msg_date: Time
+  msg_is_expiry: Boolean
+  msg_expiry_date: Time
+  msg_is_text: Boolean
+  msg_content: String
+  msg_media_type: String
+  msg_media_content: String
+  msg_active: Boolean
+  msg_is_individual: Boolean
+  msg_recv_or_sent: String
+
+}
+
+input UpdateMsgChannelMessageInput {
+  msg_date: Time
+  msg_is_expiry: Boolean
+  msg_expiry_date: Time
+  msg_is_text: Boolean
+  msg_content: String!
+  msg_media_type: String
+  msg_media_content: String
+  msg_active: Boolean
+  msg_is_individual: Boolean
+  msg_recv_or_sent: String
+
+}
+
+extend type Query {
+  GetChannelMessages(token: String! ): [MsgChannelMessage!]
+}
+
+extend type Mutation {
+  AddChannelMessage(token: String!   input: CreateMsgChannelMessageInput!  ): MsgChannelMessage!
+}
+
+
+extend type Subscription {
+ GetChannelMessagesBySubscription(token: String!):[MsgChannelMessage!]
+}

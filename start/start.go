@@ -16,13 +16,18 @@ import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/schema"
+
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/go-chi/chi"
+
+	gohandlers "github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+
 	_ "github.com/lib/pq"
-	"github.com/rs/cors"
 	"go.uber.org/zap"
 )
 
@@ -56,6 +61,8 @@ func main() {
 
 	if err := client.Schema.Create(ctx,
 		schema.WithAtlas(true),
+		migrate.WithDropColumn(true),
+		migrate.WithDropIndex(true),
 		migrate.WithGlobalUniqueID(true)); err != nil {
 		log.Fatalf("opening ent client", err)
 	}
@@ -73,35 +80,61 @@ func main() {
 	})
 
 	// create a new serve mux and register the handlers
-	router := chi.NewRouter()
+	route := mux.NewRouter()
 
-	// Add CORS middleware around every request
-	// See https://github.com/rs/cors for full option listing
-	router.Use(cors.New(cors.Options{
-		AllowedOrigins:   []string{config.AllowOrigins},
-		AllowCredentials: true,
-		Debug:            true,
-	}).Handler)
+	// CORS
+	ch := cors(config.AllowOrigins)
 
+	// create a new server
+	s := http.Server{
+		Addr:    config.ServerAddr, // configure the bind address
+		Handler: ch(route),         // set the default handler
+		//		ErrorLog:     l.StandardLogger(&hclog.StandardLoggerOptions{}), // set the logger for the server
+		ReadTimeout:  5 * time.Second,   // max time to read request from the client
+		WriteTimeout: 10 * time.Second,  // max time to write response to the client
+		IdleTimeout:  120 * time.Second, // max time for connections using TCP Keep-Alive
+	}
 	// Configure the server and start listening on :8081.
-	srv := handler.NewDefaultServer(resolvers.NewSchema(client))
-	srv.Use(entgql.Transactioner{TxOpener: client})
+	srv := handler.New(resolvers.NewSchema(client))
+
 	srv.AddTransport(&transport.Websocket{
 		Upgrader: websocket.Upgrader{
 			CheckOrigin: func(r *http.Request) bool {
-				// Check against your desired domains here
-				return r.Host == "example.org"
+				return true
 			},
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 		},
+		KeepAlivePingInterval: 10 * time.Second,
 	})
 
-	router.Handle("/", playground.Handler("myeduate", "/query"))
-	router.Handle("/query", srv)
+	srv.AddTransport(transport.Options{})
+	srv.AddTransport(transport.GET{})
+	srv.AddTransport(transport.POST{})
+	srv.AddTransport(transport.MultipartForm{})
+
+	srv.SetQueryCache(lru.New(1000))
+
+	srv.Use(extension.Introspection{})
+	srv.Use(extension.AutomaticPersistedQuery{
+		Cache: lru.New(100),
+	})
+
+	srv.Use(entgql.Transactioner{TxOpener: client})
+
+	route.Handle("/", playground.Handler("myeduate", "/query"))
+	route.Handle("/query", srv)
 	fmt.Printf("listening on : %v \n", config.ServerAddr)
-	err = http.ListenAndServe(config.ServerAddr, router)
-	if err != nil {
-		panic(err)
+	if err := s.ListenAndServe(); err != nil {
+		log.Fatal("http server terminated", err)
 	}
+}
+
+func cors(allowedOrigins string) mux.MiddlewareFunc {
+	return gohandlers.CORS(
+		gohandlers.AllowedOrigins([]string{allowedOrigins}),
+		gohandlers.AllowedHeaders([]string{"Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Origin", "X-Requested-With", "Content-Type", "Accept"}),
+		gohandlers.AllowedMethods([]string{http.MethodGet, http.MethodHead, http.MethodPost, http.MethodPut, http.MethodOptions}),
+		gohandlers.AllowCredentials(),
+	)
 }

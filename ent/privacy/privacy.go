@@ -213,6 +213,30 @@ func (f AuthStaffMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutat
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.AuthStaffMutation", m)
 }
 
+// The MsgChannelMessageQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type MsgChannelMessageQueryRuleFunc func(context.Context, *ent.MsgChannelMessageQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f MsgChannelMessageQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.MsgChannelMessageQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.MsgChannelMessageQuery", q)
+}
+
+// The MsgChannelMessageMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type MsgChannelMessageMutationRuleFunc func(context.Context, *ent.MsgChannelMessageMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f MsgChannelMessageMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.MsgChannelMessageMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.MsgChannelMessageMutation", m)
+}
+
 // The MstCustomerQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type MstCustomerQueryRuleFunc func(context.Context, *ent.MstCustomerQuery) error
@@ -324,6 +348,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.AuthStaffQuery:
 		return q.Filter(), nil
+	case *ent.MsgChannelMessageQuery:
+		return q.Filter(), nil
 	case *ent.MstCustomerQuery:
 		return q.Filter(), nil
 	case *ent.MstInstQuery:
@@ -340,6 +366,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.AuthParentMutation:
 		return m.Filter(), nil
 	case *ent.AuthStaffMutation:
+		return m.Filter(), nil
+	case *ent.MsgChannelMessageMutation:
 		return m.Filter(), nil
 	case *ent.MstCustomerMutation:
 		return m.Filter(), nil

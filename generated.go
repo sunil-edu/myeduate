@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"myeduate/ent"
 	"myeduate/ent/customtypes"
 	"strconv"
@@ -40,6 +41,7 @@ type Config struct {
 type ResolverRoot interface {
 	Mutation() MutationResolver
 	Query() QueryResolver
+	Subscription() SubscriptionResolver
 }
 
 type DirectiveRoot struct {
@@ -80,6 +82,32 @@ type ComplexityRoot struct {
 	InstData struct {
 		ID       func(childComplexity int) int
 		InstName func(childComplexity int) int
+	}
+
+	MsgChannelMessage struct {
+		CreatedAt       func(childComplexity int) int
+		ID              func(childComplexity int) int
+		MsgActive       func(childComplexity int) int
+		MsgContent      func(childComplexity int) int
+		MsgDate         func(childComplexity int) int
+		MsgExpiryDate   func(childComplexity int) int
+		MsgIsExpiry     func(childComplexity int) int
+		MsgIsIndividual func(childComplexity int) int
+		MsgIsText       func(childComplexity int) int
+		MsgMediaContent func(childComplexity int) int
+		MsgMediaType    func(childComplexity int) int
+		MsgRecvOrSent   func(childComplexity int) int
+	}
+
+	MsgChannelMessageConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	MsgChannelMessageEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	MstCustomer struct {
@@ -162,6 +190,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AddAuthParentUser func(childComplexity int, token string, input ent.CreateAuthParentInput) int
 		AddAuthStaffUser  func(childComplexity int, token string, input ent.CreateAuthStaffInput) int
+		AddChannelMessage func(childComplexity int, token string, input ent.CreateMsgChannelMessageInput) int
 		AddCustomer       func(childComplexity int, token string, input ent.CreateMstCustomerInput) int
 		AddInst           func(childComplexity int, token string, input ent.CreateMstInstInput) int
 		AddStudent        func(childComplexity int, token string, input ent.CreateMstStudentInput) int
@@ -179,6 +208,7 @@ type ComplexityRoot struct {
 	Query struct {
 		GetAuthParentUserNamesByIds func(childComplexity int, token string, id []int) int
 		GetAuthStaffUserIds         func(childComplexity int, token string, id []int) int
+		GetChannelMessages          func(childComplexity int, token string) int
 		GetCustomerByID             func(childComplexity int, token string, id int) int
 		GetCustomerIdsByNames       func(childComplexity int, token string, custNames []string) int
 		GetInstByID                 func(childComplexity int, token string, id int) int
@@ -189,6 +219,10 @@ type ComplexityRoot struct {
 		ListInstsByCustID           func(childComplexity int, token string, customerID int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstInstOrder) int
 		Node                        func(childComplexity int, token string, id int) int
 		Nodes                       func(childComplexity int, token string, ids []int) int
+	}
+
+	Subscription struct {
+		GetChannelMessagesBySubscription func(childComplexity int, token string) int
 	}
 
 	UserNamesById struct {
@@ -202,6 +236,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	AddAuthParentUser(ctx context.Context, token string, input ent.CreateAuthParentInput) (*ent.AuthParent, error)
 	AddAuthStaffUser(ctx context.Context, token string, input ent.CreateAuthStaffInput) (*ent.AuthStaff, error)
+	AddChannelMessage(ctx context.Context, token string, input ent.CreateMsgChannelMessageInput) (*ent.MsgChannelMessage, error)
 	AddCustomer(ctx context.Context, token string, input ent.CreateMstCustomerInput) (*ent.MstCustomer, error)
 	UpdateCustomer(ctx context.Context, token string, id int, input ent.UpdateMstCustomerInput) (*ent.MstCustomer, error)
 	AddInst(ctx context.Context, token string, input ent.CreateMstInstInput) (*ent.MstInst, error)
@@ -213,6 +248,7 @@ type QueryResolver interface {
 	GetAuthStaffUserIds(ctx context.Context, token string, id []int) ([]*UserNamesByID, error)
 	Node(ctx context.Context, token string, id int) (ent.Noder, error)
 	Nodes(ctx context.Context, token string, ids []int) ([]ent.Noder, error)
+	GetChannelMessages(ctx context.Context, token string) ([]*ent.MsgChannelMessage, error)
 	ListCustomers(ctx context.Context, token string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MstCustomerOrder) (*ent.MstCustomerConnection, error)
 	GetCustomerByID(ctx context.Context, token string, id int) (*ent.MstCustomer, error)
 	GetCustomerIdsByNames(ctx context.Context, token string, custNames []string) ([]*CustData, error)
@@ -221,6 +257,9 @@ type QueryResolver interface {
 	GetInstByID(ctx context.Context, token string, id int) (*ent.MstInst, error)
 	GetInstIdsByNames(ctx context.Context, token string, instNames []string) ([]*InstData, error)
 	GetStudentNamesByIds(ctx context.Context, token string, id []int) ([]*UserNamesByID, error)
+}
+type SubscriptionResolver interface {
+	GetChannelMessagesBySubscription(ctx context.Context, token string) (<-chan []*ent.MsgChannelMessage, error)
 }
 
 type executableSchema struct {
@@ -405,6 +444,125 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.InstData.InstName(childComplexity), true
+
+	case "MsgChannelMessage.created_at":
+		if e.complexity.MsgChannelMessage.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.CreatedAt(childComplexity), true
+
+	case "MsgChannelMessage.id":
+		if e.complexity.MsgChannelMessage.ID == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.ID(childComplexity), true
+
+	case "MsgChannelMessage.msg_active":
+		if e.complexity.MsgChannelMessage.MsgActive == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgActive(childComplexity), true
+
+	case "MsgChannelMessage.msg_content":
+		if e.complexity.MsgChannelMessage.MsgContent == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgContent(childComplexity), true
+
+	case "MsgChannelMessage.msg_date":
+		if e.complexity.MsgChannelMessage.MsgDate == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgDate(childComplexity), true
+
+	case "MsgChannelMessage.msg_expiry_date":
+		if e.complexity.MsgChannelMessage.MsgExpiryDate == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgExpiryDate(childComplexity), true
+
+	case "MsgChannelMessage.msg_is_expiry":
+		if e.complexity.MsgChannelMessage.MsgIsExpiry == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgIsExpiry(childComplexity), true
+
+	case "MsgChannelMessage.msg_is_individual":
+		if e.complexity.MsgChannelMessage.MsgIsIndividual == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgIsIndividual(childComplexity), true
+
+	case "MsgChannelMessage.msg_is_text":
+		if e.complexity.MsgChannelMessage.MsgIsText == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgIsText(childComplexity), true
+
+	case "MsgChannelMessage.msg_media_content":
+		if e.complexity.MsgChannelMessage.MsgMediaContent == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgMediaContent(childComplexity), true
+
+	case "MsgChannelMessage.msg_media_type":
+		if e.complexity.MsgChannelMessage.MsgMediaType == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgMediaType(childComplexity), true
+
+	case "MsgChannelMessage.msg_recv_or_sent":
+		if e.complexity.MsgChannelMessage.MsgRecvOrSent == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessage.MsgRecvOrSent(childComplexity), true
+
+	case "MsgChannelMessageConnection.edges":
+		if e.complexity.MsgChannelMessageConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessageConnection.Edges(childComplexity), true
+
+	case "MsgChannelMessageConnection.pageInfo":
+		if e.complexity.MsgChannelMessageConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessageConnection.PageInfo(childComplexity), true
+
+	case "MsgChannelMessageConnection.totalCount":
+		if e.complexity.MsgChannelMessageConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessageConnection.TotalCount(childComplexity), true
+
+	case "MsgChannelMessageEdge.cursor":
+		if e.complexity.MsgChannelMessageEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessageEdge.Cursor(childComplexity), true
+
+	case "MsgChannelMessageEdge.node":
+		if e.complexity.MsgChannelMessageEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.MsgChannelMessageEdge.Node(childComplexity), true
 
 	case "MstCustomer.cust_address":
 		if e.complexity.MstCustomer.CustAddress == nil {
@@ -822,6 +980,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AddAuthStaffUser(childComplexity, args["token"].(string), args["input"].(ent.CreateAuthStaffInput)), true
 
+	case "Mutation.AddChannelMessage":
+		if e.complexity.Mutation.AddChannelMessage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_AddChannelMessage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddChannelMessage(childComplexity, args["token"].(string), args["input"].(ent.CreateMsgChannelMessageInput)), true
+
 	case "Mutation.AddCustomer":
 		if e.complexity.Mutation.AddCustomer == nil {
 			break
@@ -933,6 +1103,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetAuthStaffUserIds(childComplexity, args["token"].(string), args["id"].([]int)), true
+
+	case "Query.GetChannelMessages":
+		if e.complexity.Query.GetChannelMessages == nil {
+			break
+		}
+
+		args, err := ec.field_Query_GetChannelMessages_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetChannelMessages(childComplexity, args["token"].(string)), true
 
 	case "Query.GetCustomerByID":
 		if e.complexity.Query.GetCustomerByID == nil {
@@ -1054,6 +1236,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Nodes(childComplexity, args["token"].(string), args["ids"].([]int)), true
 
+	case "Subscription.GetChannelMessagesBySubscription":
+		if e.complexity.Subscription.GetChannelMessagesBySubscription == nil {
+			break
+		}
+
+		args, err := ec.field_Subscription_GetChannelMessagesBySubscription_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.GetChannelMessagesBySubscription(childComplexity, args["token"].(string)), true
+
 	case "UserNamesById.first_name":
 		if e.complexity.UserNamesById.FirstName == nil {
 			break
@@ -1114,6 +1308,23 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			first = false
 			data := ec._Mutation(ctx, rc.Operation.SelectionSet)
 			var buf bytes.Buffer
+			data.MarshalGQL(&buf)
+
+			return &graphql.Response{
+				Data: buf.Bytes(),
+			}
+		}
+	case ast.Subscription:
+		next := ec._Subscription(ctx, rc.Operation.SelectionSet)
+
+		var buf bytes.Buffer
+		return func(ctx context.Context) *graphql.Response {
+			buf.Reset()
+			data := next()
+
+			if data == nil {
+				return nil
+			}
 			data.MarshalGQL(&buf)
 
 			return &graphql.Response{
@@ -2468,7 +2679,225 @@ input AuthStaffWhereInput {
   idLT: ID
   idLTE: ID
 }
+
+"""
+MsgChannelMessageWhereInput is used for filtering MsgChannelMessage objects.
+Input was generated by ent.
+"""
+input MsgChannelMessageWhereInput {
+  not: MsgChannelMessageWhereInput
+  and: [MsgChannelMessageWhereInput!]
+  or: [MsgChannelMessageWhereInput!]
+  
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  
+  """msg_date field predicates"""
+  msgDate: Time
+  msgDateNEQ: Time
+  msgDateIn: [Time!]
+  msgDateNotIn: [Time!]
+  msgDateGT: Time
+  msgDateGTE: Time
+  msgDateLT: Time
+  msgDateLTE: Time
+  msgDateIsNil: Boolean
+  msgDateNotNil: Boolean
+  
+  """msg_is_expiry field predicates"""
+  msgIsExpiry: Boolean
+  msgIsExpiryNEQ: Boolean
+  
+  """msg_expiry_date field predicates"""
+  msgExpiryDate: Time
+  msgExpiryDateNEQ: Time
+  msgExpiryDateIn: [Time!]
+  msgExpiryDateNotIn: [Time!]
+  msgExpiryDateGT: Time
+  msgExpiryDateGTE: Time
+  msgExpiryDateLT: Time
+  msgExpiryDateLTE: Time
+  msgExpiryDateIsNil: Boolean
+  msgExpiryDateNotNil: Boolean
+  
+  """msg_is_text field predicates"""
+  msgIsText: Boolean
+  msgIsTextNEQ: Boolean
+  
+  """msg_content field predicates"""
+  msgContent: String
+  msgContentNEQ: String
+  msgContentIn: [String!]
+  msgContentNotIn: [String!]
+  msgContentGT: String
+  msgContentGTE: String
+  msgContentLT: String
+  msgContentLTE: String
+  msgContentContains: String
+  msgContentHasPrefix: String
+  msgContentHasSuffix: String
+  msgContentEqualFold: String
+  msgContentContainsFold: String
+  
+  """msg_media_type field predicates"""
+  msgMediaType: String
+  msgMediaTypeNEQ: String
+  msgMediaTypeIn: [String!]
+  msgMediaTypeNotIn: [String!]
+  msgMediaTypeGT: String
+  msgMediaTypeGTE: String
+  msgMediaTypeLT: String
+  msgMediaTypeLTE: String
+  msgMediaTypeContains: String
+  msgMediaTypeHasPrefix: String
+  msgMediaTypeHasSuffix: String
+  msgMediaTypeEqualFold: String
+  msgMediaTypeContainsFold: String
+  
+  """msg_media_content field predicates"""
+  msgMediaContent: String
+  msgMediaContentNEQ: String
+  msgMediaContentIn: [String!]
+  msgMediaContentNotIn: [String!]
+  msgMediaContentGT: String
+  msgMediaContentGTE: String
+  msgMediaContentLT: String
+  msgMediaContentLTE: String
+  msgMediaContentContains: String
+  msgMediaContentHasPrefix: String
+  msgMediaContentHasSuffix: String
+  msgMediaContentEqualFold: String
+  msgMediaContentContainsFold: String
+  
+  """msg_active field predicates"""
+  msgActive: Boolean
+  msgActiveNEQ: Boolean
+  
+  """msg_is_individual field predicates"""
+  msgIsIndividual: Boolean
+  msgIsIndividualNEQ: Boolean
+  
+  """msg_recv_or_sent field predicates"""
+  msgRecvOrSent: String
+  msgRecvOrSentNEQ: String
+  msgRecvOrSentIn: [String!]
+  msgRecvOrSentNotIn: [String!]
+  msgRecvOrSentGT: String
+  msgRecvOrSentGTE: String
+  msgRecvOrSentLT: String
+  msgRecvOrSentLTE: String
+  msgRecvOrSentContains: String
+  msgRecvOrSentHasPrefix: String
+  msgRecvOrSentHasSuffix: String
+  msgRecvOrSentEqualFold: String
+  msgRecvOrSentContainsFold: String
+  
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+}
 `, BuiltIn: false},
+	{Name: "grpql/msg_channel_message.graphql", Input: `type MsgChannelMessageConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [MsgChannelMessageEdge]
+}
+
+type MsgChannelMessageEdge {
+  node: MsgChannelMessage
+  cursor: Cursor!
+}
+
+# These enums are matched the entgql annotations in the ent/schema/MsgChannelMessage.go
+enum MsgChannelMessageOrderField {
+  CREATED_AT
+}
+
+input MsgChannelMessageOrder {
+  direction: OrderDirection!
+  field: MsgChannelMessageOrderField
+}
+
+type MsgChannelMessage implements Node {
+  id:                 ID!
+  msg_date:           Time!
+  msg_is_expiry:      Boolean!
+  msg_expiry_date:    Time!
+  msg_is_text:        Boolean!
+  msg_content:        String!
+  msg_media_type:     String!
+  msg_media_content:  String!
+  msg_active:         Boolean!
+  msg_is_individual:  Boolean!
+  msg_recv_or_sent:   String!
+  created_at:         Time!     
+
+
+}
+
+input CreateMsgChannelMessageInput {
+  msg_date: Time
+  msg_is_expiry: Boolean
+  msg_expiry_date: Time
+  msg_is_text: Boolean
+  msg_content: String
+  msg_media_type: String
+  msg_media_content: String
+  msg_active: Boolean
+  msg_is_individual: Boolean
+  msg_recv_or_sent: String
+
+}
+
+input UpdateMsgChannelMessageInput {
+  msg_date: Time
+  msg_is_expiry: Boolean
+  msg_expiry_date: Time
+  msg_is_text: Boolean
+  msg_content: String!
+  msg_media_type: String
+  msg_media_content: String
+  msg_active: Boolean
+  msg_is_individual: Boolean
+  msg_recv_or_sent: String
+
+}
+
+extend type Query {
+  GetChannelMessages(token: String! ): [MsgChannelMessage!]
+}
+
+extend type Mutation {
+  AddChannelMessage(token: String!   input: CreateMsgChannelMessageInput!  ): MsgChannelMessage!
+}
+
+
+extend type Subscription {
+ GetChannelMessagesBySubscription(token: String!):[MsgChannelMessage!]
+}`, BuiltIn: false},
 	{Name: "grpql/mst_cust.graphql", Input: `
 
 type MstCustomerConnection {
@@ -2829,6 +3258,30 @@ func (ec *executionContext) field_Mutation_AddAuthStaffUser_args(ctx context.Con
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_AddChannelMessage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["token"] = arg0
+	var arg1 ent.CreateMsgChannelMessageInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNCreateMsgChannelMessageInput2myeduateᚋentᚐCreateMsgChannelMessageInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_AddCustomer_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3012,6 +3465,21 @@ func (ec *executionContext) field_Query_GetAuthStaffUserIds_args(ctx context.Con
 		}
 	}
 	args["id"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_GetChannelMessages_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["token"] = arg0
 	return args, nil
 }
 
@@ -3384,6 +3852,21 @@ func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs 
 		}
 	}
 	args["ids"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Subscription_GetChannelMessagesBySubscription_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["token"] = arg0
 	return args, nil
 }
 
@@ -4263,6 +4746,595 @@ func (ec *executionContext) _InstData_id(ctx context.Context, field graphql.Coll
 	res := resTmp.(int)
 	fc.Result = res
 	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_id(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_date(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_is_expiry(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgIsExpiry, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_expiry_date(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgExpiryDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_is_text(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgIsText, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_content(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgContent, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_media_type(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgMediaType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_media_content(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgMediaContent, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_active(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgActive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_is_individual(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgIsIndividual, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_msg_recv_or_sent(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MsgRecvOrSent, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessage_created_at(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessage",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessageConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessageConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessageConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessageConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessageConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessageConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(ent.PageInfo)
+	fc.Result = res
+	return ec.marshalNPageInfo2myeduateᚋentᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessageConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessageConnection) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessageConnection",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.MsgChannelMessageEdge)
+	fc.Result = res
+	return ec.marshalOMsgChannelMessageEdge2ᚕᚖmyeduateᚋentᚐMsgChannelMessageEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessageEdge_node(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessageEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessageEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.MsgChannelMessage)
+	fc.Result = res
+	return ec.marshalOMsgChannelMessage2ᚖmyeduateᚋentᚐMsgChannelMessage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MsgChannelMessageEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *ent.MsgChannelMessageEdge) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "MsgChannelMessageEdge",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(ent.Cursor)
+	fc.Result = res
+	return ec.marshalNCursor2myeduateᚋentᚐCursor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _MstCustomer_id(ctx context.Context, field graphql.CollectedField, obj *ent.MstCustomer) (ret graphql.Marshaler) {
@@ -6297,6 +7369,48 @@ func (ec *executionContext) _Mutation_AddAuthStaffUser(ctx context.Context, fiel
 	return ec.marshalNAuthStaff2ᚖmyeduateᚋentᚐAuthStaff(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_AddChannelMessage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_AddChannelMessage_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddChannelMessage(rctx, args["token"].(string), args["input"].(ent.CreateMsgChannelMessageInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.MsgChannelMessage)
+	fc.Result = res
+	return ec.marshalNMsgChannelMessage2ᚖmyeduateᚋentᚐMsgChannelMessage(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_AddCustomer(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -6806,6 +7920,45 @@ func (ec *executionContext) _Query_nodes(ctx context.Context, field graphql.Coll
 	return ec.marshalNNode2ᚕmyeduateᚋentᚐNoder(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_GetChannelMessages(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_GetChannelMessages_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetChannelMessages(rctx, args["token"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.MsgChannelMessage)
+	fc.Result = res
+	return ec.marshalOMsgChannelMessage2ᚕᚖmyeduateᚋentᚐMsgChannelMessageᚄ(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_ListCustomers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -7202,6 +8355,55 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	res := resTmp.(*introspection.Schema)
 	fc.Result = res
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Subscription_GetChannelMessagesBySubscription(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = nil
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Subscription",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Subscription_GetChannelMessagesBySubscription_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Subscription().GetChannelMessagesBySubscription(rctx, args["token"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	if resTmp == nil {
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-resTmp.(<-chan []*ent.MsgChannelMessage)
+		if !ok {
+			return nil
+		}
+		return graphql.WriterFunc(func(w io.Writer) {
+			w.Write([]byte{'{'})
+			graphql.MarshalString(field.Alias).MarshalGQL(w)
+			w.Write([]byte{':'})
+			ec.marshalOMsgChannelMessage2ᚕᚖmyeduateᚋentᚐMsgChannelMessageᚄ(ctx, field.Selections, res).MarshalGQL(w)
+			w.Write([]byte{'}'})
+		})
+	}
 }
 
 func (ec *executionContext) _UserNamesById_first_name(ctx context.Context, field graphql.CollectedField, obj *UserNamesByID) (ret graphql.Marshaler) {
@@ -11032,6 +12234,101 @@ func (ec *executionContext) unmarshalInputCreateAuthStaffInput(ctx context.Conte
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputCreateMsgChannelMessageInput(ctx context.Context, obj interface{}) (ent.CreateMsgChannelMessageInput, error) {
+	var it ent.CreateMsgChannelMessageInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "msg_date":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_date"))
+			it.MsgDate, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_is_expiry":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_is_expiry"))
+			it.MsgIsExpiry, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_expiry_date":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_expiry_date"))
+			it.MsgExpiryDate, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_is_text":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_is_text"))
+			it.MsgIsText, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_content":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_content"))
+			it.MsgContent, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_media_type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_media_type"))
+			it.MsgMediaType, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_media_content":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_media_content"))
+			it.MsgMediaContent, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_active":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_active"))
+			it.MsgActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_is_individual":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_is_individual"))
+			it.MsgIsIndividual, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_recv_or_sent":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_recv_or_sent"))
+			it.MsgRecvOrSent, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCreateMstCustomerInput(ctx context.Context, obj interface{}) (ent.CreateMstCustomerInput, error) {
 	var it ent.CreateMstCustomerInput
 	asMap := map[string]interface{}{}
@@ -11404,6 +12701,908 @@ func (ec *executionContext) unmarshalInputCreateMstStudentInput(ctx context.Cont
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("std_reg_no"))
 			it.StdRegNo, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputMsgChannelMessageOrder(ctx context.Context, obj interface{}) (ent.MsgChannelMessageOrder, error) {
+	var it ent.MsgChannelMessageOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			it.Direction, err = ec.unmarshalNOrderDirection2myeduateᚋentᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			it.Field, err = ec.unmarshalOMsgChannelMessageOrderField2ᚖmyeduateᚋentᚐMsgChannelMessageOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputMsgChannelMessageWhereInput(ctx context.Context, obj interface{}) (ent.MsgChannelMessageWhereInput, error) {
+	var it ent.MsgChannelMessageWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			it.Not, err = ec.unmarshalOMsgChannelMessageWhereInput2ᚖmyeduateᚋentᚐMsgChannelMessageWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			it.And, err = ec.unmarshalOMsgChannelMessageWhereInput2ᚕᚖmyeduateᚋentᚐMsgChannelMessageWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			it.Or, err = ec.unmarshalOMsgChannelMessageWhereInput2ᚕᚖmyeduateᚋentᚐMsgChannelMessageWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			it.CreatedAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			it.CreatedAtNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			it.CreatedAtIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			it.CreatedAtNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			it.CreatedAtGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			it.CreatedAtGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			it.CreatedAtLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			it.CreatedAtLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			it.UpdatedAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			it.UpdatedAtNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			it.UpdatedAtIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			it.UpdatedAtNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			it.UpdatedAtGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			it.UpdatedAtGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			it.UpdatedAtLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			it.UpdatedAtLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDate"))
+			it.MsgDate, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDateNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDateNEQ"))
+			it.MsgDateNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDateIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDateIn"))
+			it.MsgDateIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDateNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDateNotIn"))
+			it.MsgDateNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDateGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDateGT"))
+			it.MsgDateGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDateGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDateGTE"))
+			it.MsgDateGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDateLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDateLT"))
+			it.MsgDateLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDateLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDateLTE"))
+			it.MsgDateLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDateIsNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDateIsNil"))
+			it.MsgDateIsNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgDateNotNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgDateNotNil"))
+			it.MsgDateNotNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgIsExpiry":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgIsExpiry"))
+			it.MsgIsExpiry, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgIsExpiryNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgIsExpiryNEQ"))
+			it.MsgIsExpiryNEQ, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDate"))
+			it.MsgExpiryDate, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDateNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDateNEQ"))
+			it.MsgExpiryDateNEQ, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDateIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDateIn"))
+			it.MsgExpiryDateIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDateNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDateNotIn"))
+			it.MsgExpiryDateNotIn, err = ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDateGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDateGT"))
+			it.MsgExpiryDateGT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDateGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDateGTE"))
+			it.MsgExpiryDateGTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDateLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDateLT"))
+			it.MsgExpiryDateLT, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDateLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDateLTE"))
+			it.MsgExpiryDateLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDateIsNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDateIsNil"))
+			it.MsgExpiryDateIsNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgExpiryDateNotNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgExpiryDateNotNil"))
+			it.MsgExpiryDateNotNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgIsText":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgIsText"))
+			it.MsgIsText, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgIsTextNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgIsTextNEQ"))
+			it.MsgIsTextNEQ, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContent":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContent"))
+			it.MsgContent, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentNEQ"))
+			it.MsgContentNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentIn"))
+			it.MsgContentIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentNotIn"))
+			it.MsgContentNotIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentGT"))
+			it.MsgContentGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentGTE"))
+			it.MsgContentGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentLT"))
+			it.MsgContentLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentLTE"))
+			it.MsgContentLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentContains"))
+			it.MsgContentContains, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentHasPrefix"))
+			it.MsgContentHasPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentHasSuffix"))
+			it.MsgContentHasSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentEqualFold"))
+			it.MsgContentEqualFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgContentContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgContentContainsFold"))
+			it.MsgContentContainsFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaType"))
+			it.MsgMediaType, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeNEQ"))
+			it.MsgMediaTypeNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeIn"))
+			it.MsgMediaTypeIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeNotIn"))
+			it.MsgMediaTypeNotIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeGT"))
+			it.MsgMediaTypeGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeGTE"))
+			it.MsgMediaTypeGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeLT"))
+			it.MsgMediaTypeLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeLTE"))
+			it.MsgMediaTypeLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeContains"))
+			it.MsgMediaTypeContains, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeHasPrefix"))
+			it.MsgMediaTypeHasPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeHasSuffix"))
+			it.MsgMediaTypeHasSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeEqualFold"))
+			it.MsgMediaTypeEqualFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaTypeContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaTypeContainsFold"))
+			it.MsgMediaTypeContainsFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContent":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContent"))
+			it.MsgMediaContent, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentNEQ"))
+			it.MsgMediaContentNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentIn"))
+			it.MsgMediaContentIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentNotIn"))
+			it.MsgMediaContentNotIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentGT"))
+			it.MsgMediaContentGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentGTE"))
+			it.MsgMediaContentGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentLT"))
+			it.MsgMediaContentLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentLTE"))
+			it.MsgMediaContentLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentContains"))
+			it.MsgMediaContentContains, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentHasPrefix"))
+			it.MsgMediaContentHasPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentHasSuffix"))
+			it.MsgMediaContentHasSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentEqualFold"))
+			it.MsgMediaContentEqualFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgMediaContentContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgMediaContentContainsFold"))
+			it.MsgMediaContentContainsFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgActive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgActive"))
+			it.MsgActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgActiveNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgActiveNEQ"))
+			it.MsgActiveNEQ, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgIsIndividual":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgIsIndividual"))
+			it.MsgIsIndividual, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgIsIndividualNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgIsIndividualNEQ"))
+			it.MsgIsIndividualNEQ, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSent":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSent"))
+			it.MsgRecvOrSent, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentNEQ"))
+			it.MsgRecvOrSentNEQ, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentIn"))
+			it.MsgRecvOrSentIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentNotIn"))
+			it.MsgRecvOrSentNotIn, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentGT"))
+			it.MsgRecvOrSentGT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentGTE"))
+			it.MsgRecvOrSentGTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentLT"))
+			it.MsgRecvOrSentLT, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentLTE"))
+			it.MsgRecvOrSentLTE, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentContains"))
+			it.MsgRecvOrSentContains, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentHasPrefix"))
+			it.MsgRecvOrSentHasPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentHasSuffix"))
+			it.MsgRecvOrSentHasSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentEqualFold"))
+			it.MsgRecvOrSentEqualFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msgRecvOrSentContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgRecvOrSentContainsFold"))
+			it.MsgRecvOrSentContainsFold, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			it.IDNEQ, err = ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			it.IDIn, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			it.IDNotIn, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			it.IDGT, err = ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			it.IDGTE, err = ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			it.IDLT, err = ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			it.IDLTE, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -16382,6 +18581,101 @@ func (ec *executionContext) unmarshalInputUpdateAuthStaffInput(ctx context.Conte
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateMsgChannelMessageInput(ctx context.Context, obj interface{}) (ent.UpdateMsgChannelMessageInput, error) {
+	var it ent.UpdateMsgChannelMessageInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "msg_date":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_date"))
+			it.MsgDate, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_is_expiry":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_is_expiry"))
+			it.MsgIsExpiry, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_expiry_date":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_expiry_date"))
+			it.MsgExpiryDate, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_is_text":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_is_text"))
+			it.MsgIsText, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_content":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_content"))
+			it.MsgContent, err = ec.unmarshalNString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_media_type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_media_type"))
+			it.MsgMediaType, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_media_content":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_media_content"))
+			it.MsgMediaContent, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_active":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_active"))
+			it.MsgActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_is_individual":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_is_individual"))
+			it.MsgIsIndividual, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "msg_recv_or_sent":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msg_recv_or_sent"))
+			it.MsgRecvOrSent, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateMstCustomerInput(ctx context.Context, obj interface{}) (ent.UpdateMstCustomerInput, error) {
 	var it ent.UpdateMstCustomerInput
 	asMap := map[string]interface{}{}
@@ -16781,6 +19075,11 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._AuthStaff(ctx, sel, obj)
+	case *ent.MsgChannelMessage:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._MsgChannelMessage(ctx, sel, obj)
 	case *ent.MstCustomer:
 		if obj == nil {
 			return graphql.Null
@@ -17111,6 +19410,233 @@ func (ec *executionContext) _InstData(ctx context.Context, sel ast.SelectionSet,
 		case "id":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._InstData_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var msgChannelMessageImplementors = []string{"MsgChannelMessage", "Node"}
+
+func (ec *executionContext) _MsgChannelMessage(ctx context.Context, sel ast.SelectionSet, obj *ent.MsgChannelMessage) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, msgChannelMessageImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MsgChannelMessage")
+		case "id":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_date":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_date(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_is_expiry":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_is_expiry(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_expiry_date":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_expiry_date(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_is_text":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_is_text(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_content":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_content(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_media_type":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_media_type(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_media_content":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_media_content(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_active":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_active(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_is_individual":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_is_individual(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "msg_recv_or_sent":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_msg_recv_or_sent(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "created_at":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessage_created_at(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var msgChannelMessageConnectionImplementors = []string{"MsgChannelMessageConnection"}
+
+func (ec *executionContext) _MsgChannelMessageConnection(ctx context.Context, sel ast.SelectionSet, obj *ent.MsgChannelMessageConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, msgChannelMessageConnectionImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MsgChannelMessageConnection")
+		case "totalCount":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessageConnection_totalCount(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "pageInfo":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessageConnection_pageInfo(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "edges":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessageConnection_edges(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var msgChannelMessageEdgeImplementors = []string{"MsgChannelMessageEdge"}
+
+func (ec *executionContext) _MsgChannelMessageEdge(ctx context.Context, sel ast.SelectionSet, obj *ent.MsgChannelMessageEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, msgChannelMessageEdgeImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MsgChannelMessageEdge")
+		case "node":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessageEdge_node(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "cursor":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._MsgChannelMessageEdge_cursor(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -17863,6 +20389,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "AddChannelMessage":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_AddChannelMessage(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "AddCustomer":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_AddCustomer(ctx, field)
@@ -18087,6 +20623,26 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "GetChannelMessages":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_GetChannelMessages(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "ListCustomers":
 			field := field
 
@@ -18285,6 +20841,26 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		return graphql.Null
 	}
 	return out
+}
+
+var subscriptionImplementors = []string{"Subscription"}
+
+func (ec *executionContext) _Subscription(ctx context.Context, sel ast.SelectionSet) func() graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, subscriptionImplementors)
+	ctx = graphql.WithFieldContext(ctx, &graphql.FieldContext{
+		Object: "Subscription",
+	})
+	if len(fields) != 1 {
+		ec.Errorf(ctx, "must subscribe to exactly one stream")
+		return nil
+	}
+
+	switch fields[0].Name {
+	case "GetChannelMessagesBySubscription":
+		return ec._Subscription_GetChannelMessagesBySubscription(ctx, fields[0])
+	default:
+		panic("unknown field " + strconv.Quote(fields[0].Name))
+	}
 }
 
 var userNamesByIdImplementors = []string{"UserNamesById"}
@@ -18828,6 +21404,11 @@ func (ec *executionContext) unmarshalNCreateAuthStaffInput2myeduateᚋentᚐCrea
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNCreateMsgChannelMessageInput2myeduateᚋentᚐCreateMsgChannelMessageInput(ctx context.Context, v interface{}) (ent.CreateMsgChannelMessageInput, error) {
+	res, err := ec.unmarshalInputCreateMsgChannelMessageInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNCreateMstCustomerInput2myeduateᚋentᚐCreateMstCustomerInput(ctx context.Context, v interface{}) (ent.CreateMstCustomerInput, error) {
 	res, err := ec.unmarshalInputCreateMstCustomerInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -19033,6 +21614,25 @@ func (ec *executionContext) marshalNIsActive2myeduateᚋentᚋcustomtypesᚐIsAc
 	return v
 }
 
+func (ec *executionContext) marshalNMsgChannelMessage2myeduateᚋentᚐMsgChannelMessage(ctx context.Context, sel ast.SelectionSet, v ent.MsgChannelMessage) graphql.Marshaler {
+	return ec._MsgChannelMessage(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMsgChannelMessage2ᚖmyeduateᚋentᚐMsgChannelMessage(ctx context.Context, sel ast.SelectionSet, v *ent.MsgChannelMessage) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._MsgChannelMessage(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNMsgChannelMessageWhereInput2ᚖmyeduateᚋentᚐMsgChannelMessageWhereInput(ctx context.Context, v interface{}) (*ent.MsgChannelMessageWhereInput, error) {
+	res, err := ec.unmarshalInputMsgChannelMessageWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNMstCustomer2myeduateᚋentᚐMstCustomer(ctx context.Context, sel ast.SelectionSet, v ent.MstCustomer) graphql.Marshaler {
 	return ec._MstCustomer(ctx, sel, &v)
 }
@@ -19205,6 +21805,27 @@ func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v in
 
 func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
 	res := graphql.MarshalTime(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := graphql.MarshalTime(*v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -19817,6 +22438,152 @@ func (ec *executionContext) marshalOIsActive2ᚖmyeduateᚋentᚋcustomtypesᚐI
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) marshalOMsgChannelMessage2ᚕᚖmyeduateᚋentᚐMsgChannelMessageᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.MsgChannelMessage) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNMsgChannelMessage2ᚖmyeduateᚋentᚐMsgChannelMessage(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalOMsgChannelMessage2ᚖmyeduateᚋentᚐMsgChannelMessage(ctx context.Context, sel ast.SelectionSet, v *ent.MsgChannelMessage) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MsgChannelMessage(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMsgChannelMessageEdge2ᚕᚖmyeduateᚋentᚐMsgChannelMessageEdge(ctx context.Context, sel ast.SelectionSet, v []*ent.MsgChannelMessageEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOMsgChannelMessageEdge2ᚖmyeduateᚋentᚐMsgChannelMessageEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOMsgChannelMessageEdge2ᚖmyeduateᚋentᚐMsgChannelMessageEdge(ctx context.Context, sel ast.SelectionSet, v *ent.MsgChannelMessageEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MsgChannelMessageEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOMsgChannelMessageOrderField2ᚖmyeduateᚋentᚐMsgChannelMessageOrderField(ctx context.Context, v interface{}) (*ent.MsgChannelMessageOrderField, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(ent.MsgChannelMessageOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMsgChannelMessageOrderField2ᚖmyeduateᚋentᚐMsgChannelMessageOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.MsgChannelMessageOrderField) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) unmarshalOMsgChannelMessageWhereInput2ᚕᚖmyeduateᚋentᚐMsgChannelMessageWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.MsgChannelMessageWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*ent.MsgChannelMessageWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNMsgChannelMessageWhereInput2ᚖmyeduateᚋentᚐMsgChannelMessageWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOMsgChannelMessageWhereInput2ᚖmyeduateᚋentᚐMsgChannelMessageWhereInput(ctx context.Context, v interface{}) (*ent.MsgChannelMessageWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputMsgChannelMessageWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOMstCustomer2ᚖmyeduateᚋentᚐMstCustomer(ctx context.Context, sel ast.SelectionSet, v *ent.MstCustomer) graphql.Marshaler {

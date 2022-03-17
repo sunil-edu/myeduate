@@ -4,6 +4,7 @@ import (
 	"myeduate"
 	"myeduate/ent"
 	"myeduate/logger"
+	"sync"
 
 	"go.uber.org/zap"
 
@@ -16,13 +17,23 @@ import (
 
 // Resolver is the resolver root.
 type Resolver struct {
-	client *ent.Client
-	log    *zap.SugaredLogger
+	client       *ent.Client
+	log          *zap.SugaredLogger
+	ChatMessages []*ent.MsgChannelMessage
+	// All active subscriptions
+	ChatObservers map[string]chan []*ent.MsgChannelMessage
+	mutex         sync.Mutex
 }
 
 // NewSchema creates a graphql executable schema.
 func NewSchema(client *ent.Client) graphql.ExecutableSchema {
 	return myeduate.NewExecutableSchema(myeduate.Config{
-		Resolvers: &Resolver{client, logger.GetLogger()},
+		Resolvers: &Resolver{
+			client:        client,
+			log:           logger.GetLogger(),
+			ChatMessages:  []*ent.MsgChannelMessage{},
+			ChatObservers: map[string]chan []*ent.MsgChannelMessage{},
+			mutex:         sync.Mutex{},
+		},
 	})
 }

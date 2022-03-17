@@ -13,6 +13,9 @@ type AuthParent func(*sql.Selector)
 // AuthStaff is the predicate function for authstaff builders.
 type AuthStaff func(*sql.Selector)
 
+// MsgChannelMessage is the predicate function for msgchannelmessage builders.
+type MsgChannelMessage func(*sql.Selector)
+
 // MstCustomer is the predicate function for mstcustomer builders.
 type MstCustomer func(*sql.Selector)
 

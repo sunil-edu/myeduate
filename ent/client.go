@@ -12,6 +12,7 @@ import (
 
 	"myeduate/ent/authparent"
 	"myeduate/ent/authstaff"
+	"myeduate/ent/msgchannelmessage"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/mststudent"
@@ -30,6 +31,8 @@ type Client struct {
 	AuthParent *AuthParentClient
 	// AuthStaff is the client for interacting with the AuthStaff builders.
 	AuthStaff *AuthStaffClient
+	// MsgChannelMessage is the client for interacting with the MsgChannelMessage builders.
+	MsgChannelMessage *MsgChannelMessageClient
 	// MstCustomer is the client for interacting with the MstCustomer builders.
 	MstCustomer *MstCustomerClient
 	// MstInst is the client for interacting with the MstInst builders.
@@ -53,6 +56,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.AuthParent = NewAuthParentClient(c.config)
 	c.AuthStaff = NewAuthStaffClient(c.config)
+	c.MsgChannelMessage = NewMsgChannelMessageClient(c.config)
 	c.MstCustomer = NewMstCustomerClient(c.config)
 	c.MstInst = NewMstInstClient(c.config)
 	c.MstStudent = NewMstStudentClient(c.config)
@@ -87,13 +91,14 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		AuthParent:  NewAuthParentClient(cfg),
-		AuthStaff:   NewAuthStaffClient(cfg),
-		MstCustomer: NewMstCustomerClient(cfg),
-		MstInst:     NewMstInstClient(cfg),
-		MstStudent:  NewMstStudentClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		AuthParent:        NewAuthParentClient(cfg),
+		AuthStaff:         NewAuthStaffClient(cfg),
+		MsgChannelMessage: NewMsgChannelMessageClient(cfg),
+		MstCustomer:       NewMstCustomerClient(cfg),
+		MstInst:           NewMstInstClient(cfg),
+		MstStudent:        NewMstStudentClient(cfg),
 	}, nil
 }
 
@@ -111,13 +116,14 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		AuthParent:  NewAuthParentClient(cfg),
-		AuthStaff:   NewAuthStaffClient(cfg),
-		MstCustomer: NewMstCustomerClient(cfg),
-		MstInst:     NewMstInstClient(cfg),
-		MstStudent:  NewMstStudentClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		AuthParent:        NewAuthParentClient(cfg),
+		AuthStaff:         NewAuthStaffClient(cfg),
+		MsgChannelMessage: NewMsgChannelMessageClient(cfg),
+		MstCustomer:       NewMstCustomerClient(cfg),
+		MstInst:           NewMstInstClient(cfg),
+		MstStudent:        NewMstStudentClient(cfg),
 	}, nil
 }
 
@@ -149,6 +155,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.AuthParent.Use(hooks...)
 	c.AuthStaff.Use(hooks...)
+	c.MsgChannelMessage.Use(hooks...)
 	c.MstCustomer.Use(hooks...)
 	c.MstInst.Use(hooks...)
 	c.MstStudent.Use(hooks...)
@@ -332,6 +339,96 @@ func (c *AuthStaffClient) GetX(ctx context.Context, id int) *AuthStaff {
 // Hooks returns the client hooks.
 func (c *AuthStaffClient) Hooks() []Hook {
 	return c.hooks.AuthStaff
+}
+
+// MsgChannelMessageClient is a client for the MsgChannelMessage schema.
+type MsgChannelMessageClient struct {
+	config
+}
+
+// NewMsgChannelMessageClient returns a client for the MsgChannelMessage from the given config.
+func NewMsgChannelMessageClient(c config) *MsgChannelMessageClient {
+	return &MsgChannelMessageClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `msgchannelmessage.Hooks(f(g(h())))`.
+func (c *MsgChannelMessageClient) Use(hooks ...Hook) {
+	c.hooks.MsgChannelMessage = append(c.hooks.MsgChannelMessage, hooks...)
+}
+
+// Create returns a create builder for MsgChannelMessage.
+func (c *MsgChannelMessageClient) Create() *MsgChannelMessageCreate {
+	mutation := newMsgChannelMessageMutation(c.config, OpCreate)
+	return &MsgChannelMessageCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of MsgChannelMessage entities.
+func (c *MsgChannelMessageClient) CreateBulk(builders ...*MsgChannelMessageCreate) *MsgChannelMessageCreateBulk {
+	return &MsgChannelMessageCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for MsgChannelMessage.
+func (c *MsgChannelMessageClient) Update() *MsgChannelMessageUpdate {
+	mutation := newMsgChannelMessageMutation(c.config, OpUpdate)
+	return &MsgChannelMessageUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *MsgChannelMessageClient) UpdateOne(mcm *MsgChannelMessage) *MsgChannelMessageUpdateOne {
+	mutation := newMsgChannelMessageMutation(c.config, OpUpdateOne, withMsgChannelMessage(mcm))
+	return &MsgChannelMessageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *MsgChannelMessageClient) UpdateOneID(id int) *MsgChannelMessageUpdateOne {
+	mutation := newMsgChannelMessageMutation(c.config, OpUpdateOne, withMsgChannelMessageID(id))
+	return &MsgChannelMessageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for MsgChannelMessage.
+func (c *MsgChannelMessageClient) Delete() *MsgChannelMessageDelete {
+	mutation := newMsgChannelMessageMutation(c.config, OpDelete)
+	return &MsgChannelMessageDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *MsgChannelMessageClient) DeleteOne(mcm *MsgChannelMessage) *MsgChannelMessageDeleteOne {
+	return c.DeleteOneID(mcm.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *MsgChannelMessageClient) DeleteOneID(id int) *MsgChannelMessageDeleteOne {
+	builder := c.Delete().Where(msgchannelmessage.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &MsgChannelMessageDeleteOne{builder}
+}
+
+// Query returns a query builder for MsgChannelMessage.
+func (c *MsgChannelMessageClient) Query() *MsgChannelMessageQuery {
+	return &MsgChannelMessageQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a MsgChannelMessage entity by its id.
+func (c *MsgChannelMessageClient) Get(ctx context.Context, id int) (*MsgChannelMessage, error) {
+	return c.Query().Where(msgchannelmessage.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *MsgChannelMessageClient) GetX(ctx context.Context, id int) *MsgChannelMessage {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *MsgChannelMessageClient) Hooks() []Hook {
+	return c.hooks.MsgChannelMessage
 }
 
 // MstCustomerClient is a client for the MstCustomer schema.

@@ -17,6 +17,8 @@ type Tx struct {
 	AuthParent *AuthParentClient
 	// AuthStaff is the client for interacting with the AuthStaff builders.
 	AuthStaff *AuthStaffClient
+	// MsgChannelMessage is the client for interacting with the MsgChannelMessage builders.
+	MsgChannelMessage *MsgChannelMessageClient
 	// MstCustomer is the client for interacting with the MstCustomer builders.
 	MstCustomer *MstCustomerClient
 	// MstInst is the client for interacting with the MstInst builders.
@@ -160,6 +162,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.AuthParent = NewAuthParentClient(tx.config)
 	tx.AuthStaff = NewAuthStaffClient(tx.config)
+	tx.MsgChannelMessage = NewMsgChannelMessageClient(tx.config)
 	tx.MstCustomer = NewMstCustomerClient(tx.config)
 	tx.MstInst = NewMstInstClient(tx.config)
 	tx.MstStudent = NewMstStudentClient(tx.config)

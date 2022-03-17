@@ -51,6 +51,28 @@ var (
 		Columns:    AuthStaffsColumns,
 		PrimaryKey: []*schema.Column{AuthStaffsColumns[0]},
 	}
+	// MsgChannelMessagesColumns holds the columns for the "msg_channel_messages" table.
+	MsgChannelMessagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "msg_date", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"postgres": "DATE"}},
+		{Name: "msg_is_expiry", Type: field.TypeBool, Default: false},
+		{Name: "msg_expiry_date", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"postgres": "DATE"}},
+		{Name: "msg_is_text", Type: field.TypeBool, Default: true},
+		{Name: "msg_content", Type: field.TypeString},
+		{Name: "msg_media_type", Type: field.TypeString},
+		{Name: "msg_media_content", Type: field.TypeString},
+		{Name: "msg_active", Type: field.TypeBool, Default: false},
+		{Name: "msg_is_individual", Type: field.TypeBool},
+		{Name: "msg_recv_or_sent", Type: field.TypeString},
+	}
+	// MsgChannelMessagesTable holds the schema information for the "msg_channel_messages" table.
+	MsgChannelMessagesTable = &schema.Table{
+		Name:       "msg_channel_messages",
+		Columns:    MsgChannelMessagesColumns,
+		PrimaryKey: []*schema.Column{MsgChannelMessagesColumns[0]},
+	}
 	// MstCustomersColumns holds the columns for the "mst_customers" table.
 	MstCustomersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -143,6 +165,7 @@ var (
 	Tables = []*schema.Table{
 		AuthParentsTable,
 		AuthStaffsTable,
+		MsgChannelMessagesTable,
 		MstCustomersTable,
 		MstInstsTable,
 		MstStudentsTable,

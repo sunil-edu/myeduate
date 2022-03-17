@@ -6,6 +6,7 @@ package ent
 import (
 	"myeduate/ent/authparent"
 	"myeduate/ent/authstaff"
+	"myeduate/ent/msgchannelmessage"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/mststudent"
@@ -71,6 +72,41 @@ func init() {
 	authstaffDescStaffMobile := authstaffFields[8].Descriptor()
 	// authstaff.StaffMobileValidator is a validator for the "staff_mobile" field. It is called by the builders before save.
 	authstaff.StaffMobileValidator = authstaffDescStaffMobile.Validators[0].(func(string) error)
+	msgchannelmessageMixin := schema.MsgChannelMessage{}.Mixin()
+	msgchannelmessageMixinFields0 := msgchannelmessageMixin[0].Fields()
+	_ = msgchannelmessageMixinFields0
+	msgchannelmessageFields := schema.MsgChannelMessage{}.Fields()
+	_ = msgchannelmessageFields
+	// msgchannelmessageDescCreatedAt is the schema descriptor for created_at field.
+	msgchannelmessageDescCreatedAt := msgchannelmessageMixinFields0[0].Descriptor()
+	// msgchannelmessage.DefaultCreatedAt holds the default value on creation for the created_at field.
+	msgchannelmessage.DefaultCreatedAt = msgchannelmessageDescCreatedAt.Default.(func() time.Time)
+	// msgchannelmessageDescUpdatedAt is the schema descriptor for updated_at field.
+	msgchannelmessageDescUpdatedAt := msgchannelmessageMixinFields0[1].Descriptor()
+	// msgchannelmessage.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	msgchannelmessage.DefaultUpdatedAt = msgchannelmessageDescUpdatedAt.Default.(func() time.Time)
+	// msgchannelmessage.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	msgchannelmessage.UpdateDefaultUpdatedAt = msgchannelmessageDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// msgchannelmessageDescMsgDate is the schema descriptor for msg_date field.
+	msgchannelmessageDescMsgDate := msgchannelmessageFields[0].Descriptor()
+	// msgchannelmessage.DefaultMsgDate holds the default value on creation for the msg_date field.
+	msgchannelmessage.DefaultMsgDate = msgchannelmessageDescMsgDate.Default.(func() time.Time)
+	// msgchannelmessageDescMsgIsExpiry is the schema descriptor for msg_is_expiry field.
+	msgchannelmessageDescMsgIsExpiry := msgchannelmessageFields[1].Descriptor()
+	// msgchannelmessage.DefaultMsgIsExpiry holds the default value on creation for the msg_is_expiry field.
+	msgchannelmessage.DefaultMsgIsExpiry = msgchannelmessageDescMsgIsExpiry.Default.(bool)
+	// msgchannelmessageDescMsgExpiryDate is the schema descriptor for msg_expiry_date field.
+	msgchannelmessageDescMsgExpiryDate := msgchannelmessageFields[2].Descriptor()
+	// msgchannelmessage.DefaultMsgExpiryDate holds the default value on creation for the msg_expiry_date field.
+	msgchannelmessage.DefaultMsgExpiryDate = msgchannelmessageDescMsgExpiryDate.Default.(func() time.Time)
+	// msgchannelmessageDescMsgIsText is the schema descriptor for msg_is_text field.
+	msgchannelmessageDescMsgIsText := msgchannelmessageFields[3].Descriptor()
+	// msgchannelmessage.DefaultMsgIsText holds the default value on creation for the msg_is_text field.
+	msgchannelmessage.DefaultMsgIsText = msgchannelmessageDescMsgIsText.Default.(bool)
+	// msgchannelmessageDescMsgActive is the schema descriptor for msg_active field.
+	msgchannelmessageDescMsgActive := msgchannelmessageFields[7].Descriptor()
+	// msgchannelmessage.DefaultMsgActive holds the default value on creation for the msg_active field.
+	msgchannelmessage.DefaultMsgActive = msgchannelmessageDescMsgActive.Default.(bool)
 	mstcustomerMixin := schema.MstCustomer{}.Mixin()
 	mstcustomerMixinFields0 := mstcustomerMixin[0].Fields()
 	_ = mstcustomerMixinFields0

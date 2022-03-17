@@ -8,6 +8,7 @@ import (
 	"myeduate/ent/authparent"
 	"myeduate/ent/authstaff"
 	"myeduate/ent/customtypes"
+	"myeduate/ent/msgchannelmessage"
 	"myeduate/ent/mstcustomer"
 	"myeduate/ent/mstinst"
 	"myeduate/ent/mststudent"
@@ -1342,6 +1343,525 @@ func (i *AuthStaffWhereInput) P() (predicate.AuthStaff, error) {
 		return predicates[0], nil
 	default:
 		return authstaff.And(predicates...), nil
+	}
+}
+
+// MsgChannelMessageWhereInput represents a where input for filtering MsgChannelMessage queries.
+type MsgChannelMessageWhereInput struct {
+	Not *MsgChannelMessageWhereInput   `json:"not,omitempty"`
+	Or  []*MsgChannelMessageWhereInput `json:"or,omitempty"`
+	And []*MsgChannelMessageWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "msg_date" field predicates.
+	MsgDate       *time.Time  `json:"msgDate,omitempty"`
+	MsgDateNEQ    *time.Time  `json:"msgDateNEQ,omitempty"`
+	MsgDateIn     []time.Time `json:"msgDateIn,omitempty"`
+	MsgDateNotIn  []time.Time `json:"msgDateNotIn,omitempty"`
+	MsgDateGT     *time.Time  `json:"msgDateGT,omitempty"`
+	MsgDateGTE    *time.Time  `json:"msgDateGTE,omitempty"`
+	MsgDateLT     *time.Time  `json:"msgDateLT,omitempty"`
+	MsgDateLTE    *time.Time  `json:"msgDateLTE,omitempty"`
+	MsgDateIsNil  bool        `json:"msgDateIsNil,omitempty"`
+	MsgDateNotNil bool        `json:"msgDateNotNil,omitempty"`
+
+	// "msg_is_expiry" field predicates.
+	MsgIsExpiry    *bool `json:"msgIsExpiry,omitempty"`
+	MsgIsExpiryNEQ *bool `json:"msgIsExpiryNEQ,omitempty"`
+
+	// "msg_expiry_date" field predicates.
+	MsgExpiryDate       *time.Time  `json:"msgExpiryDate,omitempty"`
+	MsgExpiryDateNEQ    *time.Time  `json:"msgExpiryDateNEQ,omitempty"`
+	MsgExpiryDateIn     []time.Time `json:"msgExpiryDateIn,omitempty"`
+	MsgExpiryDateNotIn  []time.Time `json:"msgExpiryDateNotIn,omitempty"`
+	MsgExpiryDateGT     *time.Time  `json:"msgExpiryDateGT,omitempty"`
+	MsgExpiryDateGTE    *time.Time  `json:"msgExpiryDateGTE,omitempty"`
+	MsgExpiryDateLT     *time.Time  `json:"msgExpiryDateLT,omitempty"`
+	MsgExpiryDateLTE    *time.Time  `json:"msgExpiryDateLTE,omitempty"`
+	MsgExpiryDateIsNil  bool        `json:"msgExpiryDateIsNil,omitempty"`
+	MsgExpiryDateNotNil bool        `json:"msgExpiryDateNotNil,omitempty"`
+
+	// "msg_is_text" field predicates.
+	MsgIsText    *bool `json:"msgIsText,omitempty"`
+	MsgIsTextNEQ *bool `json:"msgIsTextNEQ,omitempty"`
+
+	// "msg_content" field predicates.
+	MsgContent             *string  `json:"msgContent,omitempty"`
+	MsgContentNEQ          *string  `json:"msgContentNEQ,omitempty"`
+	MsgContentIn           []string `json:"msgContentIn,omitempty"`
+	MsgContentNotIn        []string `json:"msgContentNotIn,omitempty"`
+	MsgContentGT           *string  `json:"msgContentGT,omitempty"`
+	MsgContentGTE          *string  `json:"msgContentGTE,omitempty"`
+	MsgContentLT           *string  `json:"msgContentLT,omitempty"`
+	MsgContentLTE          *string  `json:"msgContentLTE,omitempty"`
+	MsgContentContains     *string  `json:"msgContentContains,omitempty"`
+	MsgContentHasPrefix    *string  `json:"msgContentHasPrefix,omitempty"`
+	MsgContentHasSuffix    *string  `json:"msgContentHasSuffix,omitempty"`
+	MsgContentEqualFold    *string  `json:"msgContentEqualFold,omitempty"`
+	MsgContentContainsFold *string  `json:"msgContentContainsFold,omitempty"`
+
+	// "msg_media_type" field predicates.
+	MsgMediaType             *string  `json:"msgMediaType,omitempty"`
+	MsgMediaTypeNEQ          *string  `json:"msgMediaTypeNEQ,omitempty"`
+	MsgMediaTypeIn           []string `json:"msgMediaTypeIn,omitempty"`
+	MsgMediaTypeNotIn        []string `json:"msgMediaTypeNotIn,omitempty"`
+	MsgMediaTypeGT           *string  `json:"msgMediaTypeGT,omitempty"`
+	MsgMediaTypeGTE          *string  `json:"msgMediaTypeGTE,omitempty"`
+	MsgMediaTypeLT           *string  `json:"msgMediaTypeLT,omitempty"`
+	MsgMediaTypeLTE          *string  `json:"msgMediaTypeLTE,omitempty"`
+	MsgMediaTypeContains     *string  `json:"msgMediaTypeContains,omitempty"`
+	MsgMediaTypeHasPrefix    *string  `json:"msgMediaTypeHasPrefix,omitempty"`
+	MsgMediaTypeHasSuffix    *string  `json:"msgMediaTypeHasSuffix,omitempty"`
+	MsgMediaTypeEqualFold    *string  `json:"msgMediaTypeEqualFold,omitempty"`
+	MsgMediaTypeContainsFold *string  `json:"msgMediaTypeContainsFold,omitempty"`
+
+	// "msg_media_content" field predicates.
+	MsgMediaContent             *string  `json:"msgMediaContent,omitempty"`
+	MsgMediaContentNEQ          *string  `json:"msgMediaContentNEQ,omitempty"`
+	MsgMediaContentIn           []string `json:"msgMediaContentIn,omitempty"`
+	MsgMediaContentNotIn        []string `json:"msgMediaContentNotIn,omitempty"`
+	MsgMediaContentGT           *string  `json:"msgMediaContentGT,omitempty"`
+	MsgMediaContentGTE          *string  `json:"msgMediaContentGTE,omitempty"`
+	MsgMediaContentLT           *string  `json:"msgMediaContentLT,omitempty"`
+	MsgMediaContentLTE          *string  `json:"msgMediaContentLTE,omitempty"`
+	MsgMediaContentContains     *string  `json:"msgMediaContentContains,omitempty"`
+	MsgMediaContentHasPrefix    *string  `json:"msgMediaContentHasPrefix,omitempty"`
+	MsgMediaContentHasSuffix    *string  `json:"msgMediaContentHasSuffix,omitempty"`
+	MsgMediaContentEqualFold    *string  `json:"msgMediaContentEqualFold,omitempty"`
+	MsgMediaContentContainsFold *string  `json:"msgMediaContentContainsFold,omitempty"`
+
+	// "msg_active" field predicates.
+	MsgActive    *bool `json:"msgActive,omitempty"`
+	MsgActiveNEQ *bool `json:"msgActiveNEQ,omitempty"`
+
+	// "msg_is_individual" field predicates.
+	MsgIsIndividual    *bool `json:"msgIsIndividual,omitempty"`
+	MsgIsIndividualNEQ *bool `json:"msgIsIndividualNEQ,omitempty"`
+
+	// "msg_recv_or_sent" field predicates.
+	MsgRecvOrSent             *string  `json:"msgRecvOrSent,omitempty"`
+	MsgRecvOrSentNEQ          *string  `json:"msgRecvOrSentNEQ,omitempty"`
+	MsgRecvOrSentIn           []string `json:"msgRecvOrSentIn,omitempty"`
+	MsgRecvOrSentNotIn        []string `json:"msgRecvOrSentNotIn,omitempty"`
+	MsgRecvOrSentGT           *string  `json:"msgRecvOrSentGT,omitempty"`
+	MsgRecvOrSentGTE          *string  `json:"msgRecvOrSentGTE,omitempty"`
+	MsgRecvOrSentLT           *string  `json:"msgRecvOrSentLT,omitempty"`
+	MsgRecvOrSentLTE          *string  `json:"msgRecvOrSentLTE,omitempty"`
+	MsgRecvOrSentContains     *string  `json:"msgRecvOrSentContains,omitempty"`
+	MsgRecvOrSentHasPrefix    *string  `json:"msgRecvOrSentHasPrefix,omitempty"`
+	MsgRecvOrSentHasSuffix    *string  `json:"msgRecvOrSentHasSuffix,omitempty"`
+	MsgRecvOrSentEqualFold    *string  `json:"msgRecvOrSentEqualFold,omitempty"`
+	MsgRecvOrSentContainsFold *string  `json:"msgRecvOrSentContainsFold,omitempty"`
+}
+
+// Filter applies the MsgChannelMessageWhereInput filter on the MsgChannelMessageQuery builder.
+func (i *MsgChannelMessageWhereInput) Filter(q *MsgChannelMessageQuery) (*MsgChannelMessageQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// P returns a predicate for filtering msgchannelmessages.
+// An error is returned if the input is empty or invalid.
+func (i *MsgChannelMessageWhereInput) P() (predicate.MsgChannelMessage, error) {
+	var predicates []predicate.MsgChannelMessage
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, msgchannelmessage.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.MsgChannelMessage, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, msgchannelmessage.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, err
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.MsgChannelMessage, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, err
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, msgchannelmessage.And(and...))
+	}
+	if i.ID != nil {
+		predicates = append(predicates, msgchannelmessage.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, msgchannelmessage.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, msgchannelmessage.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, msgchannelmessage.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, msgchannelmessage.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, msgchannelmessage.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, msgchannelmessage.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, msgchannelmessage.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, msgchannelmessage.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, msgchannelmessage.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, msgchannelmessage.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, msgchannelmessage.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, msgchannelmessage.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, msgchannelmessage.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, msgchannelmessage.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.MsgDate != nil {
+		predicates = append(predicates, msgchannelmessage.MsgDateEQ(*i.MsgDate))
+	}
+	if i.MsgDateNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgDateNEQ(*i.MsgDateNEQ))
+	}
+	if len(i.MsgDateIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgDateIn(i.MsgDateIn...))
+	}
+	if len(i.MsgDateNotIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgDateNotIn(i.MsgDateNotIn...))
+	}
+	if i.MsgDateGT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgDateGT(*i.MsgDateGT))
+	}
+	if i.MsgDateGTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgDateGTE(*i.MsgDateGTE))
+	}
+	if i.MsgDateLT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgDateLT(*i.MsgDateLT))
+	}
+	if i.MsgDateLTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgDateLTE(*i.MsgDateLTE))
+	}
+	if i.MsgDateIsNil {
+		predicates = append(predicates, msgchannelmessage.MsgDateIsNil())
+	}
+	if i.MsgDateNotNil {
+		predicates = append(predicates, msgchannelmessage.MsgDateNotNil())
+	}
+	if i.MsgIsExpiry != nil {
+		predicates = append(predicates, msgchannelmessage.MsgIsExpiryEQ(*i.MsgIsExpiry))
+	}
+	if i.MsgIsExpiryNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgIsExpiryNEQ(*i.MsgIsExpiryNEQ))
+	}
+	if i.MsgExpiryDate != nil {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateEQ(*i.MsgExpiryDate))
+	}
+	if i.MsgExpiryDateNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateNEQ(*i.MsgExpiryDateNEQ))
+	}
+	if len(i.MsgExpiryDateIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateIn(i.MsgExpiryDateIn...))
+	}
+	if len(i.MsgExpiryDateNotIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateNotIn(i.MsgExpiryDateNotIn...))
+	}
+	if i.MsgExpiryDateGT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateGT(*i.MsgExpiryDateGT))
+	}
+	if i.MsgExpiryDateGTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateGTE(*i.MsgExpiryDateGTE))
+	}
+	if i.MsgExpiryDateLT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateLT(*i.MsgExpiryDateLT))
+	}
+	if i.MsgExpiryDateLTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateLTE(*i.MsgExpiryDateLTE))
+	}
+	if i.MsgExpiryDateIsNil {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateIsNil())
+	}
+	if i.MsgExpiryDateNotNil {
+		predicates = append(predicates, msgchannelmessage.MsgExpiryDateNotNil())
+	}
+	if i.MsgIsText != nil {
+		predicates = append(predicates, msgchannelmessage.MsgIsTextEQ(*i.MsgIsText))
+	}
+	if i.MsgIsTextNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgIsTextNEQ(*i.MsgIsTextNEQ))
+	}
+	if i.MsgContent != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentEQ(*i.MsgContent))
+	}
+	if i.MsgContentNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentNEQ(*i.MsgContentNEQ))
+	}
+	if len(i.MsgContentIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgContentIn(i.MsgContentIn...))
+	}
+	if len(i.MsgContentNotIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgContentNotIn(i.MsgContentNotIn...))
+	}
+	if i.MsgContentGT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentGT(*i.MsgContentGT))
+	}
+	if i.MsgContentGTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentGTE(*i.MsgContentGTE))
+	}
+	if i.MsgContentLT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentLT(*i.MsgContentLT))
+	}
+	if i.MsgContentLTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentLTE(*i.MsgContentLTE))
+	}
+	if i.MsgContentContains != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentContains(*i.MsgContentContains))
+	}
+	if i.MsgContentHasPrefix != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentHasPrefix(*i.MsgContentHasPrefix))
+	}
+	if i.MsgContentHasSuffix != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentHasSuffix(*i.MsgContentHasSuffix))
+	}
+	if i.MsgContentEqualFold != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentEqualFold(*i.MsgContentEqualFold))
+	}
+	if i.MsgContentContainsFold != nil {
+		predicates = append(predicates, msgchannelmessage.MsgContentContainsFold(*i.MsgContentContainsFold))
+	}
+	if i.MsgMediaType != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeEQ(*i.MsgMediaType))
+	}
+	if i.MsgMediaTypeNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeNEQ(*i.MsgMediaTypeNEQ))
+	}
+	if len(i.MsgMediaTypeIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeIn(i.MsgMediaTypeIn...))
+	}
+	if len(i.MsgMediaTypeNotIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeNotIn(i.MsgMediaTypeNotIn...))
+	}
+	if i.MsgMediaTypeGT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeGT(*i.MsgMediaTypeGT))
+	}
+	if i.MsgMediaTypeGTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeGTE(*i.MsgMediaTypeGTE))
+	}
+	if i.MsgMediaTypeLT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeLT(*i.MsgMediaTypeLT))
+	}
+	if i.MsgMediaTypeLTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeLTE(*i.MsgMediaTypeLTE))
+	}
+	if i.MsgMediaTypeContains != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeContains(*i.MsgMediaTypeContains))
+	}
+	if i.MsgMediaTypeHasPrefix != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeHasPrefix(*i.MsgMediaTypeHasPrefix))
+	}
+	if i.MsgMediaTypeHasSuffix != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeHasSuffix(*i.MsgMediaTypeHasSuffix))
+	}
+	if i.MsgMediaTypeEqualFold != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeEqualFold(*i.MsgMediaTypeEqualFold))
+	}
+	if i.MsgMediaTypeContainsFold != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaTypeContainsFold(*i.MsgMediaTypeContainsFold))
+	}
+	if i.MsgMediaContent != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentEQ(*i.MsgMediaContent))
+	}
+	if i.MsgMediaContentNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentNEQ(*i.MsgMediaContentNEQ))
+	}
+	if len(i.MsgMediaContentIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentIn(i.MsgMediaContentIn...))
+	}
+	if len(i.MsgMediaContentNotIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentNotIn(i.MsgMediaContentNotIn...))
+	}
+	if i.MsgMediaContentGT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentGT(*i.MsgMediaContentGT))
+	}
+	if i.MsgMediaContentGTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentGTE(*i.MsgMediaContentGTE))
+	}
+	if i.MsgMediaContentLT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentLT(*i.MsgMediaContentLT))
+	}
+	if i.MsgMediaContentLTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentLTE(*i.MsgMediaContentLTE))
+	}
+	if i.MsgMediaContentContains != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentContains(*i.MsgMediaContentContains))
+	}
+	if i.MsgMediaContentHasPrefix != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentHasPrefix(*i.MsgMediaContentHasPrefix))
+	}
+	if i.MsgMediaContentHasSuffix != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentHasSuffix(*i.MsgMediaContentHasSuffix))
+	}
+	if i.MsgMediaContentEqualFold != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentEqualFold(*i.MsgMediaContentEqualFold))
+	}
+	if i.MsgMediaContentContainsFold != nil {
+		predicates = append(predicates, msgchannelmessage.MsgMediaContentContainsFold(*i.MsgMediaContentContainsFold))
+	}
+	if i.MsgActive != nil {
+		predicates = append(predicates, msgchannelmessage.MsgActiveEQ(*i.MsgActive))
+	}
+	if i.MsgActiveNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgActiveNEQ(*i.MsgActiveNEQ))
+	}
+	if i.MsgIsIndividual != nil {
+		predicates = append(predicates, msgchannelmessage.MsgIsIndividualEQ(*i.MsgIsIndividual))
+	}
+	if i.MsgIsIndividualNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgIsIndividualNEQ(*i.MsgIsIndividualNEQ))
+	}
+	if i.MsgRecvOrSent != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentEQ(*i.MsgRecvOrSent))
+	}
+	if i.MsgRecvOrSentNEQ != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentNEQ(*i.MsgRecvOrSentNEQ))
+	}
+	if len(i.MsgRecvOrSentIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentIn(i.MsgRecvOrSentIn...))
+	}
+	if len(i.MsgRecvOrSentNotIn) > 0 {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentNotIn(i.MsgRecvOrSentNotIn...))
+	}
+	if i.MsgRecvOrSentGT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentGT(*i.MsgRecvOrSentGT))
+	}
+	if i.MsgRecvOrSentGTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentGTE(*i.MsgRecvOrSentGTE))
+	}
+	if i.MsgRecvOrSentLT != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentLT(*i.MsgRecvOrSentLT))
+	}
+	if i.MsgRecvOrSentLTE != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentLTE(*i.MsgRecvOrSentLTE))
+	}
+	if i.MsgRecvOrSentContains != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentContains(*i.MsgRecvOrSentContains))
+	}
+	if i.MsgRecvOrSentHasPrefix != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentHasPrefix(*i.MsgRecvOrSentHasPrefix))
+	}
+	if i.MsgRecvOrSentHasSuffix != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentHasSuffix(*i.MsgRecvOrSentHasSuffix))
+	}
+	if i.MsgRecvOrSentEqualFold != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentEqualFold(*i.MsgRecvOrSentEqualFold))
+	}
+	if i.MsgRecvOrSentContainsFold != nil {
+		predicates = append(predicates, msgchannelmessage.MsgRecvOrSentContainsFold(*i.MsgRecvOrSentContainsFold))
+	}
+
+	switch len(predicates) {
+	case 0:
+		return nil, fmt.Errorf("myeduate/ent: empty predicate MsgChannelMessageWhereInput")
+	case 1:
+		return predicates[0], nil
+	default:
+		return msgchannelmessage.And(predicates...), nil
 	}
 }
 

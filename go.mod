@@ -7,12 +7,13 @@ require (
 	entgo.io/ent v0.10.1
 	github.com/99designs/gqlgen v0.17.1
 	github.com/arsmn/fastgql v0.14.0
-	github.com/go-chi/chi v1.5.4
+	github.com/gorilla/handlers v1.5.1
+	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/lib/pq v1.10.4
-	github.com/rs/cors v1.8.2
 	github.com/spf13/viper v1.10.1
+	github.com/thanhpk/randstr v1.0.4
 	github.com/vektah/gqlparser/v2 v2.4.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	go.uber.org/zap v1.20.0
@@ -26,6 +27,7 @@ require (
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
+	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
