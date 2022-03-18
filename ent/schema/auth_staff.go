@@ -30,12 +30,6 @@ func (AuthStaff) Fields() []ent.Field {
 		field.String("staff_last_name").
 			StructTag(`gqlgen:"last_name"`),
 
-		field.String("staff_address"),
-		field.String("staff_place"),
-		field.String("staff_state"),
-		field.String("staff_pin"),
 
-		field.String("staff_email").Unique().NotEmpty(),
-		field.String("staff_mobile").Unique().NotEmpty(),
 	}
 }

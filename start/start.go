@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"myeduate"
 	"myeduate/ent"
 	"myeduate/ent/migrate"
+	"myeduate/ent/mststudent"
 	"myeduate/logger"
 	"myeduate/resolvers"
 	"myeduate/utils"
@@ -122,6 +124,14 @@ func main() {
 
 	srv.Use(entgql.Transactioner{TxOpener: client})
 
+	addStudents(ctx, client)
+	addStaff(ctx, client)
+	addParents(ctx, client)
+
+	/* please get the id from database table and send it as parameter for below function */
+
+	queryStudends(ctx, client, 21474836480)
+
 	route.Handle("/", playground.Handler("myeduate", "/query"))
 	route.Handle("/query", srv)
 	fmt.Printf("listening on : %v \n", config.ServerAddr)
@@ -137,4 +147,104 @@ func cors(allowedOrigins string) mux.MiddlewareFunc {
 		gohandlers.AllowedMethods([]string{http.MethodGet, http.MethodHead, http.MethodPost, http.MethodPut, http.MethodOptions}),
 		gohandlers.AllowCredentials(),
 	)
+}
+
+func addStudents(ctx context.Context, client *ent.Client) {
+
+	client.MstStudent.Create().
+		SetStdFirstName("smith").
+		SetStdLastName("Alicia").
+		SetStdMiddleName("B").Save(ctx)
+
+	client.MstStudent.Create().
+		SetStdFirstName("Suresh").
+		SetStdLastName("reddy").
+		SetStdMiddleName("govind").Save(ctx)
+
+	client.MstStudent.Create().
+		SetStdFirstName("Ram").
+		SetStdLastName("Joe").
+		SetStdMiddleName("S").Save(ctx)
+
+	client.MstStudent.Create().
+		SetStdFirstName("adams").
+		SetStdLastName("miller").
+		SetStdMiddleName("cents").Save(ctx)
+
+	client.MstStudent.Create().
+		SetStdFirstName("amada").
+		SetStdLastName("scot").
+		Save(ctx)
+
+}
+
+func addStaff(ctx context.Context, client *ent.Client) {
+
+	client.AuthStaff.Create().
+		SetStaffFirstName("Bier").
+		SetStaffLastName("Victor").
+		SetStaffMiddleName("A").Save(ctx)
+
+	client.AuthStaff.Create().
+		SetStaffFirstName("Christo").
+		SetStaffLastName("Brandon").
+		SetStaffMiddleName("D").Save(ctx)
+
+	client.AuthStaff.Create().
+		SetStaffFirstName("Dearborn").
+		SetStaffLastName("Molly").
+		SetStaffMiddleName("B").Save(ctx)
+
+	client.AuthStaff.Create().
+		SetStaffFirstName("Barter").
+		SetStaffLastName("Marie").
+		SetStaffMiddleName("c").Save(ctx)
+
+	client.AuthStaff.Create().
+		SetStaffFirstName("Garner").
+		SetStaffLastName("Alicia").
+		SetStaffMiddleName("E").Save(ctx)
+
+}
+
+func addParents(ctx context.Context, client *ent.Client) {
+
+	client.AuthParent.Create().
+		SetParentFirstName("McCall").
+		SetParentLastName("Magan").
+		SetParentMiddleName("A").Save(ctx)
+
+	client.AuthParent.Create().
+		SetParentFirstName("Hyde").
+		SetParentLastName("Carter").
+		SetParentMiddleName("B").Save(ctx)
+
+	client.AuthParent.Create().
+		SetParentFirstName("Layton").
+		SetParentLastName("Joy").
+		SetParentMiddleName("C").Save(ctx)
+
+	client.AuthParent.Create().
+		SetParentFirstName("Mike").
+		SetParentLastName("Tims").
+		SetParentMiddleName("D").Save(ctx)
+
+	client.AuthParent.Create().
+		SetParentFirstName("Sunil").
+		SetParentLastName("Kumar").
+		SetParentMiddleName("E").Save(ctx)
+
+	client.AuthParent.Create().
+		SetParentFirstName("Suresh").
+		SetParentLastName("Victor").
+		SetParentMiddleName("F").Save(ctx)
+}
+
+func queryStudends(ctx context.Context, client *ent.Client, id int) {
+
+	var students []*myeduate.UserNamesByID
+
+	client.MstStudent.Query().Where(mststudent.IDEQ(id)).Select(mststudent.FieldStdFirstName, mststudent.FieldStdMiddleName, mststudent.FieldStdLastName, mststudent.FieldID).ScanX(ctx, &students)
+
+	fmt.Printf("Students data %v", students)
 }

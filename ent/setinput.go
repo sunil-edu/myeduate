@@ -15,12 +15,6 @@ type CreateAuthParentInput struct {
 	ParentFirstName  string
 	ParentMiddleName string
 	ParentLastName   string
-	ParentAddress    string
-	ParentPlace      string
-	ParentState      string
-	ParentPin        string
-	ParentEmail      string
-	ParentMobile     string
 }
 
 // Mutate applies the CreateAuthParentInput on the AuthParentCreate builder.
@@ -34,12 +28,6 @@ func (i *CreateAuthParentInput) Mutate(m *AuthParentCreate) {
 	m.SetParentFirstName(i.ParentFirstName)
 	m.SetParentMiddleName(i.ParentMiddleName)
 	m.SetParentLastName(i.ParentLastName)
-	m.SetParentAddress(i.ParentAddress)
-	m.SetParentPlace(i.ParentPlace)
-	m.SetParentState(i.ParentState)
-	m.SetParentPin(i.ParentPin)
-	m.SetParentEmail(i.ParentEmail)
-	m.SetParentMobile(i.ParentMobile)
 }
 
 // SetInput applies the change-set in the CreateAuthParentInput on the create builder.
@@ -54,12 +42,6 @@ type UpdateAuthParentInput struct {
 	ParentFirstName  *string
 	ParentMiddleName *string
 	ParentLastName   *string
-	ParentAddress    *string
-	ParentPlace      *string
-	ParentState      *string
-	ParentPin        *string
-	ParentEmail      *string
-	ParentMobile     *string
 }
 
 // Mutate applies the UpdateAuthParentInput on the AuthParentMutation.
@@ -75,24 +57,6 @@ func (i *UpdateAuthParentInput) Mutate(m *AuthParentMutation) {
 	}
 	if v := i.ParentLastName; v != nil {
 		m.SetParentLastName(*v)
-	}
-	if v := i.ParentAddress; v != nil {
-		m.SetParentAddress(*v)
-	}
-	if v := i.ParentPlace; v != nil {
-		m.SetParentPlace(*v)
-	}
-	if v := i.ParentState; v != nil {
-		m.SetParentState(*v)
-	}
-	if v := i.ParentPin; v != nil {
-		m.SetParentPin(*v)
-	}
-	if v := i.ParentEmail; v != nil {
-		m.SetParentEmail(*v)
-	}
-	if v := i.ParentMobile; v != nil {
-		m.SetParentMobile(*v)
 	}
 }
 
@@ -115,12 +79,6 @@ type CreateAuthStaffInput struct {
 	StaffFirstName  string
 	StaffMiddleName string
 	StaffLastName   string
-	StaffAddress    string
-	StaffPlace      string
-	StaffState      string
-	StaffPin        string
-	StaffEmail      string
-	StaffMobile     string
 }
 
 // Mutate applies the CreateAuthStaffInput on the AuthStaffCreate builder.
@@ -134,12 +92,6 @@ func (i *CreateAuthStaffInput) Mutate(m *AuthStaffCreate) {
 	m.SetStaffFirstName(i.StaffFirstName)
 	m.SetStaffMiddleName(i.StaffMiddleName)
 	m.SetStaffLastName(i.StaffLastName)
-	m.SetStaffAddress(i.StaffAddress)
-	m.SetStaffPlace(i.StaffPlace)
-	m.SetStaffState(i.StaffState)
-	m.SetStaffPin(i.StaffPin)
-	m.SetStaffEmail(i.StaffEmail)
-	m.SetStaffMobile(i.StaffMobile)
 }
 
 // SetInput applies the change-set in the CreateAuthStaffInput on the create builder.
@@ -154,12 +106,6 @@ type UpdateAuthStaffInput struct {
 	StaffFirstName  *string
 	StaffMiddleName *string
 	StaffLastName   *string
-	StaffAddress    *string
-	StaffPlace      *string
-	StaffState      *string
-	StaffPin        *string
-	StaffEmail      *string
-	StaffMobile     *string
 }
 
 // Mutate applies the UpdateAuthStaffInput on the AuthStaffMutation.
@@ -175,24 +121,6 @@ func (i *UpdateAuthStaffInput) Mutate(m *AuthStaffMutation) {
 	}
 	if v := i.StaffLastName; v != nil {
 		m.SetStaffLastName(*v)
-	}
-	if v := i.StaffAddress; v != nil {
-		m.SetStaffAddress(*v)
-	}
-	if v := i.StaffPlace; v != nil {
-		m.SetStaffPlace(*v)
-	}
-	if v := i.StaffState; v != nil {
-		m.SetStaffState(*v)
-	}
-	if v := i.StaffPin; v != nil {
-		m.SetStaffPin(*v)
-	}
-	if v := i.StaffEmail; v != nil {
-		m.SetStaffEmail(*v)
-	}
-	if v := i.StaffMobile; v != nil {
-		m.SetStaffMobile(*v)
 	}
 }
 
@@ -681,10 +609,6 @@ type CreateMstStudentInput struct {
 	StdFirstName  string
 	StdMiddleName string
 	StdLastName   string
-	StdStudying   *bool
-	StdStatus     *customtypes.StdStatus
-	StdSex        customtypes.Sex
-	StdRegNo      string
 }
 
 // Mutate applies the CreateMstStudentInput on the MstStudentCreate builder.
@@ -698,14 +622,6 @@ func (i *CreateMstStudentInput) Mutate(m *MstStudentCreate) {
 	m.SetStdFirstName(i.StdFirstName)
 	m.SetStdMiddleName(i.StdMiddleName)
 	m.SetStdLastName(i.StdLastName)
-	if v := i.StdStudying; v != nil {
-		m.SetStdStudying(*v)
-	}
-	if v := i.StdStatus; v != nil {
-		m.SetStdStatus(*v)
-	}
-	m.SetStdSex(i.StdSex)
-	m.SetStdRegNo(i.StdRegNo)
 }
 
 // SetInput applies the change-set in the CreateMstStudentInput on the create builder.
@@ -720,10 +636,6 @@ type UpdateMstStudentInput struct {
 	StdFirstName  *string
 	StdMiddleName *string
 	StdLastName   *string
-	StdStudying   *bool
-	StdStatus     *customtypes.StdStatus
-	StdSex        *customtypes.Sex
-	StdRegNo      *string
 }
 
 // Mutate applies the UpdateMstStudentInput on the MstStudentMutation.
@@ -739,18 +651,6 @@ func (i *UpdateMstStudentInput) Mutate(m *MstStudentMutation) {
 	}
 	if v := i.StdLastName; v != nil {
 		m.SetStdLastName(*v)
-	}
-	if v := i.StdStudying; v != nil {
-		m.SetStdStudying(*v)
-	}
-	if v := i.StdStatus; v != nil {
-		m.SetStdStatus(*v)
-	}
-	if v := i.StdSex; v != nil {
-		m.SetStdSex(*v)
-	}
-	if v := i.StdRegNo; v != nil {
-		m.SetStdRegNo(*v)
 	}
 }
 

@@ -49,12 +49,6 @@ type AuthParentMutation struct {
 	parent_first_name  *string
 	parent_middle_name *string
 	parent_last_name   *string
-	parent_address     *string
-	parent_place       *string
-	parent_state       *string
-	parent_pin         *string
-	parent_email       *string
-	parent_mobile      *string
 	clearedFields      map[string]struct{}
 	done               bool
 	oldValue           func(context.Context) (*AuthParent, error)
@@ -339,222 +333,6 @@ func (m *AuthParentMutation) ResetParentLastName() {
 	m.parent_last_name = nil
 }
 
-// SetParentAddress sets the "parent_address" field.
-func (m *AuthParentMutation) SetParentAddress(s string) {
-	m.parent_address = &s
-}
-
-// ParentAddress returns the value of the "parent_address" field in the mutation.
-func (m *AuthParentMutation) ParentAddress() (r string, exists bool) {
-	v := m.parent_address
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldParentAddress returns the old "parent_address" field's value of the AuthParent entity.
-// If the AuthParent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthParentMutation) OldParentAddress(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldParentAddress is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldParentAddress requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldParentAddress: %w", err)
-	}
-	return oldValue.ParentAddress, nil
-}
-
-// ResetParentAddress resets all changes to the "parent_address" field.
-func (m *AuthParentMutation) ResetParentAddress() {
-	m.parent_address = nil
-}
-
-// SetParentPlace sets the "parent_place" field.
-func (m *AuthParentMutation) SetParentPlace(s string) {
-	m.parent_place = &s
-}
-
-// ParentPlace returns the value of the "parent_place" field in the mutation.
-func (m *AuthParentMutation) ParentPlace() (r string, exists bool) {
-	v := m.parent_place
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldParentPlace returns the old "parent_place" field's value of the AuthParent entity.
-// If the AuthParent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthParentMutation) OldParentPlace(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldParentPlace is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldParentPlace requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldParentPlace: %w", err)
-	}
-	return oldValue.ParentPlace, nil
-}
-
-// ResetParentPlace resets all changes to the "parent_place" field.
-func (m *AuthParentMutation) ResetParentPlace() {
-	m.parent_place = nil
-}
-
-// SetParentState sets the "parent_state" field.
-func (m *AuthParentMutation) SetParentState(s string) {
-	m.parent_state = &s
-}
-
-// ParentState returns the value of the "parent_state" field in the mutation.
-func (m *AuthParentMutation) ParentState() (r string, exists bool) {
-	v := m.parent_state
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldParentState returns the old "parent_state" field's value of the AuthParent entity.
-// If the AuthParent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthParentMutation) OldParentState(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldParentState is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldParentState requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldParentState: %w", err)
-	}
-	return oldValue.ParentState, nil
-}
-
-// ResetParentState resets all changes to the "parent_state" field.
-func (m *AuthParentMutation) ResetParentState() {
-	m.parent_state = nil
-}
-
-// SetParentPin sets the "parent_pin" field.
-func (m *AuthParentMutation) SetParentPin(s string) {
-	m.parent_pin = &s
-}
-
-// ParentPin returns the value of the "parent_pin" field in the mutation.
-func (m *AuthParentMutation) ParentPin() (r string, exists bool) {
-	v := m.parent_pin
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldParentPin returns the old "parent_pin" field's value of the AuthParent entity.
-// If the AuthParent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthParentMutation) OldParentPin(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldParentPin is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldParentPin requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldParentPin: %w", err)
-	}
-	return oldValue.ParentPin, nil
-}
-
-// ResetParentPin resets all changes to the "parent_pin" field.
-func (m *AuthParentMutation) ResetParentPin() {
-	m.parent_pin = nil
-}
-
-// SetParentEmail sets the "parent_email" field.
-func (m *AuthParentMutation) SetParentEmail(s string) {
-	m.parent_email = &s
-}
-
-// ParentEmail returns the value of the "parent_email" field in the mutation.
-func (m *AuthParentMutation) ParentEmail() (r string, exists bool) {
-	v := m.parent_email
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldParentEmail returns the old "parent_email" field's value of the AuthParent entity.
-// If the AuthParent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthParentMutation) OldParentEmail(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldParentEmail is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldParentEmail requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldParentEmail: %w", err)
-	}
-	return oldValue.ParentEmail, nil
-}
-
-// ResetParentEmail resets all changes to the "parent_email" field.
-func (m *AuthParentMutation) ResetParentEmail() {
-	m.parent_email = nil
-}
-
-// SetParentMobile sets the "parent_mobile" field.
-func (m *AuthParentMutation) SetParentMobile(s string) {
-	m.parent_mobile = &s
-}
-
-// ParentMobile returns the value of the "parent_mobile" field in the mutation.
-func (m *AuthParentMutation) ParentMobile() (r string, exists bool) {
-	v := m.parent_mobile
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldParentMobile returns the old "parent_mobile" field's value of the AuthParent entity.
-// If the AuthParent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthParentMutation) OldParentMobile(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldParentMobile is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldParentMobile requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldParentMobile: %w", err)
-	}
-	return oldValue.ParentMobile, nil
-}
-
-// ResetParentMobile resets all changes to the "parent_mobile" field.
-func (m *AuthParentMutation) ResetParentMobile() {
-	m.parent_mobile = nil
-}
-
 // Where appends a list predicates to the AuthParentMutation builder.
 func (m *AuthParentMutation) Where(ps ...predicate.AuthParent) {
 	m.predicates = append(m.predicates, ps...)
@@ -574,7 +352,7 @@ func (m *AuthParentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AuthParentMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 5)
 	if m.created_at != nil {
 		fields = append(fields, authparent.FieldCreatedAt)
 	}
@@ -589,24 +367,6 @@ func (m *AuthParentMutation) Fields() []string {
 	}
 	if m.parent_last_name != nil {
 		fields = append(fields, authparent.FieldParentLastName)
-	}
-	if m.parent_address != nil {
-		fields = append(fields, authparent.FieldParentAddress)
-	}
-	if m.parent_place != nil {
-		fields = append(fields, authparent.FieldParentPlace)
-	}
-	if m.parent_state != nil {
-		fields = append(fields, authparent.FieldParentState)
-	}
-	if m.parent_pin != nil {
-		fields = append(fields, authparent.FieldParentPin)
-	}
-	if m.parent_email != nil {
-		fields = append(fields, authparent.FieldParentEmail)
-	}
-	if m.parent_mobile != nil {
-		fields = append(fields, authparent.FieldParentMobile)
 	}
 	return fields
 }
@@ -626,18 +386,6 @@ func (m *AuthParentMutation) Field(name string) (ent.Value, bool) {
 		return m.ParentMiddleName()
 	case authparent.FieldParentLastName:
 		return m.ParentLastName()
-	case authparent.FieldParentAddress:
-		return m.ParentAddress()
-	case authparent.FieldParentPlace:
-		return m.ParentPlace()
-	case authparent.FieldParentState:
-		return m.ParentState()
-	case authparent.FieldParentPin:
-		return m.ParentPin()
-	case authparent.FieldParentEmail:
-		return m.ParentEmail()
-	case authparent.FieldParentMobile:
-		return m.ParentMobile()
 	}
 	return nil, false
 }
@@ -657,18 +405,6 @@ func (m *AuthParentMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldParentMiddleName(ctx)
 	case authparent.FieldParentLastName:
 		return m.OldParentLastName(ctx)
-	case authparent.FieldParentAddress:
-		return m.OldParentAddress(ctx)
-	case authparent.FieldParentPlace:
-		return m.OldParentPlace(ctx)
-	case authparent.FieldParentState:
-		return m.OldParentState(ctx)
-	case authparent.FieldParentPin:
-		return m.OldParentPin(ctx)
-	case authparent.FieldParentEmail:
-		return m.OldParentEmail(ctx)
-	case authparent.FieldParentMobile:
-		return m.OldParentMobile(ctx)
 	}
 	return nil, fmt.Errorf("unknown AuthParent field %s", name)
 }
@@ -712,48 +448,6 @@ func (m *AuthParentMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetParentLastName(v)
-		return nil
-	case authparent.FieldParentAddress:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetParentAddress(v)
-		return nil
-	case authparent.FieldParentPlace:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetParentPlace(v)
-		return nil
-	case authparent.FieldParentState:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetParentState(v)
-		return nil
-	case authparent.FieldParentPin:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetParentPin(v)
-		return nil
-	case authparent.FieldParentEmail:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetParentEmail(v)
-		return nil
-	case authparent.FieldParentMobile:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetParentMobile(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AuthParent field %s", name)
@@ -819,24 +513,6 @@ func (m *AuthParentMutation) ResetField(name string) error {
 	case authparent.FieldParentLastName:
 		m.ResetParentLastName()
 		return nil
-	case authparent.FieldParentAddress:
-		m.ResetParentAddress()
-		return nil
-	case authparent.FieldParentPlace:
-		m.ResetParentPlace()
-		return nil
-	case authparent.FieldParentState:
-		m.ResetParentState()
-		return nil
-	case authparent.FieldParentPin:
-		m.ResetParentPin()
-		return nil
-	case authparent.FieldParentEmail:
-		m.ResetParentEmail()
-		return nil
-	case authparent.FieldParentMobile:
-		m.ResetParentMobile()
-		return nil
 	}
 	return fmt.Errorf("unknown AuthParent field %s", name)
 }
@@ -900,12 +576,6 @@ type AuthStaffMutation struct {
 	staff_first_name  *string
 	staff_middle_name *string
 	staff_last_name   *string
-	staff_address     *string
-	staff_place       *string
-	staff_state       *string
-	staff_pin         *string
-	staff_email       *string
-	staff_mobile      *string
 	clearedFields     map[string]struct{}
 	done              bool
 	oldValue          func(context.Context) (*AuthStaff, error)
@@ -1190,222 +860,6 @@ func (m *AuthStaffMutation) ResetStaffLastName() {
 	m.staff_last_name = nil
 }
 
-// SetStaffAddress sets the "staff_address" field.
-func (m *AuthStaffMutation) SetStaffAddress(s string) {
-	m.staff_address = &s
-}
-
-// StaffAddress returns the value of the "staff_address" field in the mutation.
-func (m *AuthStaffMutation) StaffAddress() (r string, exists bool) {
-	v := m.staff_address
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStaffAddress returns the old "staff_address" field's value of the AuthStaff entity.
-// If the AuthStaff object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthStaffMutation) OldStaffAddress(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStaffAddress is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStaffAddress requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStaffAddress: %w", err)
-	}
-	return oldValue.StaffAddress, nil
-}
-
-// ResetStaffAddress resets all changes to the "staff_address" field.
-func (m *AuthStaffMutation) ResetStaffAddress() {
-	m.staff_address = nil
-}
-
-// SetStaffPlace sets the "staff_place" field.
-func (m *AuthStaffMutation) SetStaffPlace(s string) {
-	m.staff_place = &s
-}
-
-// StaffPlace returns the value of the "staff_place" field in the mutation.
-func (m *AuthStaffMutation) StaffPlace() (r string, exists bool) {
-	v := m.staff_place
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStaffPlace returns the old "staff_place" field's value of the AuthStaff entity.
-// If the AuthStaff object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthStaffMutation) OldStaffPlace(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStaffPlace is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStaffPlace requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStaffPlace: %w", err)
-	}
-	return oldValue.StaffPlace, nil
-}
-
-// ResetStaffPlace resets all changes to the "staff_place" field.
-func (m *AuthStaffMutation) ResetStaffPlace() {
-	m.staff_place = nil
-}
-
-// SetStaffState sets the "staff_state" field.
-func (m *AuthStaffMutation) SetStaffState(s string) {
-	m.staff_state = &s
-}
-
-// StaffState returns the value of the "staff_state" field in the mutation.
-func (m *AuthStaffMutation) StaffState() (r string, exists bool) {
-	v := m.staff_state
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStaffState returns the old "staff_state" field's value of the AuthStaff entity.
-// If the AuthStaff object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthStaffMutation) OldStaffState(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStaffState is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStaffState requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStaffState: %w", err)
-	}
-	return oldValue.StaffState, nil
-}
-
-// ResetStaffState resets all changes to the "staff_state" field.
-func (m *AuthStaffMutation) ResetStaffState() {
-	m.staff_state = nil
-}
-
-// SetStaffPin sets the "staff_pin" field.
-func (m *AuthStaffMutation) SetStaffPin(s string) {
-	m.staff_pin = &s
-}
-
-// StaffPin returns the value of the "staff_pin" field in the mutation.
-func (m *AuthStaffMutation) StaffPin() (r string, exists bool) {
-	v := m.staff_pin
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStaffPin returns the old "staff_pin" field's value of the AuthStaff entity.
-// If the AuthStaff object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthStaffMutation) OldStaffPin(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStaffPin is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStaffPin requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStaffPin: %w", err)
-	}
-	return oldValue.StaffPin, nil
-}
-
-// ResetStaffPin resets all changes to the "staff_pin" field.
-func (m *AuthStaffMutation) ResetStaffPin() {
-	m.staff_pin = nil
-}
-
-// SetStaffEmail sets the "staff_email" field.
-func (m *AuthStaffMutation) SetStaffEmail(s string) {
-	m.staff_email = &s
-}
-
-// StaffEmail returns the value of the "staff_email" field in the mutation.
-func (m *AuthStaffMutation) StaffEmail() (r string, exists bool) {
-	v := m.staff_email
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStaffEmail returns the old "staff_email" field's value of the AuthStaff entity.
-// If the AuthStaff object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthStaffMutation) OldStaffEmail(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStaffEmail is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStaffEmail requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStaffEmail: %w", err)
-	}
-	return oldValue.StaffEmail, nil
-}
-
-// ResetStaffEmail resets all changes to the "staff_email" field.
-func (m *AuthStaffMutation) ResetStaffEmail() {
-	m.staff_email = nil
-}
-
-// SetStaffMobile sets the "staff_mobile" field.
-func (m *AuthStaffMutation) SetStaffMobile(s string) {
-	m.staff_mobile = &s
-}
-
-// StaffMobile returns the value of the "staff_mobile" field in the mutation.
-func (m *AuthStaffMutation) StaffMobile() (r string, exists bool) {
-	v := m.staff_mobile
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStaffMobile returns the old "staff_mobile" field's value of the AuthStaff entity.
-// If the AuthStaff object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AuthStaffMutation) OldStaffMobile(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStaffMobile is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStaffMobile requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStaffMobile: %w", err)
-	}
-	return oldValue.StaffMobile, nil
-}
-
-// ResetStaffMobile resets all changes to the "staff_mobile" field.
-func (m *AuthStaffMutation) ResetStaffMobile() {
-	m.staff_mobile = nil
-}
-
 // Where appends a list predicates to the AuthStaffMutation builder.
 func (m *AuthStaffMutation) Where(ps ...predicate.AuthStaff) {
 	m.predicates = append(m.predicates, ps...)
@@ -1425,7 +879,7 @@ func (m *AuthStaffMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AuthStaffMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 5)
 	if m.created_at != nil {
 		fields = append(fields, authstaff.FieldCreatedAt)
 	}
@@ -1440,24 +894,6 @@ func (m *AuthStaffMutation) Fields() []string {
 	}
 	if m.staff_last_name != nil {
 		fields = append(fields, authstaff.FieldStaffLastName)
-	}
-	if m.staff_address != nil {
-		fields = append(fields, authstaff.FieldStaffAddress)
-	}
-	if m.staff_place != nil {
-		fields = append(fields, authstaff.FieldStaffPlace)
-	}
-	if m.staff_state != nil {
-		fields = append(fields, authstaff.FieldStaffState)
-	}
-	if m.staff_pin != nil {
-		fields = append(fields, authstaff.FieldStaffPin)
-	}
-	if m.staff_email != nil {
-		fields = append(fields, authstaff.FieldStaffEmail)
-	}
-	if m.staff_mobile != nil {
-		fields = append(fields, authstaff.FieldStaffMobile)
 	}
 	return fields
 }
@@ -1477,18 +913,6 @@ func (m *AuthStaffMutation) Field(name string) (ent.Value, bool) {
 		return m.StaffMiddleName()
 	case authstaff.FieldStaffLastName:
 		return m.StaffLastName()
-	case authstaff.FieldStaffAddress:
-		return m.StaffAddress()
-	case authstaff.FieldStaffPlace:
-		return m.StaffPlace()
-	case authstaff.FieldStaffState:
-		return m.StaffState()
-	case authstaff.FieldStaffPin:
-		return m.StaffPin()
-	case authstaff.FieldStaffEmail:
-		return m.StaffEmail()
-	case authstaff.FieldStaffMobile:
-		return m.StaffMobile()
 	}
 	return nil, false
 }
@@ -1508,18 +932,6 @@ func (m *AuthStaffMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldStaffMiddleName(ctx)
 	case authstaff.FieldStaffLastName:
 		return m.OldStaffLastName(ctx)
-	case authstaff.FieldStaffAddress:
-		return m.OldStaffAddress(ctx)
-	case authstaff.FieldStaffPlace:
-		return m.OldStaffPlace(ctx)
-	case authstaff.FieldStaffState:
-		return m.OldStaffState(ctx)
-	case authstaff.FieldStaffPin:
-		return m.OldStaffPin(ctx)
-	case authstaff.FieldStaffEmail:
-		return m.OldStaffEmail(ctx)
-	case authstaff.FieldStaffMobile:
-		return m.OldStaffMobile(ctx)
 	}
 	return nil, fmt.Errorf("unknown AuthStaff field %s", name)
 }
@@ -1563,48 +975,6 @@ func (m *AuthStaffMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStaffLastName(v)
-		return nil
-	case authstaff.FieldStaffAddress:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStaffAddress(v)
-		return nil
-	case authstaff.FieldStaffPlace:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStaffPlace(v)
-		return nil
-	case authstaff.FieldStaffState:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStaffState(v)
-		return nil
-	case authstaff.FieldStaffPin:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStaffPin(v)
-		return nil
-	case authstaff.FieldStaffEmail:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStaffEmail(v)
-		return nil
-	case authstaff.FieldStaffMobile:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStaffMobile(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AuthStaff field %s", name)
@@ -1669,24 +1039,6 @@ func (m *AuthStaffMutation) ResetField(name string) error {
 		return nil
 	case authstaff.FieldStaffLastName:
 		m.ResetStaffLastName()
-		return nil
-	case authstaff.FieldStaffAddress:
-		m.ResetStaffAddress()
-		return nil
-	case authstaff.FieldStaffPlace:
-		m.ResetStaffPlace()
-		return nil
-	case authstaff.FieldStaffState:
-		m.ResetStaffState()
-		return nil
-	case authstaff.FieldStaffPin:
-		m.ResetStaffPin()
-		return nil
-	case authstaff.FieldStaffEmail:
-		m.ResetStaffEmail()
-		return nil
-	case authstaff.FieldStaffMobile:
-		m.ResetStaffMobile()
 		return nil
 	}
 	return fmt.Errorf("unknown AuthStaff field %s", name)
@@ -5625,10 +4977,6 @@ type MstStudentMutation struct {
 	std_first_name  *string
 	std_middle_name *string
 	std_last_name   *string
-	std_studying    *bool
-	std_status      *customtypes.StdStatus
-	std_sex         *customtypes.Sex
-	std_reg_no      *string
 	clearedFields   map[string]struct{}
 	done            bool
 	oldValue        func(context.Context) (*MstStudent, error)
@@ -5913,150 +5261,6 @@ func (m *MstStudentMutation) ResetStdLastName() {
 	m.std_last_name = nil
 }
 
-// SetStdStudying sets the "std_studying" field.
-func (m *MstStudentMutation) SetStdStudying(b bool) {
-	m.std_studying = &b
-}
-
-// StdStudying returns the value of the "std_studying" field in the mutation.
-func (m *MstStudentMutation) StdStudying() (r bool, exists bool) {
-	v := m.std_studying
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStdStudying returns the old "std_studying" field's value of the MstStudent entity.
-// If the MstStudent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MstStudentMutation) OldStdStudying(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStdStudying is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStdStudying requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStdStudying: %w", err)
-	}
-	return oldValue.StdStudying, nil
-}
-
-// ResetStdStudying resets all changes to the "std_studying" field.
-func (m *MstStudentMutation) ResetStdStudying() {
-	m.std_studying = nil
-}
-
-// SetStdStatus sets the "std_status" field.
-func (m *MstStudentMutation) SetStdStatus(cs customtypes.StdStatus) {
-	m.std_status = &cs
-}
-
-// StdStatus returns the value of the "std_status" field in the mutation.
-func (m *MstStudentMutation) StdStatus() (r customtypes.StdStatus, exists bool) {
-	v := m.std_status
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStdStatus returns the old "std_status" field's value of the MstStudent entity.
-// If the MstStudent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MstStudentMutation) OldStdStatus(ctx context.Context) (v customtypes.StdStatus, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStdStatus is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStdStatus requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStdStatus: %w", err)
-	}
-	return oldValue.StdStatus, nil
-}
-
-// ResetStdStatus resets all changes to the "std_status" field.
-func (m *MstStudentMutation) ResetStdStatus() {
-	m.std_status = nil
-}
-
-// SetStdSex sets the "std_sex" field.
-func (m *MstStudentMutation) SetStdSex(c customtypes.Sex) {
-	m.std_sex = &c
-}
-
-// StdSex returns the value of the "std_sex" field in the mutation.
-func (m *MstStudentMutation) StdSex() (r customtypes.Sex, exists bool) {
-	v := m.std_sex
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStdSex returns the old "std_sex" field's value of the MstStudent entity.
-// If the MstStudent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MstStudentMutation) OldStdSex(ctx context.Context) (v customtypes.Sex, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStdSex is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStdSex requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStdSex: %w", err)
-	}
-	return oldValue.StdSex, nil
-}
-
-// ResetStdSex resets all changes to the "std_sex" field.
-func (m *MstStudentMutation) ResetStdSex() {
-	m.std_sex = nil
-}
-
-// SetStdRegNo sets the "std_reg_no" field.
-func (m *MstStudentMutation) SetStdRegNo(s string) {
-	m.std_reg_no = &s
-}
-
-// StdRegNo returns the value of the "std_reg_no" field in the mutation.
-func (m *MstStudentMutation) StdRegNo() (r string, exists bool) {
-	v := m.std_reg_no
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStdRegNo returns the old "std_reg_no" field's value of the MstStudent entity.
-// If the MstStudent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MstStudentMutation) OldStdRegNo(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStdRegNo is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStdRegNo requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStdRegNo: %w", err)
-	}
-	return oldValue.StdRegNo, nil
-}
-
-// ResetStdRegNo resets all changes to the "std_reg_no" field.
-func (m *MstStudentMutation) ResetStdRegNo() {
-	m.std_reg_no = nil
-}
-
 // Where appends a list predicates to the MstStudentMutation builder.
 func (m *MstStudentMutation) Where(ps ...predicate.MstStudent) {
 	m.predicates = append(m.predicates, ps...)
@@ -6076,7 +5280,7 @@ func (m *MstStudentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MstStudentMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 5)
 	if m.created_at != nil {
 		fields = append(fields, mststudent.FieldCreatedAt)
 	}
@@ -6091,18 +5295,6 @@ func (m *MstStudentMutation) Fields() []string {
 	}
 	if m.std_last_name != nil {
 		fields = append(fields, mststudent.FieldStdLastName)
-	}
-	if m.std_studying != nil {
-		fields = append(fields, mststudent.FieldStdStudying)
-	}
-	if m.std_status != nil {
-		fields = append(fields, mststudent.FieldStdStatus)
-	}
-	if m.std_sex != nil {
-		fields = append(fields, mststudent.FieldStdSex)
-	}
-	if m.std_reg_no != nil {
-		fields = append(fields, mststudent.FieldStdRegNo)
 	}
 	return fields
 }
@@ -6122,14 +5314,6 @@ func (m *MstStudentMutation) Field(name string) (ent.Value, bool) {
 		return m.StdMiddleName()
 	case mststudent.FieldStdLastName:
 		return m.StdLastName()
-	case mststudent.FieldStdStudying:
-		return m.StdStudying()
-	case mststudent.FieldStdStatus:
-		return m.StdStatus()
-	case mststudent.FieldStdSex:
-		return m.StdSex()
-	case mststudent.FieldStdRegNo:
-		return m.StdRegNo()
 	}
 	return nil, false
 }
@@ -6149,14 +5333,6 @@ func (m *MstStudentMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldStdMiddleName(ctx)
 	case mststudent.FieldStdLastName:
 		return m.OldStdLastName(ctx)
-	case mststudent.FieldStdStudying:
-		return m.OldStdStudying(ctx)
-	case mststudent.FieldStdStatus:
-		return m.OldStdStatus(ctx)
-	case mststudent.FieldStdSex:
-		return m.OldStdSex(ctx)
-	case mststudent.FieldStdRegNo:
-		return m.OldStdRegNo(ctx)
 	}
 	return nil, fmt.Errorf("unknown MstStudent field %s", name)
 }
@@ -6200,34 +5376,6 @@ func (m *MstStudentMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStdLastName(v)
-		return nil
-	case mststudent.FieldStdStudying:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStdStudying(v)
-		return nil
-	case mststudent.FieldStdStatus:
-		v, ok := value.(customtypes.StdStatus)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStdStatus(v)
-		return nil
-	case mststudent.FieldStdSex:
-		v, ok := value.(customtypes.Sex)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStdSex(v)
-		return nil
-	case mststudent.FieldStdRegNo:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStdRegNo(v)
 		return nil
 	}
 	return fmt.Errorf("unknown MstStudent field %s", name)
@@ -6292,18 +5440,6 @@ func (m *MstStudentMutation) ResetField(name string) error {
 		return nil
 	case mststudent.FieldStdLastName:
 		m.ResetStdLastName()
-		return nil
-	case mststudent.FieldStdStudying:
-		m.ResetStdStudying()
-		return nil
-	case mststudent.FieldStdStatus:
-		m.ResetStdStatus()
-		return nil
-	case mststudent.FieldStdSex:
-		m.ResetStdSex()
-		return nil
-	case mststudent.FieldStdRegNo:
-		m.ResetStdRegNo()
 		return nil
 	}
 	return fmt.Errorf("unknown MstStudent field %s", name)

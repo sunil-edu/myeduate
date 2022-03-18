@@ -7,7 +7,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"myeduate/ent/customtypes"
 	"myeduate/ent/mststudent"
 	"time"
 
@@ -65,46 +64,6 @@ func (msc *MstStudentCreate) SetStdMiddleName(s string) *MstStudentCreate {
 // SetStdLastName sets the "std_last_name" field.
 func (msc *MstStudentCreate) SetStdLastName(s string) *MstStudentCreate {
 	msc.mutation.SetStdLastName(s)
-	return msc
-}
-
-// SetStdStudying sets the "std_studying" field.
-func (msc *MstStudentCreate) SetStdStudying(b bool) *MstStudentCreate {
-	msc.mutation.SetStdStudying(b)
-	return msc
-}
-
-// SetNillableStdStudying sets the "std_studying" field if the given value is not nil.
-func (msc *MstStudentCreate) SetNillableStdStudying(b *bool) *MstStudentCreate {
-	if b != nil {
-		msc.SetStdStudying(*b)
-	}
-	return msc
-}
-
-// SetStdStatus sets the "std_status" field.
-func (msc *MstStudentCreate) SetStdStatus(cs customtypes.StdStatus) *MstStudentCreate {
-	msc.mutation.SetStdStatus(cs)
-	return msc
-}
-
-// SetNillableStdStatus sets the "std_status" field if the given value is not nil.
-func (msc *MstStudentCreate) SetNillableStdStatus(cs *customtypes.StdStatus) *MstStudentCreate {
-	if cs != nil {
-		msc.SetStdStatus(*cs)
-	}
-	return msc
-}
-
-// SetStdSex sets the "std_sex" field.
-func (msc *MstStudentCreate) SetStdSex(c customtypes.Sex) *MstStudentCreate {
-	msc.mutation.SetStdSex(c)
-	return msc
-}
-
-// SetStdRegNo sets the "std_reg_no" field.
-func (msc *MstStudentCreate) SetStdRegNo(s string) *MstStudentCreate {
-	msc.mutation.SetStdRegNo(s)
 	return msc
 }
 
@@ -187,14 +146,6 @@ func (msc *MstStudentCreate) defaults() {
 		v := mststudent.DefaultUpdatedAt()
 		msc.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := msc.mutation.StdStudying(); !ok {
-		v := mststudent.DefaultStdStudying
-		msc.mutation.SetStdStudying(v)
-	}
-	if _, ok := msc.mutation.StdStatus(); !ok {
-		v := mststudent.DefaultStdStatus
-		msc.mutation.SetStdStatus(v)
-	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -218,28 +169,6 @@ func (msc *MstStudentCreate) check() error {
 	}
 	if _, ok := msc.mutation.StdLastName(); !ok {
 		return &ValidationError{Name: "std_last_name", err: errors.New(`ent: missing required field "MstStudent.std_last_name"`)}
-	}
-	if _, ok := msc.mutation.StdStudying(); !ok {
-		return &ValidationError{Name: "std_studying", err: errors.New(`ent: missing required field "MstStudent.std_studying"`)}
-	}
-	if _, ok := msc.mutation.StdStatus(); !ok {
-		return &ValidationError{Name: "std_status", err: errors.New(`ent: missing required field "MstStudent.std_status"`)}
-	}
-	if v, ok := msc.mutation.StdStatus(); ok {
-		if err := mststudent.StdStatusValidator(v); err != nil {
-			return &ValidationError{Name: "std_status", err: fmt.Errorf(`ent: validator failed for field "MstStudent.std_status": %w`, err)}
-		}
-	}
-	if _, ok := msc.mutation.StdSex(); !ok {
-		return &ValidationError{Name: "std_sex", err: errors.New(`ent: missing required field "MstStudent.std_sex"`)}
-	}
-	if v, ok := msc.mutation.StdSex(); ok {
-		if err := mststudent.StdSexValidator(v); err != nil {
-			return &ValidationError{Name: "std_sex", err: fmt.Errorf(`ent: validator failed for field "MstStudent.std_sex": %w`, err)}
-		}
-	}
-	if _, ok := msc.mutation.StdRegNo(); !ok {
-		return &ValidationError{Name: "std_reg_no", err: errors.New(`ent: missing required field "MstStudent.std_reg_no"`)}
 	}
 	return nil
 }
@@ -307,38 +236,6 @@ func (msc *MstStudentCreate) createSpec() (*MstStudent, *sqlgraph.CreateSpec) {
 			Column: mststudent.FieldStdLastName,
 		})
 		_node.StdLastName = value
-	}
-	if value, ok := msc.mutation.StdStudying(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: mststudent.FieldStdStudying,
-		})
-		_node.StdStudying = value
-	}
-	if value, ok := msc.mutation.StdStatus(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: mststudent.FieldStdStatus,
-		})
-		_node.StdStatus = value
-	}
-	if value, ok := msc.mutation.StdSex(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: mststudent.FieldStdSex,
-		})
-		_node.StdSex = value
-	}
-	if value, ok := msc.mutation.StdRegNo(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: mststudent.FieldStdRegNo,
-		})
-		_node.StdRegNo = value
 	}
 	return _node, _spec
 }

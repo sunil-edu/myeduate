@@ -17,12 +17,6 @@ var (
 		{Name: "parent_first_name", Type: field.TypeString},
 		{Name: "parent_middle_name", Type: field.TypeString},
 		{Name: "parent_last_name", Type: field.TypeString},
-		{Name: "parent_address", Type: field.TypeString},
-		{Name: "parent_place", Type: field.TypeString},
-		{Name: "parent_state", Type: field.TypeString},
-		{Name: "parent_pin", Type: field.TypeString},
-		{Name: "parent_email", Type: field.TypeString, Unique: true},
-		{Name: "parent_mobile", Type: field.TypeString, Unique: true},
 	}
 	// AuthParentsTable holds the schema information for the "auth_parents" table.
 	AuthParentsTable = &schema.Table{
@@ -38,12 +32,6 @@ var (
 		{Name: "staff_first_name", Type: field.TypeString},
 		{Name: "staff_middle_name", Type: field.TypeString},
 		{Name: "staff_last_name", Type: field.TypeString},
-		{Name: "staff_address", Type: field.TypeString},
-		{Name: "staff_place", Type: field.TypeString},
-		{Name: "staff_state", Type: field.TypeString},
-		{Name: "staff_pin", Type: field.TypeString},
-		{Name: "staff_email", Type: field.TypeString, Unique: true},
-		{Name: "staff_mobile", Type: field.TypeString, Unique: true},
 	}
 	// AuthStaffsTable holds the schema information for the "auth_staffs" table.
 	AuthStaffsTable = &schema.Table{
@@ -150,10 +138,6 @@ var (
 		{Name: "std_first_name", Type: field.TypeString},
 		{Name: "std_middle_name", Type: field.TypeString},
 		{Name: "std_last_name", Type: field.TypeString},
-		{Name: "std_studying", Type: field.TypeBool, Default: true},
-		{Name: "std_status", Type: field.TypeEnum, Enums: []string{"CUR", "TC", "DET", "NE"}, Default: "CUR"},
-		{Name: "std_sex", Type: field.TypeEnum, Enums: []string{"MALE", "FEMALE"}},
-		{Name: "std_reg_no", Type: field.TypeString},
 	}
 	// MstStudentsTable holds the schema information for the "mst_students" table.
 	MstStudentsTable = &schema.Table{

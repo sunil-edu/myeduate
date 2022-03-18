@@ -67,42 +67,6 @@ func (apc *AuthParentCreate) SetParentLastName(s string) *AuthParentCreate {
 	return apc
 }
 
-// SetParentAddress sets the "parent_address" field.
-func (apc *AuthParentCreate) SetParentAddress(s string) *AuthParentCreate {
-	apc.mutation.SetParentAddress(s)
-	return apc
-}
-
-// SetParentPlace sets the "parent_place" field.
-func (apc *AuthParentCreate) SetParentPlace(s string) *AuthParentCreate {
-	apc.mutation.SetParentPlace(s)
-	return apc
-}
-
-// SetParentState sets the "parent_state" field.
-func (apc *AuthParentCreate) SetParentState(s string) *AuthParentCreate {
-	apc.mutation.SetParentState(s)
-	return apc
-}
-
-// SetParentPin sets the "parent_pin" field.
-func (apc *AuthParentCreate) SetParentPin(s string) *AuthParentCreate {
-	apc.mutation.SetParentPin(s)
-	return apc
-}
-
-// SetParentEmail sets the "parent_email" field.
-func (apc *AuthParentCreate) SetParentEmail(s string) *AuthParentCreate {
-	apc.mutation.SetParentEmail(s)
-	return apc
-}
-
-// SetParentMobile sets the "parent_mobile" field.
-func (apc *AuthParentCreate) SetParentMobile(s string) *AuthParentCreate {
-	apc.mutation.SetParentMobile(s)
-	return apc
-}
-
 // Mutation returns the AuthParentMutation object of the builder.
 func (apc *AuthParentCreate) Mutation() *AuthParentMutation {
 	return apc.mutation
@@ -206,34 +170,6 @@ func (apc *AuthParentCreate) check() error {
 	if _, ok := apc.mutation.ParentLastName(); !ok {
 		return &ValidationError{Name: "parent_last_name", err: errors.New(`ent: missing required field "AuthParent.parent_last_name"`)}
 	}
-	if _, ok := apc.mutation.ParentAddress(); !ok {
-		return &ValidationError{Name: "parent_address", err: errors.New(`ent: missing required field "AuthParent.parent_address"`)}
-	}
-	if _, ok := apc.mutation.ParentPlace(); !ok {
-		return &ValidationError{Name: "parent_place", err: errors.New(`ent: missing required field "AuthParent.parent_place"`)}
-	}
-	if _, ok := apc.mutation.ParentState(); !ok {
-		return &ValidationError{Name: "parent_state", err: errors.New(`ent: missing required field "AuthParent.parent_state"`)}
-	}
-	if _, ok := apc.mutation.ParentPin(); !ok {
-		return &ValidationError{Name: "parent_pin", err: errors.New(`ent: missing required field "AuthParent.parent_pin"`)}
-	}
-	if _, ok := apc.mutation.ParentEmail(); !ok {
-		return &ValidationError{Name: "parent_email", err: errors.New(`ent: missing required field "AuthParent.parent_email"`)}
-	}
-	if v, ok := apc.mutation.ParentEmail(); ok {
-		if err := authparent.ParentEmailValidator(v); err != nil {
-			return &ValidationError{Name: "parent_email", err: fmt.Errorf(`ent: validator failed for field "AuthParent.parent_email": %w`, err)}
-		}
-	}
-	if _, ok := apc.mutation.ParentMobile(); !ok {
-		return &ValidationError{Name: "parent_mobile", err: errors.New(`ent: missing required field "AuthParent.parent_mobile"`)}
-	}
-	if v, ok := apc.mutation.ParentMobile(); ok {
-		if err := authparent.ParentMobileValidator(v); err != nil {
-			return &ValidationError{Name: "parent_mobile", err: fmt.Errorf(`ent: validator failed for field "AuthParent.parent_mobile": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -300,54 +236,6 @@ func (apc *AuthParentCreate) createSpec() (*AuthParent, *sqlgraph.CreateSpec) {
 			Column: authparent.FieldParentLastName,
 		})
 		_node.ParentLastName = value
-	}
-	if value, ok := apc.mutation.ParentAddress(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentAddress,
-		})
-		_node.ParentAddress = value
-	}
-	if value, ok := apc.mutation.ParentPlace(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentPlace,
-		})
-		_node.ParentPlace = value
-	}
-	if value, ok := apc.mutation.ParentState(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentState,
-		})
-		_node.ParentState = value
-	}
-	if value, ok := apc.mutation.ParentPin(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentPin,
-		})
-		_node.ParentPin = value
-	}
-	if value, ok := apc.mutation.ParentEmail(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentEmail,
-		})
-		_node.ParentEmail = value
-	}
-	if value, ok := apc.mutation.ParentMobile(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentMobile,
-		})
-		_node.ParentMobile = value
 	}
 	return _node, _spec
 }

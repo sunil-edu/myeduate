@@ -56,7 +56,7 @@ func (ap *AuthParent) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     ap.ID,
 		Type:   "AuthParent",
-		Fields: make([]*Field, 11),
+		Fields: make([]*Field, 5),
 		Edges:  make([]*Edge, 0),
 	}
 	var buf []byte
@@ -100,54 +100,6 @@ func (ap *AuthParent) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "parent_last_name",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(ap.ParentAddress); err != nil {
-		return nil, err
-	}
-	node.Fields[5] = &Field{
-		Type:  "string",
-		Name:  "parent_address",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(ap.ParentPlace); err != nil {
-		return nil, err
-	}
-	node.Fields[6] = &Field{
-		Type:  "string",
-		Name:  "parent_place",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(ap.ParentState); err != nil {
-		return nil, err
-	}
-	node.Fields[7] = &Field{
-		Type:  "string",
-		Name:  "parent_state",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(ap.ParentPin); err != nil {
-		return nil, err
-	}
-	node.Fields[8] = &Field{
-		Type:  "string",
-		Name:  "parent_pin",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(ap.ParentEmail); err != nil {
-		return nil, err
-	}
-	node.Fields[9] = &Field{
-		Type:  "string",
-		Name:  "parent_email",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(ap.ParentMobile); err != nil {
-		return nil, err
-	}
-	node.Fields[10] = &Field{
-		Type:  "string",
-		Name:  "parent_mobile",
-		Value: string(buf),
-	}
 	return node, nil
 }
 
@@ -155,7 +107,7 @@ func (as *AuthStaff) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     as.ID,
 		Type:   "AuthStaff",
-		Fields: make([]*Field, 11),
+		Fields: make([]*Field, 5),
 		Edges:  make([]*Edge, 0),
 	}
 	var buf []byte
@@ -197,54 +149,6 @@ func (as *AuthStaff) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[4] = &Field{
 		Type:  "string",
 		Name:  "staff_last_name",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(as.StaffAddress); err != nil {
-		return nil, err
-	}
-	node.Fields[5] = &Field{
-		Type:  "string",
-		Name:  "staff_address",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(as.StaffPlace); err != nil {
-		return nil, err
-	}
-	node.Fields[6] = &Field{
-		Type:  "string",
-		Name:  "staff_place",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(as.StaffState); err != nil {
-		return nil, err
-	}
-	node.Fields[7] = &Field{
-		Type:  "string",
-		Name:  "staff_state",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(as.StaffPin); err != nil {
-		return nil, err
-	}
-	node.Fields[8] = &Field{
-		Type:  "string",
-		Name:  "staff_pin",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(as.StaffEmail); err != nil {
-		return nil, err
-	}
-	node.Fields[9] = &Field{
-		Type:  "string",
-		Name:  "staff_email",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(as.StaffMobile); err != nil {
-		return nil, err
-	}
-	node.Fields[10] = &Field{
-		Type:  "string",
-		Name:  "staff_mobile",
 		Value: string(buf),
 	}
 	return node, nil
@@ -731,7 +635,7 @@ func (ms *MstStudent) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     ms.ID,
 		Type:   "MstStudent",
-		Fields: make([]*Field, 9),
+		Fields: make([]*Field, 5),
 		Edges:  make([]*Edge, 0),
 	}
 	var buf []byte
@@ -773,38 +677,6 @@ func (ms *MstStudent) Node(ctx context.Context) (node *Node, err error) {
 	node.Fields[4] = &Field{
 		Type:  "string",
 		Name:  "std_last_name",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(ms.StdStudying); err != nil {
-		return nil, err
-	}
-	node.Fields[5] = &Field{
-		Type:  "bool",
-		Name:  "std_studying",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(ms.StdStatus); err != nil {
-		return nil, err
-	}
-	node.Fields[6] = &Field{
-		Type:  "customtypes.StdStatus",
-		Name:  "std_status",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(ms.StdSex); err != nil {
-		return nil, err
-	}
-	node.Fields[7] = &Field{
-		Type:  "customtypes.Sex",
-		Name:  "std_sex",
-		Value: string(buf),
-	}
-	if buf, err = json.Marshal(ms.StdRegNo); err != nil {
-		return nil, err
-	}
-	node.Fields[8] = &Field{
-		Type:  "string",
-		Name:  "std_reg_no",
 		Value: string(buf),
 	}
 	return node, nil

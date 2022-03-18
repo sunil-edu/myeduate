@@ -22,18 +22,6 @@ const (
 	FieldParentMiddleName = "parent_middle_name"
 	// FieldParentLastName holds the string denoting the parent_last_name field in the database.
 	FieldParentLastName = "parent_last_name"
-	// FieldParentAddress holds the string denoting the parent_address field in the database.
-	FieldParentAddress = "parent_address"
-	// FieldParentPlace holds the string denoting the parent_place field in the database.
-	FieldParentPlace = "parent_place"
-	// FieldParentState holds the string denoting the parent_state field in the database.
-	FieldParentState = "parent_state"
-	// FieldParentPin holds the string denoting the parent_pin field in the database.
-	FieldParentPin = "parent_pin"
-	// FieldParentEmail holds the string denoting the parent_email field in the database.
-	FieldParentEmail = "parent_email"
-	// FieldParentMobile holds the string denoting the parent_mobile field in the database.
-	FieldParentMobile = "parent_mobile"
 	// Table holds the table name of the authparent in the database.
 	Table = "auth_parents"
 )
@@ -46,12 +34,6 @@ var Columns = []string{
 	FieldParentFirstName,
 	FieldParentMiddleName,
 	FieldParentLastName,
-	FieldParentAddress,
-	FieldParentPlace,
-	FieldParentState,
-	FieldParentPin,
-	FieldParentEmail,
-	FieldParentMobile,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -73,8 +55,4 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// ParentFirstNameValidator is a validator for the "parent_first_name" field. It is called by the builders before save.
 	ParentFirstNameValidator func(string) error
-	// ParentEmailValidator is a validator for the "parent_email" field. It is called by the builders before save.
-	ParentEmailValidator func(string) error
-	// ParentMobileValidator is a validator for the "parent_mobile" field. It is called by the builders before save.
-	ParentMobileValidator func(string) error
 )

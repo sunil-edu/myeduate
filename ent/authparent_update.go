@@ -53,42 +53,6 @@ func (apu *AuthParentUpdate) SetParentLastName(s string) *AuthParentUpdate {
 	return apu
 }
 
-// SetParentAddress sets the "parent_address" field.
-func (apu *AuthParentUpdate) SetParentAddress(s string) *AuthParentUpdate {
-	apu.mutation.SetParentAddress(s)
-	return apu
-}
-
-// SetParentPlace sets the "parent_place" field.
-func (apu *AuthParentUpdate) SetParentPlace(s string) *AuthParentUpdate {
-	apu.mutation.SetParentPlace(s)
-	return apu
-}
-
-// SetParentState sets the "parent_state" field.
-func (apu *AuthParentUpdate) SetParentState(s string) *AuthParentUpdate {
-	apu.mutation.SetParentState(s)
-	return apu
-}
-
-// SetParentPin sets the "parent_pin" field.
-func (apu *AuthParentUpdate) SetParentPin(s string) *AuthParentUpdate {
-	apu.mutation.SetParentPin(s)
-	return apu
-}
-
-// SetParentEmail sets the "parent_email" field.
-func (apu *AuthParentUpdate) SetParentEmail(s string) *AuthParentUpdate {
-	apu.mutation.SetParentEmail(s)
-	return apu
-}
-
-// SetParentMobile sets the "parent_mobile" field.
-func (apu *AuthParentUpdate) SetParentMobile(s string) *AuthParentUpdate {
-	apu.mutation.SetParentMobile(s)
-	return apu
-}
-
 // Mutation returns the AuthParentMutation object of the builder.
 func (apu *AuthParentUpdate) Mutation() *AuthParentMutation {
 	return apu.mutation
@@ -170,16 +134,6 @@ func (apu *AuthParentUpdate) check() error {
 			return &ValidationError{Name: "parent_first_name", err: fmt.Errorf(`ent: validator failed for field "AuthParent.parent_first_name": %w`, err)}
 		}
 	}
-	if v, ok := apu.mutation.ParentEmail(); ok {
-		if err := authparent.ParentEmailValidator(v); err != nil {
-			return &ValidationError{Name: "parent_email", err: fmt.Errorf(`ent: validator failed for field "AuthParent.parent_email": %w`, err)}
-		}
-	}
-	if v, ok := apu.mutation.ParentMobile(); ok {
-		if err := authparent.ParentMobileValidator(v); err != nil {
-			return &ValidationError{Name: "parent_mobile", err: fmt.Errorf(`ent: validator failed for field "AuthParent.parent_mobile": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -229,48 +183,6 @@ func (apu *AuthParentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: authparent.FieldParentLastName,
 		})
 	}
-	if value, ok := apu.mutation.ParentAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentAddress,
-		})
-	}
-	if value, ok := apu.mutation.ParentPlace(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentPlace,
-		})
-	}
-	if value, ok := apu.mutation.ParentState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentState,
-		})
-	}
-	if value, ok := apu.mutation.ParentPin(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentPin,
-		})
-	}
-	if value, ok := apu.mutation.ParentEmail(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentEmail,
-		})
-	}
-	if value, ok := apu.mutation.ParentMobile(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentMobile,
-		})
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, apu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{authparent.Label}
@@ -311,42 +223,6 @@ func (apuo *AuthParentUpdateOne) SetParentMiddleName(s string) *AuthParentUpdate
 // SetParentLastName sets the "parent_last_name" field.
 func (apuo *AuthParentUpdateOne) SetParentLastName(s string) *AuthParentUpdateOne {
 	apuo.mutation.SetParentLastName(s)
-	return apuo
-}
-
-// SetParentAddress sets the "parent_address" field.
-func (apuo *AuthParentUpdateOne) SetParentAddress(s string) *AuthParentUpdateOne {
-	apuo.mutation.SetParentAddress(s)
-	return apuo
-}
-
-// SetParentPlace sets the "parent_place" field.
-func (apuo *AuthParentUpdateOne) SetParentPlace(s string) *AuthParentUpdateOne {
-	apuo.mutation.SetParentPlace(s)
-	return apuo
-}
-
-// SetParentState sets the "parent_state" field.
-func (apuo *AuthParentUpdateOne) SetParentState(s string) *AuthParentUpdateOne {
-	apuo.mutation.SetParentState(s)
-	return apuo
-}
-
-// SetParentPin sets the "parent_pin" field.
-func (apuo *AuthParentUpdateOne) SetParentPin(s string) *AuthParentUpdateOne {
-	apuo.mutation.SetParentPin(s)
-	return apuo
-}
-
-// SetParentEmail sets the "parent_email" field.
-func (apuo *AuthParentUpdateOne) SetParentEmail(s string) *AuthParentUpdateOne {
-	apuo.mutation.SetParentEmail(s)
-	return apuo
-}
-
-// SetParentMobile sets the "parent_mobile" field.
-func (apuo *AuthParentUpdateOne) SetParentMobile(s string) *AuthParentUpdateOne {
-	apuo.mutation.SetParentMobile(s)
 	return apuo
 }
 
@@ -438,16 +314,6 @@ func (apuo *AuthParentUpdateOne) check() error {
 			return &ValidationError{Name: "parent_first_name", err: fmt.Errorf(`ent: validator failed for field "AuthParent.parent_first_name": %w`, err)}
 		}
 	}
-	if v, ok := apuo.mutation.ParentEmail(); ok {
-		if err := authparent.ParentEmailValidator(v); err != nil {
-			return &ValidationError{Name: "parent_email", err: fmt.Errorf(`ent: validator failed for field "AuthParent.parent_email": %w`, err)}
-		}
-	}
-	if v, ok := apuo.mutation.ParentMobile(); ok {
-		if err := authparent.ParentMobileValidator(v); err != nil {
-			return &ValidationError{Name: "parent_mobile", err: fmt.Errorf(`ent: validator failed for field "AuthParent.parent_mobile": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -512,48 +378,6 @@ func (apuo *AuthParentUpdateOne) sqlSave(ctx context.Context) (_node *AuthParent
 			Type:   field.TypeString,
 			Value:  value,
 			Column: authparent.FieldParentLastName,
-		})
-	}
-	if value, ok := apuo.mutation.ParentAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentAddress,
-		})
-	}
-	if value, ok := apuo.mutation.ParentPlace(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentPlace,
-		})
-	}
-	if value, ok := apuo.mutation.ParentState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentState,
-		})
-	}
-	if value, ok := apuo.mutation.ParentPin(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentPin,
-		})
-	}
-	if value, ok := apuo.mutation.ParentEmail(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentEmail,
-		})
-	}
-	if value, ok := apuo.mutation.ParentMobile(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authparent.FieldParentMobile,
 		})
 	}
 	_node = &AuthParent{config: apuo.config}

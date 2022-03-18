@@ -7,7 +7,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"myeduate/ent/customtypes"
 	"myeduate/ent/mststudent"
 	"myeduate/ent/predicate"
 	"time"
@@ -51,46 +50,6 @@ func (msu *MstStudentUpdate) SetStdMiddleName(s string) *MstStudentUpdate {
 // SetStdLastName sets the "std_last_name" field.
 func (msu *MstStudentUpdate) SetStdLastName(s string) *MstStudentUpdate {
 	msu.mutation.SetStdLastName(s)
-	return msu
-}
-
-// SetStdStudying sets the "std_studying" field.
-func (msu *MstStudentUpdate) SetStdStudying(b bool) *MstStudentUpdate {
-	msu.mutation.SetStdStudying(b)
-	return msu
-}
-
-// SetNillableStdStudying sets the "std_studying" field if the given value is not nil.
-func (msu *MstStudentUpdate) SetNillableStdStudying(b *bool) *MstStudentUpdate {
-	if b != nil {
-		msu.SetStdStudying(*b)
-	}
-	return msu
-}
-
-// SetStdStatus sets the "std_status" field.
-func (msu *MstStudentUpdate) SetStdStatus(cs customtypes.StdStatus) *MstStudentUpdate {
-	msu.mutation.SetStdStatus(cs)
-	return msu
-}
-
-// SetNillableStdStatus sets the "std_status" field if the given value is not nil.
-func (msu *MstStudentUpdate) SetNillableStdStatus(cs *customtypes.StdStatus) *MstStudentUpdate {
-	if cs != nil {
-		msu.SetStdStatus(*cs)
-	}
-	return msu
-}
-
-// SetStdSex sets the "std_sex" field.
-func (msu *MstStudentUpdate) SetStdSex(c customtypes.Sex) *MstStudentUpdate {
-	msu.mutation.SetStdSex(c)
-	return msu
-}
-
-// SetStdRegNo sets the "std_reg_no" field.
-func (msu *MstStudentUpdate) SetStdRegNo(s string) *MstStudentUpdate {
-	msu.mutation.SetStdRegNo(s)
 	return msu
 }
 
@@ -175,16 +134,6 @@ func (msu *MstStudentUpdate) check() error {
 			return &ValidationError{Name: "std_first_name", err: fmt.Errorf(`ent: validator failed for field "MstStudent.std_first_name": %w`, err)}
 		}
 	}
-	if v, ok := msu.mutation.StdStatus(); ok {
-		if err := mststudent.StdStatusValidator(v); err != nil {
-			return &ValidationError{Name: "std_status", err: fmt.Errorf(`ent: validator failed for field "MstStudent.std_status": %w`, err)}
-		}
-	}
-	if v, ok := msu.mutation.StdSex(); ok {
-		if err := mststudent.StdSexValidator(v); err != nil {
-			return &ValidationError{Name: "std_sex", err: fmt.Errorf(`ent: validator failed for field "MstStudent.std_sex": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -234,34 +183,6 @@ func (msu *MstStudentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: mststudent.FieldStdLastName,
 		})
 	}
-	if value, ok := msu.mutation.StdStudying(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: mststudent.FieldStdStudying,
-		})
-	}
-	if value, ok := msu.mutation.StdStatus(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: mststudent.FieldStdStatus,
-		})
-	}
-	if value, ok := msu.mutation.StdSex(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: mststudent.FieldStdSex,
-		})
-	}
-	if value, ok := msu.mutation.StdRegNo(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: mststudent.FieldStdRegNo,
-		})
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, msu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{mststudent.Label}
@@ -302,46 +223,6 @@ func (msuo *MstStudentUpdateOne) SetStdMiddleName(s string) *MstStudentUpdateOne
 // SetStdLastName sets the "std_last_name" field.
 func (msuo *MstStudentUpdateOne) SetStdLastName(s string) *MstStudentUpdateOne {
 	msuo.mutation.SetStdLastName(s)
-	return msuo
-}
-
-// SetStdStudying sets the "std_studying" field.
-func (msuo *MstStudentUpdateOne) SetStdStudying(b bool) *MstStudentUpdateOne {
-	msuo.mutation.SetStdStudying(b)
-	return msuo
-}
-
-// SetNillableStdStudying sets the "std_studying" field if the given value is not nil.
-func (msuo *MstStudentUpdateOne) SetNillableStdStudying(b *bool) *MstStudentUpdateOne {
-	if b != nil {
-		msuo.SetStdStudying(*b)
-	}
-	return msuo
-}
-
-// SetStdStatus sets the "std_status" field.
-func (msuo *MstStudentUpdateOne) SetStdStatus(cs customtypes.StdStatus) *MstStudentUpdateOne {
-	msuo.mutation.SetStdStatus(cs)
-	return msuo
-}
-
-// SetNillableStdStatus sets the "std_status" field if the given value is not nil.
-func (msuo *MstStudentUpdateOne) SetNillableStdStatus(cs *customtypes.StdStatus) *MstStudentUpdateOne {
-	if cs != nil {
-		msuo.SetStdStatus(*cs)
-	}
-	return msuo
-}
-
-// SetStdSex sets the "std_sex" field.
-func (msuo *MstStudentUpdateOne) SetStdSex(c customtypes.Sex) *MstStudentUpdateOne {
-	msuo.mutation.SetStdSex(c)
-	return msuo
-}
-
-// SetStdRegNo sets the "std_reg_no" field.
-func (msuo *MstStudentUpdateOne) SetStdRegNo(s string) *MstStudentUpdateOne {
-	msuo.mutation.SetStdRegNo(s)
 	return msuo
 }
 
@@ -433,16 +314,6 @@ func (msuo *MstStudentUpdateOne) check() error {
 			return &ValidationError{Name: "std_first_name", err: fmt.Errorf(`ent: validator failed for field "MstStudent.std_first_name": %w`, err)}
 		}
 	}
-	if v, ok := msuo.mutation.StdStatus(); ok {
-		if err := mststudent.StdStatusValidator(v); err != nil {
-			return &ValidationError{Name: "std_status", err: fmt.Errorf(`ent: validator failed for field "MstStudent.std_status": %w`, err)}
-		}
-	}
-	if v, ok := msuo.mutation.StdSex(); ok {
-		if err := mststudent.StdSexValidator(v); err != nil {
-			return &ValidationError{Name: "std_sex", err: fmt.Errorf(`ent: validator failed for field "MstStudent.std_sex": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -507,34 +378,6 @@ func (msuo *MstStudentUpdateOne) sqlSave(ctx context.Context) (_node *MstStudent
 			Type:   field.TypeString,
 			Value:  value,
 			Column: mststudent.FieldStdLastName,
-		})
-	}
-	if value, ok := msuo.mutation.StdStudying(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: mststudent.FieldStdStudying,
-		})
-	}
-	if value, ok := msuo.mutation.StdStatus(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: mststudent.FieldStdStatus,
-		})
-	}
-	if value, ok := msuo.mutation.StdSex(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: mststudent.FieldStdSex,
-		})
-	}
-	if value, ok := msuo.mutation.StdRegNo(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: mststudent.FieldStdRegNo,
 		})
 	}
 	_node = &MstStudent{config: msuo.config}

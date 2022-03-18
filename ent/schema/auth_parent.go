@@ -29,13 +29,5 @@ func (AuthParent) Fields() []ent.Field {
 
 		field.String("parent_last_name").
 			StructTag(`gqlgen:"last_name"`),
-
-		field.String("parent_address"),
-		field.String("parent_place"),
-		field.String("parent_state"),
-		field.String("parent_pin"),
-
-		field.String("parent_email").Unique().NotEmpty(),
-		field.String("parent_mobile").Unique().NotEmpty(),
 	}
 }

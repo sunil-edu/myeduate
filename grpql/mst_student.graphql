@@ -4,10 +4,7 @@ type MstStudent implements Node {
   std_first_name: String!
   std_middle_name: String!
   std_last_name: String!
-  std_studying: Boolean!
-  std_status: StdStatus!
-  std_sex: Sex!
-  std_reg_no: String!
+
   
 }
 
@@ -15,10 +12,7 @@ input CreateMstStudentInput {
   std_first_name: String!
   std_middle_name: String
   std_last_name: String
-  std_studying: Boolean
-  std_status: StdStatus
-  std_sex: Sex
-  std_reg_no: String
+
  
 }
 
@@ -26,11 +20,7 @@ input UpdateMstStudentInput {
   std_first_name: String!
   std_middle_name: String
   std_last_name: String
-  std_studying: Boolean
-  std_status: StdStatus
-  std_sex: Sex
-  std_reg_no: String
- 
+
 }
 
 

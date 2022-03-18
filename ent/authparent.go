@@ -27,18 +27,6 @@ type AuthParent struct {
 	ParentMiddleName string `json:"parent_middle_name,omitempty" gqlgen:"middle_name"`
 	// ParentLastName holds the value of the "parent_last_name" field.
 	ParentLastName string `json:"parent_last_name,omitempty" gqlgen:"last_name"`
-	// ParentAddress holds the value of the "parent_address" field.
-	ParentAddress string `json:"parent_address,omitempty"`
-	// ParentPlace holds the value of the "parent_place" field.
-	ParentPlace string `json:"parent_place,omitempty"`
-	// ParentState holds the value of the "parent_state" field.
-	ParentState string `json:"parent_state,omitempty"`
-	// ParentPin holds the value of the "parent_pin" field.
-	ParentPin string `json:"parent_pin,omitempty"`
-	// ParentEmail holds the value of the "parent_email" field.
-	ParentEmail string `json:"parent_email,omitempty"`
-	// ParentMobile holds the value of the "parent_mobile" field.
-	ParentMobile string `json:"parent_mobile,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -48,7 +36,7 @@ func (*AuthParent) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case authparent.FieldID:
 			values[i] = new(sql.NullInt64)
-		case authparent.FieldParentFirstName, authparent.FieldParentMiddleName, authparent.FieldParentLastName, authparent.FieldParentAddress, authparent.FieldParentPlace, authparent.FieldParentState, authparent.FieldParentPin, authparent.FieldParentEmail, authparent.FieldParentMobile:
+		case authparent.FieldParentFirstName, authparent.FieldParentMiddleName, authparent.FieldParentLastName:
 			values[i] = new(sql.NullString)
 		case authparent.FieldCreatedAt, authparent.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -103,42 +91,6 @@ func (ap *AuthParent) assignValues(columns []string, values []interface{}) error
 			} else if value.Valid {
 				ap.ParentLastName = value.String
 			}
-		case authparent.FieldParentAddress:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field parent_address", values[i])
-			} else if value.Valid {
-				ap.ParentAddress = value.String
-			}
-		case authparent.FieldParentPlace:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field parent_place", values[i])
-			} else if value.Valid {
-				ap.ParentPlace = value.String
-			}
-		case authparent.FieldParentState:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field parent_state", values[i])
-			} else if value.Valid {
-				ap.ParentState = value.String
-			}
-		case authparent.FieldParentPin:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field parent_pin", values[i])
-			} else if value.Valid {
-				ap.ParentPin = value.String
-			}
-		case authparent.FieldParentEmail:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field parent_email", values[i])
-			} else if value.Valid {
-				ap.ParentEmail = value.String
-			}
-		case authparent.FieldParentMobile:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field parent_mobile", values[i])
-			} else if value.Valid {
-				ap.ParentMobile = value.String
-			}
 		}
 	}
 	return nil
@@ -177,18 +129,6 @@ func (ap *AuthParent) String() string {
 	builder.WriteString(ap.ParentMiddleName)
 	builder.WriteString(", parent_last_name=")
 	builder.WriteString(ap.ParentLastName)
-	builder.WriteString(", parent_address=")
-	builder.WriteString(ap.ParentAddress)
-	builder.WriteString(", parent_place=")
-	builder.WriteString(ap.ParentPlace)
-	builder.WriteString(", parent_state=")
-	builder.WriteString(ap.ParentState)
-	builder.WriteString(", parent_pin=")
-	builder.WriteString(ap.ParentPin)
-	builder.WriteString(", parent_email=")
-	builder.WriteString(ap.ParentEmail)
-	builder.WriteString(", parent_mobile=")
-	builder.WriteString(ap.ParentMobile)
 	builder.WriteByte(')')
 	return builder.String()
 }

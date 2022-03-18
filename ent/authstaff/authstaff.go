@@ -22,18 +22,6 @@ const (
 	FieldStaffMiddleName = "staff_middle_name"
 	// FieldStaffLastName holds the string denoting the staff_last_name field in the database.
 	FieldStaffLastName = "staff_last_name"
-	// FieldStaffAddress holds the string denoting the staff_address field in the database.
-	FieldStaffAddress = "staff_address"
-	// FieldStaffPlace holds the string denoting the staff_place field in the database.
-	FieldStaffPlace = "staff_place"
-	// FieldStaffState holds the string denoting the staff_state field in the database.
-	FieldStaffState = "staff_state"
-	// FieldStaffPin holds the string denoting the staff_pin field in the database.
-	FieldStaffPin = "staff_pin"
-	// FieldStaffEmail holds the string denoting the staff_email field in the database.
-	FieldStaffEmail = "staff_email"
-	// FieldStaffMobile holds the string denoting the staff_mobile field in the database.
-	FieldStaffMobile = "staff_mobile"
 	// Table holds the table name of the authstaff in the database.
 	Table = "auth_staffs"
 )
@@ -46,12 +34,6 @@ var Columns = []string{
 	FieldStaffFirstName,
 	FieldStaffMiddleName,
 	FieldStaffLastName,
-	FieldStaffAddress,
-	FieldStaffPlace,
-	FieldStaffState,
-	FieldStaffPin,
-	FieldStaffEmail,
-	FieldStaffMobile,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -73,8 +55,4 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// StaffFirstNameValidator is a validator for the "staff_first_name" field. It is called by the builders before save.
 	StaffFirstNameValidator func(string) error
-	// StaffEmailValidator is a validator for the "staff_email" field. It is called by the builders before save.
-	StaffEmailValidator func(string) error
-	// StaffMobileValidator is a validator for the "staff_mobile" field. It is called by the builders before save.
-	StaffMobileValidator func(string) error
 )

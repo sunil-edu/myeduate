@@ -53,42 +53,6 @@ func (asu *AuthStaffUpdate) SetStaffLastName(s string) *AuthStaffUpdate {
 	return asu
 }
 
-// SetStaffAddress sets the "staff_address" field.
-func (asu *AuthStaffUpdate) SetStaffAddress(s string) *AuthStaffUpdate {
-	asu.mutation.SetStaffAddress(s)
-	return asu
-}
-
-// SetStaffPlace sets the "staff_place" field.
-func (asu *AuthStaffUpdate) SetStaffPlace(s string) *AuthStaffUpdate {
-	asu.mutation.SetStaffPlace(s)
-	return asu
-}
-
-// SetStaffState sets the "staff_state" field.
-func (asu *AuthStaffUpdate) SetStaffState(s string) *AuthStaffUpdate {
-	asu.mutation.SetStaffState(s)
-	return asu
-}
-
-// SetStaffPin sets the "staff_pin" field.
-func (asu *AuthStaffUpdate) SetStaffPin(s string) *AuthStaffUpdate {
-	asu.mutation.SetStaffPin(s)
-	return asu
-}
-
-// SetStaffEmail sets the "staff_email" field.
-func (asu *AuthStaffUpdate) SetStaffEmail(s string) *AuthStaffUpdate {
-	asu.mutation.SetStaffEmail(s)
-	return asu
-}
-
-// SetStaffMobile sets the "staff_mobile" field.
-func (asu *AuthStaffUpdate) SetStaffMobile(s string) *AuthStaffUpdate {
-	asu.mutation.SetStaffMobile(s)
-	return asu
-}
-
 // Mutation returns the AuthStaffMutation object of the builder.
 func (asu *AuthStaffUpdate) Mutation() *AuthStaffMutation {
 	return asu.mutation
@@ -170,16 +134,6 @@ func (asu *AuthStaffUpdate) check() error {
 			return &ValidationError{Name: "staff_first_name", err: fmt.Errorf(`ent: validator failed for field "AuthStaff.staff_first_name": %w`, err)}
 		}
 	}
-	if v, ok := asu.mutation.StaffEmail(); ok {
-		if err := authstaff.StaffEmailValidator(v); err != nil {
-			return &ValidationError{Name: "staff_email", err: fmt.Errorf(`ent: validator failed for field "AuthStaff.staff_email": %w`, err)}
-		}
-	}
-	if v, ok := asu.mutation.StaffMobile(); ok {
-		if err := authstaff.StaffMobileValidator(v); err != nil {
-			return &ValidationError{Name: "staff_mobile", err: fmt.Errorf(`ent: validator failed for field "AuthStaff.staff_mobile": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -229,48 +183,6 @@ func (asu *AuthStaffUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: authstaff.FieldStaffLastName,
 		})
 	}
-	if value, ok := asu.mutation.StaffAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffAddress,
-		})
-	}
-	if value, ok := asu.mutation.StaffPlace(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffPlace,
-		})
-	}
-	if value, ok := asu.mutation.StaffState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffState,
-		})
-	}
-	if value, ok := asu.mutation.StaffPin(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffPin,
-		})
-	}
-	if value, ok := asu.mutation.StaffEmail(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffEmail,
-		})
-	}
-	if value, ok := asu.mutation.StaffMobile(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffMobile,
-		})
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, asu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{authstaff.Label}
@@ -311,42 +223,6 @@ func (asuo *AuthStaffUpdateOne) SetStaffMiddleName(s string) *AuthStaffUpdateOne
 // SetStaffLastName sets the "staff_last_name" field.
 func (asuo *AuthStaffUpdateOne) SetStaffLastName(s string) *AuthStaffUpdateOne {
 	asuo.mutation.SetStaffLastName(s)
-	return asuo
-}
-
-// SetStaffAddress sets the "staff_address" field.
-func (asuo *AuthStaffUpdateOne) SetStaffAddress(s string) *AuthStaffUpdateOne {
-	asuo.mutation.SetStaffAddress(s)
-	return asuo
-}
-
-// SetStaffPlace sets the "staff_place" field.
-func (asuo *AuthStaffUpdateOne) SetStaffPlace(s string) *AuthStaffUpdateOne {
-	asuo.mutation.SetStaffPlace(s)
-	return asuo
-}
-
-// SetStaffState sets the "staff_state" field.
-func (asuo *AuthStaffUpdateOne) SetStaffState(s string) *AuthStaffUpdateOne {
-	asuo.mutation.SetStaffState(s)
-	return asuo
-}
-
-// SetStaffPin sets the "staff_pin" field.
-func (asuo *AuthStaffUpdateOne) SetStaffPin(s string) *AuthStaffUpdateOne {
-	asuo.mutation.SetStaffPin(s)
-	return asuo
-}
-
-// SetStaffEmail sets the "staff_email" field.
-func (asuo *AuthStaffUpdateOne) SetStaffEmail(s string) *AuthStaffUpdateOne {
-	asuo.mutation.SetStaffEmail(s)
-	return asuo
-}
-
-// SetStaffMobile sets the "staff_mobile" field.
-func (asuo *AuthStaffUpdateOne) SetStaffMobile(s string) *AuthStaffUpdateOne {
-	asuo.mutation.SetStaffMobile(s)
 	return asuo
 }
 
@@ -438,16 +314,6 @@ func (asuo *AuthStaffUpdateOne) check() error {
 			return &ValidationError{Name: "staff_first_name", err: fmt.Errorf(`ent: validator failed for field "AuthStaff.staff_first_name": %w`, err)}
 		}
 	}
-	if v, ok := asuo.mutation.StaffEmail(); ok {
-		if err := authstaff.StaffEmailValidator(v); err != nil {
-			return &ValidationError{Name: "staff_email", err: fmt.Errorf(`ent: validator failed for field "AuthStaff.staff_email": %w`, err)}
-		}
-	}
-	if v, ok := asuo.mutation.StaffMobile(); ok {
-		if err := authstaff.StaffMobileValidator(v); err != nil {
-			return &ValidationError{Name: "staff_mobile", err: fmt.Errorf(`ent: validator failed for field "AuthStaff.staff_mobile": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -512,48 +378,6 @@ func (asuo *AuthStaffUpdateOne) sqlSave(ctx context.Context) (_node *AuthStaff, 
 			Type:   field.TypeString,
 			Value:  value,
 			Column: authstaff.FieldStaffLastName,
-		})
-	}
-	if value, ok := asuo.mutation.StaffAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffAddress,
-		})
-	}
-	if value, ok := asuo.mutation.StaffPlace(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffPlace,
-		})
-	}
-	if value, ok := asuo.mutation.StaffState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffState,
-		})
-	}
-	if value, ok := asuo.mutation.StaffPin(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffPin,
-		})
-	}
-	if value, ok := asuo.mutation.StaffEmail(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffEmail,
-		})
-	}
-	if value, ok := asuo.mutation.StaffMobile(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffMobile,
 		})
 	}
 	_node = &AuthStaff{config: asuo.config}

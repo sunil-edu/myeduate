@@ -27,18 +27,6 @@ type AuthStaff struct {
 	StaffMiddleName string `json:"staff_middle_name,omitempty" gqlgen:"middle_name"`
 	// StaffLastName holds the value of the "staff_last_name" field.
 	StaffLastName string `json:"staff_last_name,omitempty" gqlgen:"last_name"`
-	// StaffAddress holds the value of the "staff_address" field.
-	StaffAddress string `json:"staff_address,omitempty"`
-	// StaffPlace holds the value of the "staff_place" field.
-	StaffPlace string `json:"staff_place,omitempty"`
-	// StaffState holds the value of the "staff_state" field.
-	StaffState string `json:"staff_state,omitempty"`
-	// StaffPin holds the value of the "staff_pin" field.
-	StaffPin string `json:"staff_pin,omitempty"`
-	// StaffEmail holds the value of the "staff_email" field.
-	StaffEmail string `json:"staff_email,omitempty"`
-	// StaffMobile holds the value of the "staff_mobile" field.
-	StaffMobile string `json:"staff_mobile,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -48,7 +36,7 @@ func (*AuthStaff) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case authstaff.FieldID:
 			values[i] = new(sql.NullInt64)
-		case authstaff.FieldStaffFirstName, authstaff.FieldStaffMiddleName, authstaff.FieldStaffLastName, authstaff.FieldStaffAddress, authstaff.FieldStaffPlace, authstaff.FieldStaffState, authstaff.FieldStaffPin, authstaff.FieldStaffEmail, authstaff.FieldStaffMobile:
+		case authstaff.FieldStaffFirstName, authstaff.FieldStaffMiddleName, authstaff.FieldStaffLastName:
 			values[i] = new(sql.NullString)
 		case authstaff.FieldCreatedAt, authstaff.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -103,42 +91,6 @@ func (as *AuthStaff) assignValues(columns []string, values []interface{}) error 
 			} else if value.Valid {
 				as.StaffLastName = value.String
 			}
-		case authstaff.FieldStaffAddress:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field staff_address", values[i])
-			} else if value.Valid {
-				as.StaffAddress = value.String
-			}
-		case authstaff.FieldStaffPlace:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field staff_place", values[i])
-			} else if value.Valid {
-				as.StaffPlace = value.String
-			}
-		case authstaff.FieldStaffState:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field staff_state", values[i])
-			} else if value.Valid {
-				as.StaffState = value.String
-			}
-		case authstaff.FieldStaffPin:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field staff_pin", values[i])
-			} else if value.Valid {
-				as.StaffPin = value.String
-			}
-		case authstaff.FieldStaffEmail:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field staff_email", values[i])
-			} else if value.Valid {
-				as.StaffEmail = value.String
-			}
-		case authstaff.FieldStaffMobile:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field staff_mobile", values[i])
-			} else if value.Valid {
-				as.StaffMobile = value.String
-			}
 		}
 	}
 	return nil
@@ -177,18 +129,6 @@ func (as *AuthStaff) String() string {
 	builder.WriteString(as.StaffMiddleName)
 	builder.WriteString(", staff_last_name=")
 	builder.WriteString(as.StaffLastName)
-	builder.WriteString(", staff_address=")
-	builder.WriteString(as.StaffAddress)
-	builder.WriteString(", staff_place=")
-	builder.WriteString(as.StaffPlace)
-	builder.WriteString(", staff_state=")
-	builder.WriteString(as.StaffState)
-	builder.WriteString(", staff_pin=")
-	builder.WriteString(as.StaffPin)
-	builder.WriteString(", staff_email=")
-	builder.WriteString(as.StaffEmail)
-	builder.WriteString(", staff_mobile=")
-	builder.WriteString(as.StaffMobile)
 	builder.WriteByte(')')
 	return builder.String()
 }

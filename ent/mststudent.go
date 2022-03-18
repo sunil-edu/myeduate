@@ -5,7 +5,6 @@ package ent
 
 import (
 	"fmt"
-	"myeduate/ent/customtypes"
 	"myeduate/ent/mststudent"
 	"strings"
 	"time"
@@ -28,14 +27,6 @@ type MstStudent struct {
 	StdMiddleName string `json:"std_middle_name,omitempty" gqlgen:"middle_name"`
 	// StdLastName holds the value of the "std_last_name" field.
 	StdLastName string `json:"std_last_name,omitempty" gqlgen:"last_name"`
-	// StdStudying holds the value of the "std_studying" field.
-	StdStudying bool `json:"std_studying,omitempty"`
-	// StdStatus holds the value of the "std_status" field.
-	StdStatus customtypes.StdStatus `json:"std_status,omitempty"`
-	// StdSex holds the value of the "std_sex" field.
-	StdSex customtypes.Sex `json:"std_sex,omitempty"`
-	// StdRegNo holds the value of the "std_reg_no" field.
-	StdRegNo string `json:"std_reg_no,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -43,11 +34,9 @@ func (*MstStudent) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case mststudent.FieldStdStudying:
-			values[i] = new(sql.NullBool)
 		case mststudent.FieldID:
 			values[i] = new(sql.NullInt64)
-		case mststudent.FieldStdFirstName, mststudent.FieldStdMiddleName, mststudent.FieldStdLastName, mststudent.FieldStdStatus, mststudent.FieldStdSex, mststudent.FieldStdRegNo:
+		case mststudent.FieldStdFirstName, mststudent.FieldStdMiddleName, mststudent.FieldStdLastName:
 			values[i] = new(sql.NullString)
 		case mststudent.FieldCreatedAt, mststudent.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -102,30 +91,6 @@ func (ms *MstStudent) assignValues(columns []string, values []interface{}) error
 			} else if value.Valid {
 				ms.StdLastName = value.String
 			}
-		case mststudent.FieldStdStudying:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field std_studying", values[i])
-			} else if value.Valid {
-				ms.StdStudying = value.Bool
-			}
-		case mststudent.FieldStdStatus:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field std_status", values[i])
-			} else if value.Valid {
-				ms.StdStatus = customtypes.StdStatus(value.String)
-			}
-		case mststudent.FieldStdSex:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field std_sex", values[i])
-			} else if value.Valid {
-				ms.StdSex = customtypes.Sex(value.String)
-			}
-		case mststudent.FieldStdRegNo:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field std_reg_no", values[i])
-			} else if value.Valid {
-				ms.StdRegNo = value.String
-			}
 		}
 	}
 	return nil
@@ -164,14 +129,6 @@ func (ms *MstStudent) String() string {
 	builder.WriteString(ms.StdMiddleName)
 	builder.WriteString(", std_last_name=")
 	builder.WriteString(ms.StdLastName)
-	builder.WriteString(", std_studying=")
-	builder.WriteString(fmt.Sprintf("%v", ms.StdStudying))
-	builder.WriteString(", std_status=")
-	builder.WriteString(fmt.Sprintf("%v", ms.StdStatus))
-	builder.WriteString(", std_sex=")
-	builder.WriteString(fmt.Sprintf("%v", ms.StdSex))
-	builder.WriteString(", std_reg_no=")
-	builder.WriteString(ms.StdRegNo)
 	builder.WriteByte(')')
 	return builder.String()
 }

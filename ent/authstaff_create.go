@@ -67,42 +67,6 @@ func (asc *AuthStaffCreate) SetStaffLastName(s string) *AuthStaffCreate {
 	return asc
 }
 
-// SetStaffAddress sets the "staff_address" field.
-func (asc *AuthStaffCreate) SetStaffAddress(s string) *AuthStaffCreate {
-	asc.mutation.SetStaffAddress(s)
-	return asc
-}
-
-// SetStaffPlace sets the "staff_place" field.
-func (asc *AuthStaffCreate) SetStaffPlace(s string) *AuthStaffCreate {
-	asc.mutation.SetStaffPlace(s)
-	return asc
-}
-
-// SetStaffState sets the "staff_state" field.
-func (asc *AuthStaffCreate) SetStaffState(s string) *AuthStaffCreate {
-	asc.mutation.SetStaffState(s)
-	return asc
-}
-
-// SetStaffPin sets the "staff_pin" field.
-func (asc *AuthStaffCreate) SetStaffPin(s string) *AuthStaffCreate {
-	asc.mutation.SetStaffPin(s)
-	return asc
-}
-
-// SetStaffEmail sets the "staff_email" field.
-func (asc *AuthStaffCreate) SetStaffEmail(s string) *AuthStaffCreate {
-	asc.mutation.SetStaffEmail(s)
-	return asc
-}
-
-// SetStaffMobile sets the "staff_mobile" field.
-func (asc *AuthStaffCreate) SetStaffMobile(s string) *AuthStaffCreate {
-	asc.mutation.SetStaffMobile(s)
-	return asc
-}
-
 // Mutation returns the AuthStaffMutation object of the builder.
 func (asc *AuthStaffCreate) Mutation() *AuthStaffMutation {
 	return asc.mutation
@@ -206,34 +170,6 @@ func (asc *AuthStaffCreate) check() error {
 	if _, ok := asc.mutation.StaffLastName(); !ok {
 		return &ValidationError{Name: "staff_last_name", err: errors.New(`ent: missing required field "AuthStaff.staff_last_name"`)}
 	}
-	if _, ok := asc.mutation.StaffAddress(); !ok {
-		return &ValidationError{Name: "staff_address", err: errors.New(`ent: missing required field "AuthStaff.staff_address"`)}
-	}
-	if _, ok := asc.mutation.StaffPlace(); !ok {
-		return &ValidationError{Name: "staff_place", err: errors.New(`ent: missing required field "AuthStaff.staff_place"`)}
-	}
-	if _, ok := asc.mutation.StaffState(); !ok {
-		return &ValidationError{Name: "staff_state", err: errors.New(`ent: missing required field "AuthStaff.staff_state"`)}
-	}
-	if _, ok := asc.mutation.StaffPin(); !ok {
-		return &ValidationError{Name: "staff_pin", err: errors.New(`ent: missing required field "AuthStaff.staff_pin"`)}
-	}
-	if _, ok := asc.mutation.StaffEmail(); !ok {
-		return &ValidationError{Name: "staff_email", err: errors.New(`ent: missing required field "AuthStaff.staff_email"`)}
-	}
-	if v, ok := asc.mutation.StaffEmail(); ok {
-		if err := authstaff.StaffEmailValidator(v); err != nil {
-			return &ValidationError{Name: "staff_email", err: fmt.Errorf(`ent: validator failed for field "AuthStaff.staff_email": %w`, err)}
-		}
-	}
-	if _, ok := asc.mutation.StaffMobile(); !ok {
-		return &ValidationError{Name: "staff_mobile", err: errors.New(`ent: missing required field "AuthStaff.staff_mobile"`)}
-	}
-	if v, ok := asc.mutation.StaffMobile(); ok {
-		if err := authstaff.StaffMobileValidator(v); err != nil {
-			return &ValidationError{Name: "staff_mobile", err: fmt.Errorf(`ent: validator failed for field "AuthStaff.staff_mobile": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -300,54 +236,6 @@ func (asc *AuthStaffCreate) createSpec() (*AuthStaff, *sqlgraph.CreateSpec) {
 			Column: authstaff.FieldStaffLastName,
 		})
 		_node.StaffLastName = value
-	}
-	if value, ok := asc.mutation.StaffAddress(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffAddress,
-		})
-		_node.StaffAddress = value
-	}
-	if value, ok := asc.mutation.StaffPlace(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffPlace,
-		})
-		_node.StaffPlace = value
-	}
-	if value, ok := asc.mutation.StaffState(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffState,
-		})
-		_node.StaffState = value
-	}
-	if value, ok := asc.mutation.StaffPin(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffPin,
-		})
-		_node.StaffPin = value
-	}
-	if value, ok := asc.mutation.StaffEmail(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffEmail,
-		})
-		_node.StaffEmail = value
-	}
-	if value, ok := asc.mutation.StaffMobile(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: authstaff.FieldStaffMobile,
-		})
-		_node.StaffMobile = value
 	}
 	return _node, _spec
 }

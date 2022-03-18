@@ -37,14 +37,6 @@ func init() {
 	authparentDescParentFirstName := authparentFields[0].Descriptor()
 	// authparent.ParentFirstNameValidator is a validator for the "parent_first_name" field. It is called by the builders before save.
 	authparent.ParentFirstNameValidator = authparentDescParentFirstName.Validators[0].(func(string) error)
-	// authparentDescParentEmail is the schema descriptor for parent_email field.
-	authparentDescParentEmail := authparentFields[7].Descriptor()
-	// authparent.ParentEmailValidator is a validator for the "parent_email" field. It is called by the builders before save.
-	authparent.ParentEmailValidator = authparentDescParentEmail.Validators[0].(func(string) error)
-	// authparentDescParentMobile is the schema descriptor for parent_mobile field.
-	authparentDescParentMobile := authparentFields[8].Descriptor()
-	// authparent.ParentMobileValidator is a validator for the "parent_mobile" field. It is called by the builders before save.
-	authparent.ParentMobileValidator = authparentDescParentMobile.Validators[0].(func(string) error)
 	authstaffMixin := schema.AuthStaff{}.Mixin()
 	authstaffMixinFields0 := authstaffMixin[0].Fields()
 	_ = authstaffMixinFields0
@@ -64,14 +56,6 @@ func init() {
 	authstaffDescStaffFirstName := authstaffFields[0].Descriptor()
 	// authstaff.StaffFirstNameValidator is a validator for the "staff_first_name" field. It is called by the builders before save.
 	authstaff.StaffFirstNameValidator = authstaffDescStaffFirstName.Validators[0].(func(string) error)
-	// authstaffDescStaffEmail is the schema descriptor for staff_email field.
-	authstaffDescStaffEmail := authstaffFields[7].Descriptor()
-	// authstaff.StaffEmailValidator is a validator for the "staff_email" field. It is called by the builders before save.
-	authstaff.StaffEmailValidator = authstaffDescStaffEmail.Validators[0].(func(string) error)
-	// authstaffDescStaffMobile is the schema descriptor for staff_mobile field.
-	authstaffDescStaffMobile := authstaffFields[8].Descriptor()
-	// authstaff.StaffMobileValidator is a validator for the "staff_mobile" field. It is called by the builders before save.
-	authstaff.StaffMobileValidator = authstaffDescStaffMobile.Validators[0].(func(string) error)
 	msgchannelmessageMixin := schema.MsgChannelMessage{}.Mixin()
 	msgchannelmessageMixinFields0 := msgchannelmessageMixin[0].Fields()
 	_ = msgchannelmessageMixinFields0
@@ -168,8 +152,4 @@ func init() {
 	mststudentDescStdFirstName := mststudentFields[0].Descriptor()
 	// mststudent.StdFirstNameValidator is a validator for the "std_first_name" field. It is called by the builders before save.
 	mststudent.StdFirstNameValidator = mststudentDescStdFirstName.Validators[0].(func(string) error)
-	// mststudentDescStdStudying is the schema descriptor for std_studying field.
-	mststudentDescStdStudying := mststudentFields[3].Descriptor()
-	// mststudent.DefaultStdStudying holds the default value on creation for the std_studying field.
-	mststudent.DefaultStdStudying = mststudentDescStdStudying.Default.(bool)
 }

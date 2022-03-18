@@ -4,11 +4,7 @@
 package mststudent
 
 import (
-	"fmt"
-	"myeduate/ent/customtypes"
 	"time"
-
-	"github.com/arsmn/fastgql/graphql"
 )
 
 const (
@@ -26,14 +22,6 @@ const (
 	FieldStdMiddleName = "std_middle_name"
 	// FieldStdLastName holds the string denoting the std_last_name field in the database.
 	FieldStdLastName = "std_last_name"
-	// FieldStdStudying holds the string denoting the std_studying field in the database.
-	FieldStdStudying = "std_studying"
-	// FieldStdStatus holds the string denoting the std_status field in the database.
-	FieldStdStatus = "std_status"
-	// FieldStdSex holds the string denoting the std_sex field in the database.
-	FieldStdSex = "std_sex"
-	// FieldStdRegNo holds the string denoting the std_reg_no field in the database.
-	FieldStdRegNo = "std_reg_no"
 	// Table holds the table name of the mststudent in the database.
 	Table = "mst_students"
 )
@@ -46,10 +34,6 @@ var Columns = []string{
 	FieldStdFirstName,
 	FieldStdMiddleName,
 	FieldStdLastName,
-	FieldStdStudying,
-	FieldStdStatus,
-	FieldStdSex,
-	FieldStdRegNo,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -71,42 +55,4 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// StdFirstNameValidator is a validator for the "std_first_name" field. It is called by the builders before save.
 	StdFirstNameValidator func(string) error
-	// DefaultStdStudying holds the default value on creation for the "std_studying" field.
-	DefaultStdStudying bool
-)
-
-const DefaultStdStatus customtypes.StdStatus = "CUR"
-
-// StdStatusValidator is a validator for the "std_status" field enum values. It is called by the builders before save.
-func StdStatusValidator(ss customtypes.StdStatus) error {
-	switch ss {
-	case "CUR", "TC", "DET", "NE":
-		return nil
-	default:
-		return fmt.Errorf("mststudent: invalid enum value for std_status field: %q", ss)
-	}
-}
-
-// StdSexValidator is a validator for the "std_sex" field enum values. It is called by the builders before save.
-func StdSexValidator(ss customtypes.Sex) error {
-	switch ss {
-	case "MALE", "FEMALE":
-		return nil
-	default:
-		return fmt.Errorf("mststudent: invalid enum value for std_sex field: %q", ss)
-	}
-}
-
-var (
-	// customtypes.StdStatus must implement graphql.Marshaler.
-	_ graphql.Marshaler = customtypes.StdStatus("")
-	// customtypes.StdStatus must implement graphql.Unmarshaler.
-	_ graphql.Unmarshaler = (*customtypes.StdStatus)(nil)
-)
-
-var (
-	// customtypes.Sex must implement graphql.Marshaler.
-	_ graphql.Marshaler = customtypes.Sex("")
-	// customtypes.Sex must implement graphql.Unmarshaler.
-	_ graphql.Unmarshaler = (*customtypes.Sex)(nil)
 )

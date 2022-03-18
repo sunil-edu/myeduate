@@ -37,12 +37,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			authparent.FieldParentFirstName:  {Type: field.TypeString, Column: authparent.FieldParentFirstName},
 			authparent.FieldParentMiddleName: {Type: field.TypeString, Column: authparent.FieldParentMiddleName},
 			authparent.FieldParentLastName:   {Type: field.TypeString, Column: authparent.FieldParentLastName},
-			authparent.FieldParentAddress:    {Type: field.TypeString, Column: authparent.FieldParentAddress},
-			authparent.FieldParentPlace:      {Type: field.TypeString, Column: authparent.FieldParentPlace},
-			authparent.FieldParentState:      {Type: field.TypeString, Column: authparent.FieldParentState},
-			authparent.FieldParentPin:        {Type: field.TypeString, Column: authparent.FieldParentPin},
-			authparent.FieldParentEmail:      {Type: field.TypeString, Column: authparent.FieldParentEmail},
-			authparent.FieldParentMobile:     {Type: field.TypeString, Column: authparent.FieldParentMobile},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -61,12 +55,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			authstaff.FieldStaffFirstName:  {Type: field.TypeString, Column: authstaff.FieldStaffFirstName},
 			authstaff.FieldStaffMiddleName: {Type: field.TypeString, Column: authstaff.FieldStaffMiddleName},
 			authstaff.FieldStaffLastName:   {Type: field.TypeString, Column: authstaff.FieldStaffLastName},
-			authstaff.FieldStaffAddress:    {Type: field.TypeString, Column: authstaff.FieldStaffAddress},
-			authstaff.FieldStaffPlace:      {Type: field.TypeString, Column: authstaff.FieldStaffPlace},
-			authstaff.FieldStaffState:      {Type: field.TypeString, Column: authstaff.FieldStaffState},
-			authstaff.FieldStaffPin:        {Type: field.TypeString, Column: authstaff.FieldStaffPin},
-			authstaff.FieldStaffEmail:      {Type: field.TypeString, Column: authstaff.FieldStaffEmail},
-			authstaff.FieldStaffMobile:     {Type: field.TypeString, Column: authstaff.FieldStaffMobile},
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
@@ -177,10 +165,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			mststudent.FieldStdFirstName:  {Type: field.TypeString, Column: mststudent.FieldStdFirstName},
 			mststudent.FieldStdMiddleName: {Type: field.TypeString, Column: mststudent.FieldStdMiddleName},
 			mststudent.FieldStdLastName:   {Type: field.TypeString, Column: mststudent.FieldStdLastName},
-			mststudent.FieldStdStudying:   {Type: field.TypeBool, Column: mststudent.FieldStdStudying},
-			mststudent.FieldStdStatus:     {Type: field.TypeEnum, Column: mststudent.FieldStdStatus},
-			mststudent.FieldStdSex:        {Type: field.TypeEnum, Column: mststudent.FieldStdSex},
-			mststudent.FieldStdRegNo:      {Type: field.TypeString, Column: mststudent.FieldStdRegNo},
 		},
 	}
 	graph.MustAddE(
@@ -280,36 +264,6 @@ func (f *AuthParentFilter) WhereParentLastName(p entql.StringP) {
 	f.Where(p.Field(authparent.FieldParentLastName))
 }
 
-// WhereParentAddress applies the entql string predicate on the parent_address field.
-func (f *AuthParentFilter) WhereParentAddress(p entql.StringP) {
-	f.Where(p.Field(authparent.FieldParentAddress))
-}
-
-// WhereParentPlace applies the entql string predicate on the parent_place field.
-func (f *AuthParentFilter) WhereParentPlace(p entql.StringP) {
-	f.Where(p.Field(authparent.FieldParentPlace))
-}
-
-// WhereParentState applies the entql string predicate on the parent_state field.
-func (f *AuthParentFilter) WhereParentState(p entql.StringP) {
-	f.Where(p.Field(authparent.FieldParentState))
-}
-
-// WhereParentPin applies the entql string predicate on the parent_pin field.
-func (f *AuthParentFilter) WhereParentPin(p entql.StringP) {
-	f.Where(p.Field(authparent.FieldParentPin))
-}
-
-// WhereParentEmail applies the entql string predicate on the parent_email field.
-func (f *AuthParentFilter) WhereParentEmail(p entql.StringP) {
-	f.Where(p.Field(authparent.FieldParentEmail))
-}
-
-// WhereParentMobile applies the entql string predicate on the parent_mobile field.
-func (f *AuthParentFilter) WhereParentMobile(p entql.StringP) {
-	f.Where(p.Field(authparent.FieldParentMobile))
-}
-
 // addPredicate implements the predicateAdder interface.
 func (asq *AuthStaffQuery) addPredicate(pred func(s *sql.Selector)) {
 	asq.predicates = append(asq.predicates, pred)
@@ -372,36 +326,6 @@ func (f *AuthStaffFilter) WhereStaffMiddleName(p entql.StringP) {
 // WhereStaffLastName applies the entql string predicate on the staff_last_name field.
 func (f *AuthStaffFilter) WhereStaffLastName(p entql.StringP) {
 	f.Where(p.Field(authstaff.FieldStaffLastName))
-}
-
-// WhereStaffAddress applies the entql string predicate on the staff_address field.
-func (f *AuthStaffFilter) WhereStaffAddress(p entql.StringP) {
-	f.Where(p.Field(authstaff.FieldStaffAddress))
-}
-
-// WhereStaffPlace applies the entql string predicate on the staff_place field.
-func (f *AuthStaffFilter) WhereStaffPlace(p entql.StringP) {
-	f.Where(p.Field(authstaff.FieldStaffPlace))
-}
-
-// WhereStaffState applies the entql string predicate on the staff_state field.
-func (f *AuthStaffFilter) WhereStaffState(p entql.StringP) {
-	f.Where(p.Field(authstaff.FieldStaffState))
-}
-
-// WhereStaffPin applies the entql string predicate on the staff_pin field.
-func (f *AuthStaffFilter) WhereStaffPin(p entql.StringP) {
-	f.Where(p.Field(authstaff.FieldStaffPin))
-}
-
-// WhereStaffEmail applies the entql string predicate on the staff_email field.
-func (f *AuthStaffFilter) WhereStaffEmail(p entql.StringP) {
-	f.Where(p.Field(authstaff.FieldStaffEmail))
-}
-
-// WhereStaffMobile applies the entql string predicate on the staff_mobile field.
-func (f *AuthStaffFilter) WhereStaffMobile(p entql.StringP) {
-	f.Where(p.Field(authstaff.FieldStaffMobile))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -876,24 +800,4 @@ func (f *MstStudentFilter) WhereStdMiddleName(p entql.StringP) {
 // WhereStdLastName applies the entql string predicate on the std_last_name field.
 func (f *MstStudentFilter) WhereStdLastName(p entql.StringP) {
 	f.Where(p.Field(mststudent.FieldStdLastName))
-}
-
-// WhereStdStudying applies the entql bool predicate on the std_studying field.
-func (f *MstStudentFilter) WhereStdStudying(p entql.BoolP) {
-	f.Where(p.Field(mststudent.FieldStdStudying))
-}
-
-// WhereStdStatus applies the entql string predicate on the std_status field.
-func (f *MstStudentFilter) WhereStdStatus(p entql.StringP) {
-	f.Where(p.Field(mststudent.FieldStdStatus))
-}
-
-// WhereStdSex applies the entql string predicate on the std_sex field.
-func (f *MstStudentFilter) WhereStdSex(p entql.StringP) {
-	f.Where(p.Field(mststudent.FieldStdSex))
-}
-
-// WhereStdRegNo applies the entql string predicate on the std_reg_no field.
-func (f *MstStudentFilter) WhereStdRegNo(p entql.StringP) {
-	f.Where(p.Field(mststudent.FieldStdRegNo))
 }
