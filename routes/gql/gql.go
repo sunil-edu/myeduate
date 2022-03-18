@@ -13,11 +13,17 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func Init(app *echo.Echo, client *ent.Client) {
 
 	// do not forget the middleware
+
+	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
 	app.GET("/", PlaygroundHandler())
 	app.POST("/query", GraphqlHandler(client))
@@ -70,5 +76,3 @@ func GraphqlWsHandler(client *ent.Client) echo.HandlerFunc {
 		return nil
 	}
 }
-
-

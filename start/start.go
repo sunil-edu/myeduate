@@ -7,7 +7,6 @@ import (
 	"myeduate/logger"
 	"myeduate/routes"
 	"myeduate/utils"
-	"net/http"
 	"time"
 
 	_ "myeduate/ent/runtime"
@@ -15,10 +14,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/schema"
 
-	gohandlers "github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 
 	_ "github.com/lib/pq"
 	"go.uber.org/zap"
@@ -74,21 +70,7 @@ func main() {
 
 	app := echo.New()
 
-	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{config.AllowOrigins},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	}))
-
 	routes.Init(app, client)
 
 	app.Logger.Fatal(app.Start(":8081"))
-}
-
-func cors(allowedOrigins string) mux.MiddlewareFunc {
-	return gohandlers.CORS(
-		gohandlers.AllowedOrigins([]string{allowedOrigins}),
-		gohandlers.AllowedHeaders([]string{"Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Origin", "X-Requested-With", "Content-Type", "Accept"}),
-		gohandlers.AllowedMethods([]string{http.MethodGet, http.MethodHead, http.MethodPost, http.MethodPut, http.MethodOptions}),
-		gohandlers.AllowCredentials(),
-	)
 }

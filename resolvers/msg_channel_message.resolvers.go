@@ -9,7 +9,7 @@ import (
 	"myeduate/ent"
 	"myeduate/ent/msgchannelmessage"
 
-	"github.com/thanhpk/randstr"
+	"github.com/google/uuid"
 )
 
 func (r *mutationResolver) AddChannelMessage(ctx context.Context, token string, input ent.CreateMsgChannelMessageInput) (*ent.MsgChannelMessage, error) {
@@ -42,7 +42,7 @@ func (r *queryResolver) GetChannelMessages(ctx context.Context, token string) ([
 
 func (r *subscriptionResolver) GetChannelMessagesBySubscription(ctx context.Context, token string) (<-chan []*ent.MsgChannelMessage, error) {
 	// Create an ID and channel for each active subscription. We will push changes into this channel.
-	id := randstr.Hex(16)
+	id := uuid.New().String()
 	msgs := make(chan []*ent.MsgChannelMessage, 1)
 
 	// Start a goroutine to allow for cleaning up subscriptions that are disconnected.
@@ -63,7 +63,7 @@ func (r *subscriptionResolver) GetChannelMessagesBySubscription(ctx context.Cont
 	// in the PostMessage mutation.
 	r.ChatObservers[id] <- r.ChatMessages
 
-	return msgs, nil
+	return r.ChatObservers[id], nil
 }
 
 // Subscription returns myeduate.SubscriptionResolver implementation.
